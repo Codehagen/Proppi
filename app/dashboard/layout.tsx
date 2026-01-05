@@ -15,8 +15,8 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-background">
       <DashboardHeader />
 
-      {/* Main content */}
-      <main className="container py-6">{children}</main>
+      {/* Main content - full width with consistent padding */}
+      <main className="w-full py-6">{children}</main>
     </div>
   )
 }

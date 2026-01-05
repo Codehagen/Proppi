@@ -25,7 +25,7 @@ function VirtualRowInner<TData>({
       data-index={row.index}
       className={cn(
         "group cursor-pointer select-text",
-        "hover:bg-muted/50",
+        "table-row-hover",
         "flex items-center border-0",
         "absolute top-0 left-0 w-full"
       )}

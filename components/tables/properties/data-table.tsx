@@ -92,13 +92,47 @@ export function DataTable() {
     threshold: 15,
   })
 
-  // Loading state
+  // Loading skeleton state
   if (isInitialLoad) {
     return (
       <div className="space-y-4">
         <TableToolbar />
-        <div className="flex items-center justify-center py-16">
-          <IconLoader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="relative overflow-hidden rounded-xl bg-card shadow-xs ring-1 ring-foreground/10">
+          {/* Skeleton Header */}
+          <div className="flex items-center gap-4 border-b px-4 py-3">
+            <div className="skeleton h-4 w-32" />
+            <div className="skeleton h-4 w-20" />
+            <div className="skeleton h-4 w-24" />
+            <div className="skeleton h-4 w-16" />
+            <div className="skeleton h-4 w-20" />
+          </div>
+          {/* Skeleton Rows */}
+          <div className="divide-y">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 px-4 py-4"
+                style={{ animationDelay: `${i * 50}ms` }}
+              >
+                <div className="flex flex-col gap-1.5 flex-1">
+                  <div className="skeleton h-4 w-48" />
+                  <div className="skeleton h-3 w-32" />
+                </div>
+                <div className="skeleton h-5 w-16 rounded-full" />
+                <div className="flex gap-1">
+                  <div className="skeleton h-5 w-14 rounded-full" />
+                  <div className="skeleton h-5 w-14 rounded-full" />
+                </div>
+                <div className="skeleton h-4 w-8" />
+                <div className="skeleton h-4 w-14" />
+                <div className="skeleton h-8 w-8 rounded-md" />
+              </div>
+            ))}
+          </div>
+          {/* Skeleton Footer */}
+          <div className="border-t px-4 py-3">
+            <div className="skeleton h-4 w-32" />
+          </div>
         </div>
       </div>
     )
@@ -145,8 +179,8 @@ export function DataTable() {
         {/* Scrollable body with virtualization */}
         <div
           ref={parentRef}
-          className="overflow-auto scrollbar-hide"
-          style={{ height: "calc(100vh - 340px)" }}
+          className="overflow-auto scrollbar-thin"
+          style={{ height: "calc(100vh - 400px)", minHeight: "300px" }}
         >
           <Table>
             <TableBody
