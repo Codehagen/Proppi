@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { ProjectCard } from "@/components/dashboard/project-card"
-import type { Project } from "@/lib/mock/projects"
+import type { Project } from "@/lib/db/schema"
 
 interface ProjectsGridProps {
   projects: Project[]

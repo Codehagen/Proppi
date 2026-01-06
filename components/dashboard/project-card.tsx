@@ -3,11 +3,11 @@
 import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { IconPhoto, IconClock, IconCheck, IconLoader2, IconAlertTriangle } from "@tabler/icons-react"
+import { IconPhoto, IconClock, IconCheck, IconLoader2, IconAlertTriangle, IconPhotoOff } from "@tabler/icons-react"
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import type { Project, ProjectStatus } from "@/lib/mock/projects"
+import type { Project, ProjectStatus } from "@/lib/db/schema"
 import { getTemplateById } from "@/lib/style-templates"
 
 interface ProjectCardProps {
@@ -61,7 +61,7 @@ function formatRelativeDate(date: Date): string {
 
 export function ProjectCard({ project, className, style }: ProjectCardProps) {
   const template = getTemplateById(project.styleTemplateId)
-  const status = statusConfig[project.status]
+  const status = statusConfig[project.status as ProjectStatus] || statusConfig.pending
 
   return (
     <Link
@@ -79,13 +79,19 @@ export function ProjectCard({ project, className, style }: ProjectCardProps) {
     >
       {/* Thumbnail with overlay */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-        <Image
-          src={project.thumbnailUrl}
-          alt={project.name}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
+        {project.thumbnailUrl ? (
+          <Image
+            src={project.thumbnailUrl}
+            alt={project.name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <IconPhotoOff className="h-12 w-12 text-muted-foreground/30" />
+          </div>
+        )}
 
         {/* Gradient overlay for text legibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />

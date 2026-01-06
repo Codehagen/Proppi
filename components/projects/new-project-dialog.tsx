@@ -22,9 +22,11 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { useProjectCreation, type CreationStep } from "@/hooks/use-project-creation"
+import { useImageUpload } from "@/hooks/use-image-upload"
 import { UploadStep } from "@/components/projects/steps/upload-step"
 import { StyleStep } from "@/components/projects/steps/style-step"
 import { ConfirmStep } from "@/components/projects/steps/confirm-step"
+import { createProjectAction } from "@/lib/actions"
 
 interface NewProjectDialogProps {
   open: boolean
@@ -93,26 +95,54 @@ function StepIndicator({
 export function NewProjectDialog({ open, onOpenChange }: NewProjectDialogProps) {
   const router = useRouter()
   const creation = useProjectCreation()
+  const imageUpload = useImageUpload()
 
   const handleClose = React.useCallback(() => {
     creation.reset()
+    imageUpload.reset()
     onOpenChange(false)
-  }, [creation, onOpenChange])
+  }, [creation, imageUpload, onOpenChange])
 
   const handleSubmit = React.useCallback(async () => {
-    if (!creation.canProceed()) return
+    if (!creation.canProceed() || !creation.selectedTemplate) return
 
     creation.setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      // Step 1: Create the project
+      const projectFormData = new FormData()
+      projectFormData.set("name", creation.projectName)
+      projectFormData.set("styleTemplateId", creation.selectedTemplate.id)
 
-    // For now, just redirect to a mock project detail page
-    const projectId = `proj_${Date.now().toString(36)}`
-    creation.reset()
-    onOpenChange(false)
-    router.push(`/dashboard/${projectId}`)
-  }, [creation, onOpenChange, router])
+      const projectResult = await createProjectAction(projectFormData)
+
+      if (!projectResult.success) {
+        console.error("Failed to create project:", projectResult.error)
+        creation.setIsSubmitting(false)
+        return
+      }
+
+      const project = projectResult.data
+
+      // Step 2: Upload images directly to Supabase (client-side)
+      const files = creation.images.map((img) => img.file)
+      const uploadSuccess = await imageUpload.uploadImages(project.id, files)
+
+      if (!uploadSuccess) {
+        console.error("Failed to upload images:", imageUpload.error)
+        // Project was created but images failed - still redirect to project
+      }
+
+      // Success - redirect to project detail page
+      creation.reset()
+      imageUpload.reset()
+      onOpenChange(false)
+      router.push(`/dashboard/${project.id}`)
+    } catch (error) {
+      console.error("Project creation error:", error)
+      creation.setIsSubmitting(false)
+    }
+  }, [creation, imageUpload, onOpenChange, router])
 
   const stepTitles: Record<CreationStep, { title: string; description: string }> = {
     upload: {

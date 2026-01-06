@@ -5,6 +5,7 @@ import {
   boolean,
   index,
   jsonb,
+  integer,
 } from "drizzle-orm/pg-core";
 
 // ============================================================================
@@ -106,6 +107,43 @@ export const verification = pgTable(
 );
 
 // ============================================================================
+// Project (groups multiple image generations)
+// ============================================================================
+
+export const project = pgTable(
+  "project",
+  {
+    id: text("id").primaryKey(),
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspace.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    // Project details
+    name: text("name").notNull(),
+    styleTemplateId: text("style_template_id").notNull(),
+    thumbnailUrl: text("thumbnail_url"),
+
+    // Status tracking
+    status: text("status").notNull().default("pending"), // pending | processing | completed | failed
+
+    // Image counts (denormalized for performance)
+    imageCount: integer("image_count").notNull().default(0),
+    completedCount: integer("completed_count").notNull().default(0),
+
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("project_workspace_idx").on(table.workspaceId),
+    index("project_user_idx").on(table.userId),
+    index("project_status_idx").on(table.status),
+  ]
+);
+
+// ============================================================================
 // Image Generation
 // ============================================================================
 
@@ -119,6 +157,9 @@ export const imageGeneration = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => project.id, { onDelete: "cascade" }),
 
     // Image data
     originalImageUrl: text("original_image_url").notNull(),
@@ -138,6 +179,7 @@ export const imageGeneration = pgTable(
   (table) => [
     index("image_generation_workspace_idx").on(table.workspaceId),
     index("image_generation_user_idx").on(table.userId),
+    index("image_generation_project_idx").on(table.projectId),
   ]
 );
 
@@ -151,10 +193,14 @@ export type NewWorkspace = typeof workspace.$inferInsert;
 export type User = typeof user.$inferSelect;
 export type NewUser = typeof user.$inferInsert;
 
+export type Project = typeof project.$inferSelect;
+export type NewProject = typeof project.$inferInsert;
+
 export type ImageGeneration = typeof imageGeneration.$inferSelect;
 export type NewImageGeneration = typeof imageGeneration.$inferInsert;
 
 export type UserRole = "owner" | "admin" | "member";
+export type ProjectStatus = "pending" | "processing" | "completed" | "failed";
 export type ImageStatus = "pending" | "processing" | "completed" | "failed";
 
 // ============================================================================
@@ -162,46 +208,6 @@ export type ImageStatus = "pending" | "processing" | "completed" | "failed";
 // ============================================================================
 
 /*
-// Add these fields to workspace table:
-// organizationNumber: text("organization_number"), // Norwegian org number (9 digits)
-// fikenContactId: integer("fiken_contact_id"),     // Fiken contact ID for invoicing
-
-export const project = pgTable(
-  "project",
-  {
-    id: text("id").primaryKey(),
-    workspaceId: text("workspace_id")
-      .notNull()
-      .references(() => workspace.id, { onDelete: "cascade" }),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-
-    // Project details
-    name: text("name").notNull(),
-    styleTemplateId: text("style_template_id"),
-
-    // Image tracking (max 10 per project)
-    imageCount: integer("image_count").notNull().default(0),
-    completedImageCount: integer("completed_image_count").notNull().default(0),
-
-    // Billing status: draft | completed | invoiced
-    status: text("status").notNull().default("draft"),
-
-    // Invoice reference (when invoiced)
-    invoiceId: text("invoice_id").references(() => invoice.id),
-
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    updatedAt: timestamp("updated_at").notNull().defaultNow(),
-    completedAt: timestamp("completed_at"),
-  },
-  (table) => [
-    index("project_workspace_idx").on(table.workspaceId),
-    index("project_user_idx").on(table.userId),
-    index("project_status_idx").on(table.status),
-  ]
-);
-
 export const invoice = pgTable(
   "invoice",
   {
@@ -238,11 +244,6 @@ export const invoice = pgTable(
     index("invoice_fiken_idx").on(table.fikenInvoiceId),
   ]
 );
-
-// Type exports for billing
-export type Project = typeof project.$inferSelect;
-export type NewProject = typeof project.$inferInsert;
-export type ProjectStatus = "draft" | "completed" | "invoiced";
 
 export type Invoice = typeof invoice.$inferSelect;
 export type NewInvoice = typeof invoice.$inferInsert;
