@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { IconChartBar, IconBuilding, IconUsers, IconLogout } from "@tabler/icons-react"
+import { IconChartBar, IconBuilding, IconUsers, IconFileInvoice, IconLogout } from "@tabler/icons-react"
 
 const navItems = [
   { href: "/admin", label: "Overview", icon: IconChartBar, exact: true as const },
   { href: "/admin/workspaces", label: "Workspaces", icon: IconBuilding, exact: false as const },
   { href: "/admin/users", label: "Users", icon: IconUsers, exact: false as const },
+  { href: "/admin/billing", label: "Betalinger", icon: IconFileInvoice, exact: false as const },
 ]
 
 export function AdminHeader() {

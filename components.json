@@ -21,9 +21,9 @@
   "menuColor": "default",
   "menuAccent": "subtle",
   "registries": {
-      "@magicui": "https://magicui.design/r/{name}",
-      "@lytenyte": "https://www.1771technologies.com/r/{name}.json",
-      "@nuqs": "https://nuqs.dev/r/{name}.json",
-      "@motion-primitives": "https://motion-primitives.com/c/registry.json"
-  }
+    "@magicui": "https://magicui.design/r/{name}",
+    "@lytenyte": "https://www.1771technologies.com/r/{name}.json",
+    "@nuqs": "https://nuqs.dev/r/{name}.json",
+    "@motion-primitives": "https://motion-primitives.com/c/registry.json"
+ }
 }
