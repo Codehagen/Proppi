@@ -17,6 +17,7 @@ import {
 } from "@/lib/db/queries"
 import { getUserWithWorkspace } from "@/lib/db/queries"
 import { deleteVideoProjectFiles, uploadVideoSourceImage, getVideoSourceImagePath, getExtensionFromContentType } from "@/lib/supabase"
+import { auth as triggerAuth } from "@trigger.dev/sdk/v3"
 import { generateVideoTask } from "@/trigger/video-orchestrator"
 import { calculateVideoCost, costToCents, VIDEO_DEFAULTS } from "@/lib/video/video-constants"
 import { getMotionPrompt } from "@/lib/video/motion-prompts"
@@ -126,12 +127,18 @@ export async function triggerVideoGeneration(videoProjectId: string) {
     videoProjectId,
   })
 
-  // Update project with run ID for tracking
+  // Generate public access token for real-time updates
+  const publicAccessToken = await triggerAuth.createPublicToken({
+    scopes: {
+      read: { runs: [handle.id] }
+    }
+  })
+
+  // Update project with run ID AND access token for real-time tracking
   await updateVideoProject(videoProjectId, {
     status: "generating",
-    metadata: {
-      runId: handle.id,
-    },
+    triggerRunId: handle.id,
+    triggerAccessToken: publicAccessToken,
   })
 
   revalidatePath(`/video/${videoProjectId}`)

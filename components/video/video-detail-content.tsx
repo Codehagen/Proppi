@@ -104,12 +104,24 @@ function RealtimeVideoProgress({
     enabled: !!runId && !!accessToken,
   })
 
-  const metadata = run?.metadata as { step?: string; clipIndex?: number; totalClips?: number } | undefined
-  const step = metadata?.step || "generating"
-  const currentClip = metadata?.clipIndex || 0
-  const total = metadata?.totalClips || clipCount
+  // Metadata is nested under "status" key from the orchestrator
+  const metadata = run?.metadata as {
+    status?: {
+      step?: string
+      label?: string
+      clipIndex?: number
+      totalClips?: number
+      progress?: number
+    }
+  } | undefined
+  const status = metadata?.status
+  const step = status?.step || "generating"
+  const currentClip = status?.clipIndex || 0
+  const total = status?.totalClips || clipCount
+  const progressFromMetadata = status?.progress
 
-  const progress = step === "compiling" ? 100 : Math.round((currentClip / total) * 100)
+  // Use metadata progress if available, otherwise calculate from clips
+  const progress = progressFromMetadata ?? (step === "compiling" ? 70 : Math.round((currentClip / total) * 100))
 
   return (
     <div className="rounded-xl border bg-card p-6">
@@ -120,12 +132,16 @@ function RealtimeVideoProgress({
           </div>
           <div>
             <div className="font-medium">
-              {step === "compiling" ? "Compiling video…" : `Generating clip ${currentClip} of ${total}`}
+              {status?.label || (step === "compiling" ? "Compiling video…" : `Generating clip ${currentClip} of ${total}`)}
             </div>
             <div className="text-sm text-muted-foreground">
-              {step === "compiling"
-                ? "Adding transitions and music"
-                : "Creating cinematic clips from your images"}
+              {step === "starting"
+                ? "Preparing video generation"
+                : step === "compiling"
+                  ? "Adding transitions and music"
+                  : step === "completed"
+                    ? "Your video is ready"
+                    : "Creating cinematic clips from your images"}
             </div>
           </div>
         </div>
