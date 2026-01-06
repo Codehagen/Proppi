@@ -167,6 +167,10 @@ export const imageGeneration = pgTable(
     resultImageUrl: text("result_image_url"),
     prompt: text("prompt").notNull(),
 
+    // Version tracking for edit history
+    version: integer("version").notNull().default(1), // v1, v2, v3...
+    parentId: text("parent_id"), // Links to original image for version chain
+
     // Status tracking
     status: text("status").notNull().default("pending"), // pending | processing | completed | failed
     errorMessage: text("error_message"),
@@ -181,6 +185,7 @@ export const imageGeneration = pgTable(
     index("image_generation_workspace_idx").on(table.workspaceId),
     index("image_generation_user_idx").on(table.userId),
     index("image_generation_project_idx").on(table.projectId),
+    index("image_generation_parent_idx").on(table.parentId),
   ]
 );
 

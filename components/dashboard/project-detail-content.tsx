@@ -58,6 +58,12 @@ const statusConfig: Record<
   },
 }
 
+interface ImageGroup {
+  rootId: string
+  versions: ImageGeneration[]
+  latestVersion: ImageGeneration
+}
+
 function ImageCard({
   image,
   index,
@@ -65,6 +71,8 @@ function ImageCard({
   onEdit,
   onRetry,
   isRetrying,
+  versionCount,
+  onVersionClick,
 }: {
   image: ImageGeneration
   index: number
@@ -72,9 +80,12 @@ function ImageCard({
   onEdit: () => void
   onRetry: () => void
   isRetrying: boolean
+  versionCount?: number
+  onVersionClick?: () => void
 }) {
   const isCompleted = image.status === "completed"
   const displayUrl = isCompleted && image.resultImageUrl ? image.resultImageUrl : image.originalImageUrl
+  const hasMultipleVersions = versionCount && versionCount > 1
 
   return (
     <div
@@ -156,12 +167,108 @@ function ImageCard({
         {index + 1}
       </div>
 
+      {/* Version badge - show if multiple versions exist */}
+      {hasMultipleVersions && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onVersionClick?.()
+          }}
+          className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-purple-500 px-2 py-1 text-xs font-medium text-white shadow-md transition-colors hover:bg-purple-600"
+          title={`${versionCount} versions available`}
+        >
+          v{image.version || 1}
+          <span className="text-white/70">/{versionCount}</span>
+        </button>
+      )}
+
       {/* Completed badge */}
-      {isCompleted && (
+      {isCompleted && !hasMultipleVersions && (
         <div className="absolute left-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 shadow-md">
           <IconCheck className="h-3.5 w-3.5 text-white" />
         </div>
       )}
+
+      {/* Completed badge when versions exist - move to left */}
+      {isCompleted && hasMultipleVersions && (
+        <div className="absolute left-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 shadow-md">
+          <IconCheck className="h-3.5 w-3.5 text-white" />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function VersionSelector({
+  versions,
+  currentVersion,
+  onSelect,
+  onClose,
+}: {
+  versions: ImageGeneration[]
+  currentVersion: ImageGeneration
+  onSelect: (image: ImageGeneration) => void
+  onClose: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+      <div className="relative w-full max-w-2xl rounded-2xl bg-card p-6 shadow-xl">
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          aria-label="Close"
+        >
+          <IconArrowLeft className="h-5 w-5" />
+        </button>
+
+        <h3 className="mb-4 text-lg font-semibold">Version History</h3>
+        <p className="mb-4 text-sm text-muted-foreground">
+          Click on a version to view it. Each edit creates a new version.
+        </p>
+
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+          {versions.map((version) => {
+            const isSelected = version.id === currentVersion.id
+            const displayUrl = version.resultImageUrl || version.originalImageUrl
+            return (
+              <button
+                key={version.id}
+                onClick={() => onSelect(version)}
+                className={cn(
+                  "group relative aspect-square overflow-hidden rounded-lg ring-2 transition-all",
+                  isSelected
+                    ? "ring-purple-500"
+                    : "ring-transparent hover:ring-foreground/20"
+                )}
+              >
+                <Image
+                  src={displayUrl}
+                  alt={`Version ${version.version || 1}`}
+                  fill
+                  className="object-cover"
+                  sizes="150px"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                  <span className="text-xs font-medium text-white">
+                    v{version.version || 1}
+                  </span>
+                </div>
+                {isSelected && (
+                  <div className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-purple-500">
+                    <IconCheck className="h-3 w-3 text-white" />
+                  </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="mt-4 flex justify-end gap-2">
+          <Button variant="outline" onClick={onClose}>
+            Close
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -266,11 +373,43 @@ export function ProjectDetailContent({ project, images }: ProjectDetailContentPr
   const [editingImage, setEditingImage] = React.useState<ImageGeneration | null>(null)
   const [addImagesOpen, setAddImagesOpen] = React.useState(false)
   const [retryingImageId, setRetryingImageId] = React.useState<string | null>(null)
+  const [versionSelectorGroup, setVersionSelectorGroup] = React.useState<ImageGroup | null>(null)
 
   const template = getTemplateById(project.styleTemplateId)
   const status = statusConfig[project.status as ProjectStatus] || statusConfig.pending
   const completedImages = images.filter((img) => img.status === "completed")
-  const canAddMore = images.length < 10
+
+  // Group images by their root ID (original image or first in version chain)
+  const imageGroups = React.useMemo(() => {
+    const grouped = new Map<string, ImageGeneration[]>()
+
+    for (const img of images) {
+      const rootId = img.parentId || img.id
+      if (!grouped.has(rootId)) {
+        grouped.set(rootId, [])
+      }
+      grouped.get(rootId)!.push(img)
+    }
+
+    // Sort each group by version and create ImageGroup objects
+    const groups: ImageGroup[] = []
+    for (const [rootId, versions] of grouped) {
+      versions.sort((a, b) => (a.version || 1) - (b.version || 1))
+      const latestVersion = versions[versions.length - 1]
+      groups.push({ rootId, versions, latestVersion })
+    }
+
+    // Sort groups by the latest version's creation date (most recent first)
+    groups.sort((a, b) =>
+      new Date(b.latestVersion.createdAt).getTime() - new Date(a.latestVersion.createdAt).getTime()
+    )
+
+    return groups
+  }, [images])
+
+  // Count only root images (not versions) for the "add more" limit
+  const rootImageCount = imageGroups.length
+  const canAddMore = rootImageCount < 10
 
   const handleRetry = async (imageId: string) => {
     setRetryingImageId(imageId)
@@ -435,25 +574,31 @@ export function ProjectDetailContent({ project, images }: ProjectDetailContentPr
         {/* Image grid */}
         <div className="animate-fade-in-up stagger-2">
           <h2 className="mb-4 text-lg font-semibold">Images</h2>
-          {images.length > 0 ? (
+          {imageGroups.length > 0 ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {images.map((image, index) => (
+              {imageGroups.map((group, index) => (
                 <ImageCard
-                  key={image.id}
-                  image={image}
+                  key={group.rootId}
+                  image={group.latestVersion}
                   index={index}
+                  versionCount={group.versions.length}
                   onSelect={() => {
-                    if (image.status === "completed" && image.resultImageUrl) {
-                      setSelectedImage(image)
+                    if (group.latestVersion.status === "completed" && group.latestVersion.resultImageUrl) {
+                      setSelectedImage(group.latestVersion)
                     }
                   }}
                   onEdit={() => {
-                    if (image.status === "completed") {
-                      setEditingImage(image)
+                    if (group.latestVersion.status === "completed") {
+                      setEditingImage(group.latestVersion)
                     }
                   }}
-                  onRetry={() => handleRetry(image.id)}
-                  isRetrying={retryingImageId === image.id}
+                  onRetry={() => handleRetry(group.latestVersion.id)}
+                  isRetrying={retryingImageId === group.latestVersion.id}
+                  onVersionClick={() => {
+                    if (group.versions.length > 1) {
+                      setVersionSelectorGroup(group)
+                    }
+                  }}
                 />
               ))}
             </div>
@@ -497,6 +642,20 @@ export function ProjectDetailContent({ project, images }: ProjectDetailContentPr
         <ImageMaskEditor
           image={editingImage}
           onClose={() => setEditingImage(null)}
+        />
+      )}
+
+      {/* Version selector modal */}
+      {versionSelectorGroup && (
+        <VersionSelector
+          versions={versionSelectorGroup.versions}
+          currentVersion={versionSelectorGroup.latestVersion}
+          onSelect={(version) => {
+            // Update the selected image to show in comparison or edit
+            setSelectedImage(version)
+            setVersionSelectorGroup(null)
+          }}
+          onClose={() => setVersionSelectorGroup(null)}
         />
       )}
     </>

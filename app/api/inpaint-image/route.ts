@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { fal, FLUX_FILL_PRO, type FluxFillOutput } from "@/lib/fal"
-import { getImageGenerationById, updateImageGeneration, updateProjectCounts } from "@/lib/db/queries"
+import { getImageGenerationById, createImageGeneration, updateProjectCounts } from "@/lib/db/queries"
 import { uploadImage, getImagePath, getExtensionFromContentType } from "@/lib/supabase"
 import sharp from "sharp"
 
@@ -107,12 +107,12 @@ export async function POST(request: NextRequest) {
       const resultImageBuffer = await resultImageResponse.arrayBuffer()
       const extension = getExtensionFromContentType(contentType)
 
-      // Upload to Supabase storage with unique name for inpainted version
-      const timestamp = Date.now()
+      // Upload to Supabase storage with unique name for new version
+      const newImageId = crypto.randomUUID()
       const resultPath = getImagePath(
         image.workspaceId,
         image.projectId,
-        `${imageId}_inpaint_${timestamp}.${extension}`,
+        `${newImageId}.${extension}`,
         "result"
       )
       const storedResultUrl = await uploadImage(
@@ -121,12 +121,27 @@ export async function POST(request: NextRequest) {
         contentType
       )
 
-      // Update image record with new result
-      await updateImageGeneration(imageId, {
-        status: "completed",
+      // Calculate version info
+      // The root image is either the parentId (if editing a version) or the current image (if editing original)
+      const rootImageId = image.parentId || image.id
+      const newVersion = (image.version || 1) + 1
+
+      // Create new image record as a new version (don't overwrite)
+      const newImage = await createImageGeneration({
+        workspaceId: image.workspaceId,
+        userId: image.userId,
+        projectId: image.projectId,
+        originalImageUrl: image.originalImageUrl, // Keep the original source
         resultImageUrl: storedResultUrl,
-        prompt: prompt, // Update prompt to reflect inpainting instruction
+        prompt: prompt,
+        version: newVersion,
+        parentId: rootImageId, // Link to the root/original image
+        status: "completed",
         errorMessage: null,
+        metadata: {
+          inpaintedFrom: image.id,
+          inpaintedAt: new Date().toISOString(),
+        },
       })
 
       // Update project counts
@@ -135,6 +150,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         resultUrl: storedResultUrl,
+        newImageId: newImage.id,
+        version: newVersion,
       })
     } catch (processingError) {
       console.error("Inpainting error:", processingError)

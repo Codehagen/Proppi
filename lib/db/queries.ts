@@ -448,3 +448,70 @@ export async function getProjectImages(
     .where(eq(imageGeneration.projectId, projectId))
     .orderBy(desc(imageGeneration.createdAt));
 }
+
+// Get all versions of an image (including the original)
+export async function getImageVersions(
+  imageId: string
+): Promise<ImageGeneration[]> {
+  // First get the image to find its root
+  const image = await getImageGenerationById(imageId);
+  if (!image) return [];
+
+  // The root is either the parentId or the image itself
+  const rootId = image.parentId || image.id;
+
+  // Get all versions: the root + all images with parentId = rootId
+  const versions = await db
+    .select()
+    .from(imageGeneration)
+    .where(
+      // Either the root image itself OR any image with this parentId
+      eq(imageGeneration.id, rootId)
+    );
+
+  const children = await db
+    .select()
+    .from(imageGeneration)
+    .where(eq(imageGeneration.parentId, rootId));
+
+  // Combine and sort by version
+  const allVersions = [...versions, ...children].sort(
+    (a, b) => (a.version || 1) - (b.version || 1)
+  );
+
+  return allVersions;
+}
+
+// Get the latest version of an image
+export async function getLatestImageVersion(
+  imageId: string
+): Promise<ImageGeneration | null> {
+  const versions = await getImageVersions(imageId);
+  if (versions.length === 0) return null;
+  return versions[versions.length - 1];
+}
+
+// Get project images grouped by root (for version display)
+export async function getProjectImagesGrouped(
+  projectId: string
+): Promise<Map<string, ImageGeneration[]>> {
+  const images = await getProjectImages(projectId);
+
+  // Group by root image ID
+  const grouped = new Map<string, ImageGeneration[]>();
+
+  for (const img of images) {
+    const rootId = img.parentId || img.id;
+    if (!grouped.has(rootId)) {
+      grouped.set(rootId, []);
+    }
+    grouped.get(rootId)!.push(img);
+  }
+
+  // Sort each group by version
+  for (const [, versions] of grouped) {
+    versions.sort((a, b) => (a.version || 1) - (b.version || 1));
+  }
+
+  return grouped;
+}
