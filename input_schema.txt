@@ -1,0 +1,407 @@
+                                                          name: Input
+                                                          ref: ref-0kkv1jm9d7j
+                                                          children:
+                                                            - role: link
+                                                              name: Input
+                                                              ref: ref-qokw9gf7ok
+                                                        - role: listitem
+                                                          name: Output
+                                                          ref: ref-a78ezfu4k2
+                                                          children:
+                                                            - role: link
+                                                              name: Output
+                                                              ref: ref-bpn31zci61m
+                                                        - role: listitem
+                                                          name: Other
+                                                          ref: ref-nc7p42g2bw9
+                                                          children:
+                                                            - role: link
+                                                              name: Other
+                                                              ref: ref-utcwezg0mm
+                            - role: generic
+                              ref: ref-a6f3g4z0iut
+                              children:
+                                - role: generic
+                                  ref: ref-ow2iu5v0ivc
+                                  children:
+                                    - role: heading
+                                      name: 1. Calling the API #
+                                      ref: ref-s9cl4lcj09b
+                                      children:
+                                        - role: link
+                                          name: #
+                                          ref: ref-nknc2eo3s
+                                    - role: generic
+                                      ref: ref-i26ql0t31v
+                                      children:
+                                        - role: heading
+                                          name: In tall the client #
+                                          ref: ref-l1tigs5pezp
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-883u2bn6g5j
+                                        - role: generic
+                                          ref: ref-38vakpwp4je
+                                          children:
+                                            - role: generic
+                                              ref: ref-mb29eemazhe
+                                              children:
+                                                - role: generic
+                                                  ref: ref-3yih15xqxw4
+                                                  children:
+                                                    - role: tablist
+                                                      ref: ref-vq2uoqgn8c
+                                                      children:
+                                                        - role: tab
+                                                          name: npm
+                                                          ref: ref-z84o9mm0chm
+                                                        - role: tab
+                                                          name: yarn
+                                                          ref: ref-upyxkv0voi
+                                                        - role: tab
+                                                          name: pnpm
+                                                          ref: ref-e1c64bieh8
+                                                        - role: tab
+                                                          name: bun
+                                                          ref: ref-cch233tr4d
+                                                - role: generic
+                                                  ref: ref-ospm7dymlt
+                                                  children:
+                                                    - role: generic
+                                                      ref: ref-55b40u5wo0r
+                                                      children:
+                                                        - role: button
+                                                          name: Copy
+                                                          ref: ref-2fsa0tqzqps
+                                            - role: alert
+                                              ref: ref-akbatbuxem
+                                              children:
+                                                - role: generic
+                                                  ref: ref-abifgq0c469
+                                                - role: generic
+                                                  ref: ref-ei5zy0o5k6s
+                                                  children:
+                                                    - role: heading
+                                                      name: Migrate to @fal-ai/client
+                                                      ref: ref-0kfoay3imqz
+                                                    - role: generic
+                                                      ref: ref-xvm1i6sswnl
+                                                      children:
+                                                        - role: generic
+                                                          ref: ref-axjfjkh4iro
+                                                          children:
+                                                            - role: generic
+                                                              name: The @fal-ai/ erverle -client package ha  been deprecated in favor of @fal-ai/client . Plea e check the migration guide for more information.
+                                                              ref: ref-hbmlq9m0i4a
+                                                              children:
+                                                                - role: link
+                                                                  name: migration guide
+                                                                  ref: ref-r0odzdy7pmc
+                                    - role: generic
+                                      ref: ref-gdmb0xh5t0v
+                                      children:
+                                        - role: heading
+                                          name: Setup your API Key #
+                                          ref: ref-wlflb0cghpa
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-qnpnh3txnt
+                                        - role: generic
+                                          ref: ref-zdobhsd99c
+                                          children:
+                                            - role: generic
+                                              ref: ref-mstb6ollsp
+                                              children:
+                                                - role: generic
+                                                  ref: ref-e3iiw9xhs9j
+                                                  children:
+                                                    - role: button
+                                                      name: Copy
+                                                      ref: ref-ukxow6b4yz
+                                    - role: generic
+                                      ref: ref-tar1n83974b
+                                      children:
+                                        - role: heading
+                                          name: Submit a reque t #
+                                          ref: ref-leuc2qq2ws
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-6ivm0afjzzl
+                                        - role: generic
+                                          ref: ref-ilw4n1sa1yb
+                                          children:
+                                            - role: generic
+                                              ref: ref-0dzfz1solhk
+                                              children:
+                                                - role: generic
+                                                  ref: ref-l2wujeo0d8i
+                                                  children:
+                                                    - role: button
+                                                      name: Copy
+                                                      ref: ref-japzbg0vsd
+                                    - role: none
+                                      ref: ref-pfb69lffbo
+                                    - role: heading
+                                      name: 2. Authentication #
+                                      ref: ref-fsd8nrf1kd9
+                                      children:
+                                        - role: link
+                                          name: #
+                                          ref: ref-uzso7l9bd7
+                                    - role: heading
+                                      name: API Key #
+                                      ref: ref-zj1xw4hmyt
+                                      children:
+                                        - role: link
+                                          name: #
+                                          ref: ref-bnk1kf36j2p
+                                    - role: generic
+                                      ref: ref-xyyp463noi
+                                      children:
+                                        - role: generic
+                                          ref: ref-1j39gk6t8y3
+                                          children:
+                                            - role: generic
+                                              ref: ref-km4b9dd459
+                                              children:
+                                                - role: generic
+                                                  ref: ref-q450us52pxi
+                                                  children:
+                                                    - role: button
+                                                      name: Copy
+                                                      ref: ref-s8cm7fgd2dd
+                                    - role: alert
+                                      ref: ref-lmli2v4q8tg
+                                      children:
+                                        - role: generic
+                                          ref: ref-m1raf3khb3
+                                        - role: generic
+                                          ref: ref-i3a2hxze8g
+                                          children:
+                                            - role: heading
+                                              name: Protect your API Key
+                                              ref: ref-943ngtyb89
+                                            - role: generic
+                                              ref: ref-egzwab5zn2r
+                                              children:
+                                                - role: generic
+                                                  ref: ref-at9hoiqoc5k
+                                                  children:
+                                                    - role: generic
+                                                      name: When running code on the client- ide (e.g. in a brow er, mobile app or GUI application ), make  ure to not expo e your FAL_KEY . In tead, u e a  erver- ide proxy to make reque t  to the API. For more
+                                                      ref: ref-c8h35gzvx08
+                                                      children:
+                                                        - role: generic
+                                                          ref: ref-s84wa2u2rpg
+                                                        - role: link
+                                                          name: erver- ide integration guide
+                                                          ref: ref-ng5jro5nqoa
+                                    - role: none
+                                      ref: ref-svrekqrjkt7
+                                    - role: heading
+                                      name: 3. Queue #
+--
+                                      name: Input #
+                                      ref: ref-c4a94z00hhk
+                                      children:
+                                        - role: link
+                                          name: #
+                                          ref: ref-76ikg5g53ep
+                                    - role: generic
+                                      ref: ref-078engrvtz6w
+                                      children:
+                                        - role: generic
+                                          ref: ref-wv8fje7gt1k
+                                          children:
+                                            - role: generic
+                                              ref: ref-5ydmijkxly
+                                              children:
+                                                - role: link
+                                                  name: tring
+                                                  ref: ref-56w0k89mh86
+                                    - role: generic
+                                      ref: ref-68u12nj10fi
+                                      children:
+                                        - role: generic
+                                          ref: ref-5pk7asewyzp
+                                          children:
+                                            - role: generic
+                                              ref: ref-crup94i9b07
+                                              children:
+                                                - role: button
+                                                  name: Copy
+                                                  ref: ref-6r0svu5l064
+                                    - role: heading
+                                      name: Output #
+                                      ref: ref-uwyr6w5wv6c
+                                      children:
+                                        - role: link
+                                          name: #
+                                          ref: ref-wife225sls
+                                    - role: generic
+                                      ref: ref-b6ka4mivnd6
+                                      children:
+                                        - role: generic
+                                          ref: ref-g5sbl1ul63e
+                                          children:
+                                            - role: generic
+                                              ref: ref-8skoy6gv6vx
+                                              children:
+                                                - role: link
+                                                  name: File
+                                                  ref: ref-8vkuttesw6
+                                    - role: generic
+                                      ref: ref-9zgywkirjg4
+                                      children:
+                                        - role: generic
+                                          ref: ref-l7pxc692ab
+                                          children:
+                                            - role: generic
+                                              ref: ref-0l3elntpost
+                                              children:
+                                                - role: button
+                                                  name: Copy
+                                                  ref: ref-h7ibqhjjbne
+                                    - role: heading
+                                      name: Other type #
+                                      ref: ref-4y2ck0ijh1o
+                                      children:
+                                        - role: link
+                                          name: #
+                                          ref: ref-c86e8d1ddr
+                                    - role: generic
+                                      ref: ref-dvhucfhftq
+                                      children:
+                                        - role: heading
+                                          name: ImageToVideoV2Ma terReque t #
+                                          ref: ref-fdr3azz5eil
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-14jjo2uyve4
+                                    - role: generic
+                                      ref: ref-p8uggcay84b
+                                      children:
+                                        - role: heading
+                                          name: TextToVideoV21Ma terReque t #
+                                          ref: ref-l8bro9cx0y
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-cyf42nrs6
+                                    - role: generic
+                                      ref: ref-cz4e4fmw01t
+                                      children:
+                                        - role: heading
+                                          name: ProImageToVideoReque t #
+                                          ref: ref-0ulqqmo15ir
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-hi5my45cgr9
+                                    - role: generic
+                                      ref: ref-wih3ft8uwb7
+                                      children:
+                                        - role: heading
+                                          name: TextToVideoV25ProReque t #
+                                          ref: ref-jjkn1ovdxom
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-wfo3ivmyb3
+                                    - role: generic
+                                      ref: ref-s15y9bz0tgh
+                                      children:
+                                        - role: heading
+                                          name: TextToVideoV26ProReque t #
+                                          ref: ref-jv8zbkm3fya
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-qlzt6w4dvh
+                                    - role: generic
+                                      ref: ref-vf6sh6k2ixg
+                                      children:
+                                        - role: heading
+                                          name: ImageToVideoV21StandardReque t #
+                                          ref: ref-1qvo7663p9l
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-rre499nxix
+                                    - role: generic
+                                      ref: ref-bmrzns77x2r
+                                      children:
+                                        - role: heading
+                                          name: ImageToVideoV25StandardReque t #
+                                          ref: ref-rw53n9e5lgc
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-5tg1p8k3jgs
+                                    - role: generic
+                                      ref: ref-50x3tcljj8r
+                                      children:
+                                        - role: heading
+                                          name: TextToVideoReque t #
+                                          ref: ref-jbza8isbnrl
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-38338dwi872
+                                    - role: generic
+                                      ref: ref-7hrz2o9tqwl
+                                      children:
+                                        - role: heading
+                                          name: FaceChoice #
+                                          ref: ref-cxp0tali2ic
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-en0ukjg3ahm
+                                    - role: generic
+                                      ref: ref-dwwy2clonvo
+                                      children:
+                                        - role: heading
+                                          name: KlingV15ProImageToVideoReque t #
+                                          ref: ref-l01nnpr1x7
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-o0o46ofi8a
+                                        - role: generic
+                                          ref: ref-vy28nfrhxfj
+                                          children:
+                                            - role: generic
+                                              ref: ref-yjnefbmt0dd
+                                              children:
+                                                - role: generic
+                                                  ref: ref-ytcgmla0za
+                                                  children:
+                                                    - role: link
+                                                      name: DynamicMa k
+                                                      ref: ref-mv7b0vwl3n9
+                                    - role: generic
+                                      ref: ref-pkopywjecoe
+                                      children:
+                                        - role: heading
+                                          name: TextToVideoV2Ma terReque t #
+                                          ref: ref-ssbylw4t52f
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-vfja4m15xg8
+                                    - role: generic
+                                      ref: ref-xucovmauqqb
+                                      children:
+                                        - role: heading
+                                          name: FaceData #
+                                          ref: ref-4yrjwz9fy09
+                                          children:
+                                            - role: link
+                                              name: #
+                                              ref: ref-79lay8ytlx6
+                                    - role: generic

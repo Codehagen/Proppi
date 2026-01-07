@@ -8,7 +8,6 @@ import {
     IconX, 
     IconCheck, 
     IconLoader2, 
-    IconAlertCircle,
     IconHome,
     IconSofa,
     IconBed,
@@ -20,7 +19,7 @@ import {
 import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
-import { getVideoTemplateById, type VideoTemplate, type VideoTemplateSlot } from "@/lib/video/video-templates"
+import { getVideoTemplateById } from "@/lib/video/video-templates"
 import { uploadVideoSourceImageAction } from "@/lib/actions/video"
 import type { VideoImageItem } from "@/hooks/use-video-creation"
 import { Badge } from "@/components/ui/badge"
@@ -39,8 +38,10 @@ const ROOM_ICONS: Record<string, React.ReactNode> = {
   "bathroom": <IconBath className="h-5 w-5" />,
   "dining-room": <IconArmchair className="h-5 w-5" />,
   "office": <IconDesk className="h-5 w-5" />,
-  "exterior-front": <IconHome className="h-5 w-5" />,
-  "exterior-back": <IconHome className="h-5 w-5" />,
+  "exterior": <IconHome className="h-5 w-5" />,
+  "hallway": <IconHome className="h-5 w-5" />,
+  "terrace": <IconHome className="h-5 w-5" />,
+  "garden": <IconHome className="h-5 w-5" />,
 }
 
 export function StoryboardStep({

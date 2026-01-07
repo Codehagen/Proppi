@@ -267,7 +267,7 @@ export const videoClip = pgTable(
     ),
 
     // Room type for sequencing
-    roomType: text("room_type").notNull(), // exterior-front | living-room | kitchen | bedroom | bathroom | etc.
+    roomType: text("room_type").notNull(), // stue | soverom | kjokken | bad | etc (English keys used internally)
     roomLabel: text("room_label"), // Custom label like "Master Bedroom", "Front Yard"
 
     // Sequence order
@@ -360,24 +360,43 @@ export type NewMusicTrack = typeof musicTrack.$inferInsert;
 export type UserRole = "owner" | "admin" | "member";
 export type ProjectStatus = "pending" | "processing" | "completed" | "failed";
 export type ImageStatus = "pending" | "processing" | "completed" | "failed";
-export type RoomType = "living-room" | "bedroom" | "kitchen" | "bathroom" | "dining-room" | "office";
+
+// Comprehensive Room Types (English keys, Norwegian UI labels)
+export type RoomType =
+  | "living-room"
+  | "kitchen"
+  | "bedroom"
+  | "bathroom"
+  | "toilet"
+  | "hallway"
+  | "office"
+  | "laundry-room"
+  | "storage-room"
+  | "walk-in-closet"
+  | "sauna"
+  | "gym"
+  | "childrens-room"
+  | "pool-area"
+  | "dining-room"
+  | "tv-room"
+  | "library"
+  | "hobby-room"
+  | "utility-room"
+  | "pantry"
+  | "conservatory"
+  | "garage"
+  | "terrace"
+  | "garden"
+  | "landscape"
+  | "exterior"
+  | "other";
 
 // Video types
 export type VideoProjectStatus = "draft" | "generating" | "compiling" | "completed" | "failed";
 export type VideoClipStatus = "pending" | "processing" | "completed" | "failed";
 export type VideoAspectRatio = "16:9" | "9:16" | "1:1";
 export type MusicCategory = "modern" | "classical" | "upbeat" | "calm" | "cinematic";
-export type VideoRoomType =
-  | "exterior-front"
-  | "entryway"
-  | "living-room"
-  | "kitchen"
-  | "dining-room"
-  | "bedroom"
-  | "bathroom"
-  | "office"
-  | "exterior-back"
-  | "other";
+export type VideoRoomType = RoomType; // Unified with RoomType for consistency
 
 // ============================================================================
 // BILLING SCHEMA (TODO: Uncomment when ready to implement)

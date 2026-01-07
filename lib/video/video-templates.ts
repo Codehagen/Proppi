@@ -29,12 +29,12 @@ export const VIDEO_TEMPLATES = [
     estimatedDuration: 35,
     slots: [
       {
-        roomType: "exterior-front",
+        roomType: "exterior",
         label: "Front Exterior",
         description: "The hero shot of the home from the street",
       },
       {
-        roomType: "entryway",
+        roomType: "hallway",
         label: "Entryway",
         description: "Welcome viewers into the home",
       },
@@ -64,7 +64,7 @@ export const VIDEO_TEMPLATES = [
         description: "Spa-like features",
       },
       {
-        roomType: "exterior-back",
+        roomType: "terrace",
         label: "Backyard / Patio",
         description: "Outdoor living space",
       },
@@ -79,7 +79,7 @@ export const VIDEO_TEMPLATES = [
     estimatedDuration: 20,
     slots: [
       {
-        roomType: "exterior-front",
+        roomType: "exterior",
         label: "Exterior",
         description: "Catch attention immediately",
       },
@@ -132,17 +132,17 @@ export const VIDEO_TEMPLATES = [
     estimatedDuration: 15,
     slots: [
       {
-        roomType: "exterior-front",
+        roomType: "exterior",
         label: "Curb Appeal",
         description: "The classic front-on hero shot",
       },
       {
-        roomType: "exterior-back",
+        roomType: "garden",
         label: "Outdoor Living",
         description: "Patio, deck, or landscaping detail",
       },
       {
-        roomType: "exterior-front",
+        roomType: "exterior",
         label: "Entrance Flow",
         description: "Moving towards the front door",
       },
@@ -161,7 +161,7 @@ export const VIDEO_TEMPLATES = [
         description: "The most visually striking interior feature",
       },
       {
-        roomType: "exterior-front",
+        roomType: "exterior",
         label: "Final Reveal",
         description: "The classic money shot of the exterior",
       },
