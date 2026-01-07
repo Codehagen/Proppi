@@ -3,7 +3,13 @@
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { useAdminWorkspaceFilters } from "@/hooks/use-admin-workspace-filters";
 import { useImpersonation } from "@/hooks/use-impersonation";
-import { fetchAdminWorkspacesAction } from "@/lib/actions/admin";
+import {
+  fetchAdminWorkspacesAction,
+  updateWorkspaceStatusAction,
+  deleteWorkspaceAction,
+} from "@/lib/actions/admin";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import type {
   AdminWorkspaceRow,
   AdminWorkspacesMeta,
@@ -38,6 +44,7 @@ export function WorkspacesDataTable({
   initialMeta,
 }: WorkspacesDataTableProps) {
   const parentRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const { startImpersonation } = useImpersonation();
 
   // Get filters from URL state
@@ -61,13 +68,73 @@ export function WorkspacesDataTable({
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(false); // Already loaded via SSR
 
-  // Create columns with impersonation handler
+  // Handlers for workspace actions
+  const handleSuspend = useCallback(
+    async (workspaceId: string, workspaceName: string) => {
+      const reason = window.prompt(
+        `Enter reason for suspending "${workspaceName}" (optional):`
+      );
+      if (reason === null) return; // User cancelled
+
+      const result = await updateWorkspaceStatusAction(
+        workspaceId,
+        "suspended",
+        reason || undefined
+      );
+
+      if (result.success) {
+        toast.success(`Workspace "${workspaceName}" has been suspended`);
+        router.refresh();
+      } else {
+        toast.error(result.error);
+      }
+    },
+    [router]
+  );
+
+  const handleActivate = useCallback(
+    async (workspaceId: string, workspaceName: string) => {
+      const result = await updateWorkspaceStatusAction(workspaceId, "active");
+
+      if (result.success) {
+        toast.success(`Workspace "${workspaceName}" has been activated`);
+        router.refresh();
+      } else {
+        toast.error(result.error);
+      }
+    },
+    [router]
+  );
+
+  const handleDelete = useCallback(
+    async (workspaceId: string, workspaceName: string) => {
+      const confirmed = window.confirm(
+        `Are you sure you want to delete "${workspaceName}"?\n\nThis will permanently delete all data including users, projects, and images. This action cannot be undone.`
+      );
+      if (!confirmed) return;
+
+      const result = await deleteWorkspaceAction(workspaceId);
+
+      if (result.success) {
+        toast.success(`Workspace "${workspaceName}" has been deleted`);
+        router.refresh();
+      } else {
+        toast.error(result.error);
+      }
+    },
+    [router]
+  );
+
+  // Create columns with handlers
   const columns = useMemo(
     () =>
-      createWorkspaceColumns((user) => {
-        startImpersonation(user);
+      createWorkspaceColumns({
+        onImpersonate: (user) => startImpersonation(user),
+        onSuspend: handleSuspend,
+        onActivate: handleActivate,
+        onDelete: handleDelete,
       }),
-    [startImpersonation],
+    [startImpersonation, handleSuspend, handleActivate, handleDelete]
   );
 
   // Reset pagination when filters change

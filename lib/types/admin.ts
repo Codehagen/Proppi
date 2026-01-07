@@ -12,7 +12,10 @@ export interface AdminWorkspaceRow {
   plan: WorkspacePlan;
   memberCount: number;
   imagesGenerated: number;
+  videosGenerated: number;
+  videosCompleted: number;
   totalSpend: number;
+  totalVideoSpend: number;
   ownerId: string | null;
   ownerName: string | null;
   ownerEmail: string | null;
@@ -44,15 +47,19 @@ export interface AdminWorkspacesMeta {
 }
 
 // ============================================================================
-// Admin User Types (for future Phase 2)
+// Admin User Types
 // ============================================================================
+
+export type UserRole = "owner" | "admin" | "member";
+export type UserStatus = "active" | "pending" | "inactive";
 
 export interface AdminUserRow {
   id: string;
   name: string;
   email: string;
   image: string | null;
-  role: "owner" | "admin" | "member";
+  role: UserRole;
+  status: UserStatus;
   isSystemAdmin: boolean;
   workspaceId: string | null;
   workspaceName: string | null;
@@ -63,8 +70,8 @@ export interface AdminUserRow {
 
 export interface AdminUserFilters {
   search?: string;
-  role?: "owner" | "admin" | "member" | null;
-  status?: "active" | "pending" | "inactive" | null;
+  role?: UserRole | null;
+  status?: UserStatus | null;
   workspaceId?: string | null;
 }
 
@@ -75,6 +82,61 @@ export type SortableUserColumn =
   | "imagesGenerated"
   | "lastActiveAt"
   | "createdAt";
+
+export interface AdminUsersMeta {
+  cursor: string | null;
+  hasMore: boolean;
+  total: number;
+}
+
+// ============================================================================
+// Admin User Detail (for /admin/users/[id] page)
+// ============================================================================
+
+export interface AdminUserDetail {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+    role: UserRole;
+    status: UserStatus;
+    isSystemAdmin: boolean;
+    emailVerified: boolean;
+    workspaceId: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  workspace: {
+    id: string;
+    name: string;
+    slug: string;
+    status: WorkspaceStatus;
+    plan: WorkspacePlan;
+  } | null;
+  stats: {
+    imagesGenerated: number;
+    projectsCreated: number;
+    videosCreated: number;
+    totalSpend: number;
+  };
+  recentProjects: Array<{
+    id: string;
+    name: string;
+    status: string;
+    imageCount: number;
+    completedCount: number;
+    createdAt: Date;
+  }>;
+  recentVideos: Array<{
+    id: string;
+    name: string;
+    status: string;
+    clipCount: number;
+    completedClipCount: number;
+    createdAt: Date;
+  }>;
+}
 
 // ============================================================================
 // Constants
@@ -93,3 +155,6 @@ export const ALL_WORKSPACE_PLANS: WorkspacePlan[] = [
 ];
 
 export const COST_PER_IMAGE = 0.039; // USD per image
+
+export const ALL_USER_ROLES: UserRole[] = ["owner", "admin", "member"];
+export const ALL_USER_STATUSES: UserStatus[] = ["active", "pending", "inactive"];

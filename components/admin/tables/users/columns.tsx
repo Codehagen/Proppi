@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { AdminUser, UserRole, UserStatus } from "@/lib/mock/admin-users";
+import type { AdminUserRow, UserRole, UserStatus } from "@/lib/types/admin";
 import { IconDotsVertical, IconEye, IconUserCircle } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo } from "react";
@@ -85,8 +86,8 @@ const UserCell = memo(
 );
 UserCell.displayName = "UserCell";
 
-const WorkspaceCell = memo(({ name }: { name: string }) => (
-  <span className="text-sm truncate">{name}</span>
+const WorkspaceCell = memo(({ name }: { name: string | null }) => (
+  <span className="text-sm truncate">{name || "No workspace"}</span>
 ));
 WorkspaceCell.displayName = "WorkspaceCell";
 
@@ -106,7 +107,11 @@ const ImagesCell = memo(({ count }: { count: number }) => (
 ImagesCell.displayName = "ImagesCell";
 
 const DateCell = memo(
-  ({ date, relative }: { date: Date; relative?: boolean }) => {
+  ({ date, relative }: { date: Date | null; relative?: boolean }) => {
+    if (!date) {
+      return <span className="text-sm text-muted-foreground">Never</span>;
+    }
+
     if (relative) {
       const now = new Date();
       const diffMs = now.getTime() - date.getTime();
@@ -150,8 +155,8 @@ const ActionsCell = memo(
     userId: string;
     userName: string;
     userEmail: string;
-    workspaceId: string;
-    workspaceName: string;
+    workspaceId: string | null;
+    workspaceName: string | null;
     onImpersonate?: (user: {
       id: string;
       name: string;
@@ -159,41 +164,51 @@ const ActionsCell = memo(
       workspaceId: string;
       workspaceName: string;
     }) => void;
-  }) => (
-    <div className="flex items-center justify-center">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <IconDotsVertical className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => console.log("View", userId)}>
-            <IconEye className="mr-2 h-4 w-4" />
-            View details
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => {
-              if (onImpersonate) {
-                onImpersonate({
-                  id: userId,
-                  name: userName,
-                  email: userEmail,
-                  workspaceId,
-                  workspaceName,
-                });
-              }
-            }}
-          >
-            <IconUserCircle className="mr-2 h-4 w-4" />
-            Impersonate user
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  ),
+  }) => {
+    const canImpersonate = workspaceId && workspaceName;
+
+    return (
+      <div className="flex items-center justify-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <IconDotsVertical className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/admin/users/${userId}`}>
+                <IconEye className="mr-2 h-4 w-4" />
+                View details
+              </Link>
+            </DropdownMenuItem>
+            {canImpersonate && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (onImpersonate) {
+                      onImpersonate({
+                        id: userId,
+                        name: userName,
+                        email: userEmail,
+                        workspaceId,
+                        workspaceName,
+                      });
+                    }
+                  }}
+                >
+                  <IconUserCircle className="mr-2 h-4 w-4" />
+                  Impersonate user
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  },
 );
 ActionsCell.displayName = "ActionsCell";
 
@@ -205,7 +220,7 @@ export function createUserColumns(
     workspaceId: string;
     workspaceName: string;
   }) => void,
-): ColumnDef<AdminUser>[] {
+): ColumnDef<AdminUserRow>[] {
   return [
     {
       id: "user",
@@ -267,13 +282,13 @@ export function createUserColumns(
       cell: ({ row }) => <DateCell date={row.original.lastActiveAt} relative />,
     },
     {
-      id: "joinedAt",
-      accessorKey: "joinedAt",
+      id: "createdAt",
+      accessorKey: "createdAt",
       header: "Joined",
       size: 120,
       minSize: 100,
       maxSize: 140,
-      cell: ({ row }) => <DateCell date={row.original.joinedAt} />,
+      cell: ({ row }) => <DateCell date={row.original.createdAt} />,
     },
     {
       id: "actions",

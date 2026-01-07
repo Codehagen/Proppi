@@ -984,15 +984,18 @@ interface AdminWorkspaceQueryRow {
   slug: string;
   status: string;
   plan: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string | Date;
+  updated_at: string | Date;
   owner_id: string | null;
   owner_name: string | null;
   owner_email: string | null;
   owner_image: string | null;
   member_count: string;
   images_generated: string;
-  last_activity_at: Date;
+  videos_generated: string;
+  videos_completed: string;
+  video_cost_cents: string;
+  last_activity_at: string | Date;
 }
 
 export async function getAdminWorkspaces(options: {
@@ -1021,7 +1024,7 @@ export async function getAdminWorkspaces(options: {
     .where(countConditions.length > 0 ? and(...countConditions) : undefined);
 
   // Build the main query with raw SQL for complex aggregations
-  // We need to join user (for owner), count members, and sum images
+  // We need to join user (for owner), count members, sum images, and sum videos
   const workspacesResult = await db.execute<AdminWorkspaceQueryRow>(sql`
     SELECT
       w.id,
@@ -1037,9 +1040,13 @@ export async function getAdminWorkspaces(options: {
       owner.image as owner_image,
       COALESCE(member_counts.member_count, 0)::text as member_count,
       COALESCE(image_counts.images_generated, 0)::text as images_generated,
+      COALESCE(video_counts.videos_generated, 0)::text as videos_generated,
+      COALESCE(video_counts.videos_completed, 0)::text as videos_completed,
+      COALESCE(video_counts.video_cost_cents, 0)::text as video_cost_cents,
       GREATEST(
         w.updated_at,
-        COALESCE(project_activity.last_project_update, w.updated_at)
+        COALESCE(project_activity.last_project_update, w.updated_at),
+        COALESCE(video_activity.last_video_update, w.updated_at)
       ) as last_activity_at
     FROM workspace w
     LEFT JOIN "user" owner ON owner.workspace_id = w.id AND owner.role = 'owner'
@@ -1054,10 +1061,23 @@ export async function getAdminWorkspaces(options: {
       GROUP BY workspace_id
     ) image_counts ON image_counts.workspace_id = w.id
     LEFT JOIN (
+      SELECT workspace_id,
+        COUNT(*)::int as videos_generated,
+        COUNT(*) FILTER (WHERE status = 'completed')::int as videos_completed,
+        COALESCE(SUM(actual_cost), 0)::int as video_cost_cents
+      FROM video_project
+      GROUP BY workspace_id
+    ) video_counts ON video_counts.workspace_id = w.id
+    LEFT JOIN (
       SELECT workspace_id, MAX(updated_at) as last_project_update
       FROM project
       GROUP BY workspace_id
     ) project_activity ON project_activity.workspace_id = w.id
+    LEFT JOIN (
+      SELECT workspace_id, MAX(updated_at) as last_video_update
+      FROM video_project
+      GROUP BY workspace_id
+    ) video_activity ON video_activity.workspace_id = w.id
     WHERE 1=1
     ${filters?.status ? sql`AND w.status = ${filters.status}` : sql``}
     ${filters?.plan ? sql`AND w.plan = ${filters.plan}` : sql``}
@@ -1093,13 +1113,16 @@ export async function getAdminWorkspaces(options: {
     plan: row.plan as WorkspacePlan,
     memberCount: Number(row.member_count) || 0,
     imagesGenerated: Number(row.images_generated) || 0,
+    videosGenerated: Number(row.videos_generated) || 0,
+    videosCompleted: Number(row.videos_completed) || 0,
     totalSpend: Math.round(Number(row.images_generated) * COST_PER_IMAGE * 100) / 100,
+    totalVideoSpend: (Number(row.video_cost_cents) || 0) / 100,
     ownerId: row.owner_id,
     ownerName: row.owner_name,
     ownerEmail: row.owner_email,
     ownerImage: row.owner_image,
-    createdAt: row.created_at,
-    lastActivityAt: row.last_activity_at,
+    createdAt: new Date(row.created_at),
+    lastActivityAt: new Date(row.last_activity_at),
   }));
 
   return {
@@ -1222,5 +1245,453 @@ export async function getAdminWorkspaceStats(): Promise<{
       pro: proResult?.count || 0,
       enterprise: enterpriseResult?.count || 0,
     },
+  };
+}
+
+// Types for admin workspace detail
+export interface AdminWorkspaceDetail {
+  workspace: {
+    id: string;
+    name: string;
+    slug: string;
+    status: WorkspaceStatus;
+    plan: WorkspacePlan;
+    organizationNumber: string | null;
+    contactEmail: string | null;
+    contactPerson: string | null;
+    onboardingCompleted: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    suspendedAt: Date | null;
+    suspendedReason: string | null;
+  };
+  owner: {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+  } | null;
+  members: Array<{
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+    role: string;
+    createdAt: Date;
+  }>;
+  stats: {
+    memberCount: number;
+    imagesGenerated: number;
+    videosGenerated: number;
+    videosCompleted: number;
+    totalImageSpend: number;
+    totalVideoSpend: number;
+  };
+  recentProjects: Array<{
+    id: string;
+    name: string;
+    status: string;
+    imageCount: number;
+    completedCount: number;
+    createdAt: Date;
+  }>;
+  recentVideos: Array<{
+    id: string;
+    name: string;
+    status: string;
+    clipCount: number;
+    completedClipCount: number;
+    createdAt: Date;
+  }>;
+}
+
+export async function getAdminWorkspaceDetail(
+  workspaceId: string
+): Promise<AdminWorkspaceDetail | null> {
+  // Get workspace
+  const workspaceData = await db
+    .select()
+    .from(workspace)
+    .where(eq(workspace.id, workspaceId))
+    .limit(1);
+
+  if (!workspaceData[0]) {
+    return null;
+  }
+
+  const w = workspaceData[0];
+
+  // Get all members
+  const membersData = await db
+    .select({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      role: user.role,
+      createdAt: user.createdAt,
+    })
+    .from(user)
+    .where(eq(user.workspaceId, workspaceId))
+    .orderBy(desc(user.createdAt));
+
+  // Find owner
+  const owner = membersData.find((m) => m.role === "owner");
+
+  // Get image stats
+  const [imageStats] = await db
+    .select({ total: sum(project.completedCount) })
+    .from(project)
+    .where(eq(project.workspaceId, workspaceId));
+
+  // Get video stats
+  const [videoStats] = await db
+    .select({
+      total: count(),
+      completed: sum(
+        sql`CASE WHEN ${videoProject.status} = 'completed' THEN 1 ELSE 0 END`
+      ),
+      totalCost: sum(videoProject.actualCost),
+    })
+    .from(videoProject)
+    .where(eq(videoProject.workspaceId, workspaceId));
+
+  // Get recent projects (last 5)
+  const recentProjectsData = await db
+    .select({
+      id: project.id,
+      name: project.name,
+      status: project.status,
+      imageCount: project.imageCount,
+      completedCount: project.completedCount,
+      createdAt: project.createdAt,
+    })
+    .from(project)
+    .where(eq(project.workspaceId, workspaceId))
+    .orderBy(desc(project.createdAt))
+    .limit(5);
+
+  // Get recent videos (last 5)
+  const recentVideosData = await db
+    .select({
+      id: videoProject.id,
+      name: videoProject.name,
+      status: videoProject.status,
+      clipCount: videoProject.clipCount,
+      completedClipCount: videoProject.completedClipCount,
+      createdAt: videoProject.createdAt,
+    })
+    .from(videoProject)
+    .where(eq(videoProject.workspaceId, workspaceId))
+    .orderBy(desc(videoProject.createdAt))
+    .limit(5);
+
+  const imagesGenerated = Number(imageStats?.total) || 0;
+
+  return {
+    workspace: {
+      id: w.id,
+      name: w.name,
+      slug: w.slug,
+      status: w.status as WorkspaceStatus,
+      plan: w.plan as WorkspacePlan,
+      organizationNumber: w.organizationNumber,
+      contactEmail: w.contactEmail,
+      contactPerson: w.contactPerson,
+      onboardingCompleted: w.onboardingCompleted,
+      createdAt: w.createdAt,
+      updatedAt: w.updatedAt,
+      suspendedAt: w.suspendedAt,
+      suspendedReason: w.suspendedReason,
+    },
+    owner: owner
+      ? {
+          id: owner.id,
+          name: owner.name,
+          email: owner.email,
+          image: owner.image,
+        }
+      : null,
+    members: membersData,
+    stats: {
+      memberCount: membersData.length,
+      imagesGenerated,
+      videosGenerated: Number(videoStats?.total) || 0,
+      videosCompleted: Number(videoStats?.completed) || 0,
+      totalImageSpend: Math.round(imagesGenerated * COST_PER_IMAGE * 100) / 100,
+      totalVideoSpend: (Number(videoStats?.totalCost) || 0) / 100,
+    },
+    recentProjects: recentProjectsData,
+    recentVideos: recentVideosData,
+  };
+}
+
+// ============================================================================
+// Admin User Queries
+// ============================================================================
+
+interface AdminUserQueryRow {
+  [key: string]: unknown;
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+  role: string;
+  is_system_admin: boolean;
+  workspace_id: string | null;
+  workspace_name: string | null;
+  images_generated: string;
+  status: string;
+  created_at: string | Date;
+  updated_at: string | Date;
+}
+
+export async function getAdminUsers(options: {
+  cursor?: string | null;
+  limit?: number;
+  filters?: import("@/lib/types/admin").AdminUserFilters;
+  sort?: [import("@/lib/types/admin").SortableUserColumn, SortDirection];
+}): Promise<{
+  data: import("@/lib/types/admin").AdminUserRow[];
+  meta: import("@/lib/types/admin").AdminUsersMeta;
+}> {
+  const { cursor, limit = 20, filters, sort } = options;
+
+  // Get total count with filters (excluding cursor)
+  const countConditions: ReturnType<typeof eq>[] = [];
+  if (filters?.role) {
+    countConditions.push(eq(user.role, filters.role));
+  }
+  if (filters?.workspaceId) {
+    countConditions.push(eq(user.workspaceId, filters.workspaceId));
+  }
+
+  const [totalResult] = await db
+    .select({ count: count() })
+    .from(user)
+    .where(countConditions.length > 0 ? and(...countConditions) : undefined);
+
+  // Build the main query with raw SQL for computed status field
+  const usersResult = await db.execute<AdminUserQueryRow>(sql`
+    SELECT
+      u.id,
+      u.name,
+      u.email,
+      u.image,
+      u.role,
+      u.is_system_admin,
+      u.workspace_id,
+      w.name as workspace_name,
+      COALESCE(image_counts.images_generated, 0)::text as images_generated,
+      CASE
+        WHEN u.email_verified = false THEN 'pending'
+        WHEN u.updated_at < NOW() - INTERVAL '30 days' THEN 'inactive'
+        ELSE 'active'
+      END as status,
+      u.created_at,
+      u.updated_at
+    FROM "user" u
+    LEFT JOIN workspace w ON w.id = u.workspace_id
+    LEFT JOIN (
+      SELECT user_id, SUM(completed_count)::int as images_generated
+      FROM project
+      GROUP BY user_id
+    ) image_counts ON image_counts.user_id = u.id
+    WHERE 1=1
+    ${filters?.search ? sql`AND (
+      u.name ILIKE ${'%' + filters.search + '%'} OR
+      u.email ILIKE ${'%' + filters.search + '%'} OR
+      w.name ILIKE ${'%' + filters.search + '%'}
+    )` : sql``}
+    ${filters?.role ? sql`AND u.role = ${filters.role}` : sql``}
+    ${filters?.workspaceId ? sql`AND u.workspace_id = ${filters.workspaceId}` : sql``}
+    ${filters?.status ? sql`AND CASE
+      WHEN u.email_verified = false THEN 'pending'
+      WHEN u.updated_at < NOW() - INTERVAL '30 days' THEN 'inactive'
+      ELSE 'active'
+    END = ${filters.status}` : sql``}
+    ${cursor ? sql`AND u.id > ${cursor}` : sql``}
+    ORDER BY ${
+      sort?.[0] === "name" ? (sort[1] === "asc" ? sql`u.name ASC` : sql`u.name DESC`) :
+      sort?.[0] === "email" ? (sort[1] === "asc" ? sql`u.email ASC` : sql`u.email DESC`) :
+      sort?.[0] === "role" ? (sort[1] === "asc" ? sql`u.role ASC` : sql`u.role DESC`) :
+      sort?.[0] === "imagesGenerated" ? (sort[1] === "asc" ? sql`images_generated ASC` : sql`images_generated DESC`) :
+      sort?.[0] === "lastActiveAt" ? (sort[1] === "asc" ? sql`u.updated_at ASC` : sql`u.updated_at DESC`) :
+      sort?.[0] === "createdAt" ? (sort[1] === "asc" ? sql`u.created_at ASC` : sql`u.created_at DESC`) :
+      sql`u.created_at DESC`
+    }
+    LIMIT ${limit + 1}
+  `);
+
+  // postgres-js returns the result directly as an array
+  const rows = usersResult as unknown as AdminUserQueryRow[];
+  const hasMore = rows.length > limit;
+  const data = rows.slice(0, limit);
+
+  type AdminUserRow = import("@/lib/types/admin").AdminUserRow;
+  type UserRole = import("@/lib/types/admin").UserRole;
+  type UserStatus = import("@/lib/types/admin").UserStatus;
+
+  const result: AdminUserRow[] = data.map((row) => ({
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    image: row.image,
+    role: row.role as UserRole,
+    status: row.status as UserStatus,
+    isSystemAdmin: row.is_system_admin,
+    workspaceId: row.workspace_id,
+    workspaceName: row.workspace_name,
+    imagesGenerated: Number(row.images_generated) || 0,
+    lastActiveAt: row.updated_at ? new Date(row.updated_at) : null,
+    createdAt: new Date(row.created_at),
+  }));
+
+  return {
+    data: result,
+    meta: {
+      cursor: hasMore && data.length > 0 ? data[data.length - 1].id : null,
+      hasMore,
+      total: totalResult?.count || 0,
+    },
+  };
+}
+
+// ============================================================================
+// Admin User Detail Query
+// ============================================================================
+
+export async function getAdminUserDetail(
+  userId: string
+): Promise<import("@/lib/types/admin").AdminUserDetail | null> {
+  type UserRole = import("@/lib/types/admin").UserRole;
+  type UserStatus = import("@/lib/types/admin").UserStatus;
+
+  // Get user
+  const userData = await db
+    .select()
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+
+  if (!userData[0]) {
+    return null;
+  }
+
+  const u = userData[0];
+
+  // Get workspace if user has one
+  let workspaceData = null;
+  if (u.workspaceId) {
+    const [ws] = await db
+      .select({
+        id: workspace.id,
+        name: workspace.name,
+        slug: workspace.slug,
+        status: workspace.status,
+        plan: workspace.plan,
+      })
+      .from(workspace)
+      .where(eq(workspace.id, u.workspaceId))
+      .limit(1);
+    workspaceData = ws || null;
+  }
+
+  // Get image stats (sum of completedCount from projects by this user)
+  const [imageStats] = await db
+    .select({ total: sum(project.completedCount) })
+    .from(project)
+    .where(eq(project.userId, userId));
+
+  // Get project count
+  const [projectCount] = await db
+    .select({ total: count() })
+    .from(project)
+    .where(eq(project.userId, userId));
+
+  // Get video count and cost
+  const [videoStats] = await db
+    .select({
+      total: count(),
+      totalCost: sum(videoProject.actualCost),
+    })
+    .from(videoProject)
+    .where(eq(videoProject.userId, userId));
+
+  // Get recent projects (last 5)
+  const recentProjectsData = await db
+    .select({
+      id: project.id,
+      name: project.name,
+      status: project.status,
+      imageCount: project.imageCount,
+      completedCount: project.completedCount,
+      createdAt: project.createdAt,
+    })
+    .from(project)
+    .where(eq(project.userId, userId))
+    .orderBy(desc(project.createdAt))
+    .limit(5);
+
+  // Get recent videos (last 5)
+  const recentVideosData = await db
+    .select({
+      id: videoProject.id,
+      name: videoProject.name,
+      status: videoProject.status,
+      clipCount: videoProject.clipCount,
+      completedClipCount: videoProject.completedClipCount,
+      createdAt: videoProject.createdAt,
+    })
+    .from(videoProject)
+    .where(eq(videoProject.userId, userId))
+    .orderBy(desc(videoProject.createdAt))
+    .limit(5);
+
+  // Calculate stats
+  const imagesGenerated = Number(imageStats?.total) || 0;
+  const totalImageSpend = Math.round(imagesGenerated * COST_PER_IMAGE * 100) / 100;
+  const totalVideoSpend = (Number(videoStats?.totalCost) || 0) / 100;
+
+  // Derive status
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  let status: UserStatus = "active";
+  if (!u.emailVerified) {
+    status = "pending";
+  } else if (u.updatedAt && u.updatedAt < thirtyDaysAgo) {
+    status = "inactive";
+  }
+
+  return {
+    user: {
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      image: u.image,
+      role: u.role as UserRole,
+      status,
+      isSystemAdmin: u.isSystemAdmin,
+      emailVerified: u.emailVerified,
+      workspaceId: u.workspaceId,
+      createdAt: u.createdAt,
+      updatedAt: u.updatedAt,
+    },
+    workspace: workspaceData
+      ? {
+          id: workspaceData.id,
+          name: workspaceData.name,
+          slug: workspaceData.slug,
+          status: workspaceData.status as import("@/lib/db/schema").WorkspaceStatus,
+          plan: workspaceData.plan as import("@/lib/db/schema").WorkspacePlan,
+        }
+      : null,
+    stats: {
+      imagesGenerated,
+      projectsCreated: Number(projectCount?.total) || 0,
+      videosCreated: Number(videoStats?.total) || 0,
+      totalSpend: Math.round((totalImageSpend + totalVideoSpend) * 100) / 100,
+    },
+    recentProjects: recentProjectsData,
+    recentVideos: recentVideosData,
   };
 }

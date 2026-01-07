@@ -3,7 +3,8 @@
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { useAdminUserFilters } from "@/hooks/use-admin-user-filters";
 import { useImpersonation } from "@/hooks/use-impersonation";
-import { getUsersPage, type AdminUser } from "@/lib/mock/admin-users";
+import { fetchAdminUsersAction } from "@/lib/actions/admin";
+import type { AdminUserRow, AdminUsersMeta } from "@/lib/types/admin";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -14,6 +15,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from "react";
 import { createUserColumns } from "./columns";
 import { UserVirtualRow } from "./virtual-row";
@@ -23,7 +25,15 @@ import { IconLoader2, IconUserOff } from "@tabler/icons-react";
 
 const ROW_HEIGHT = 60;
 
-export function UsersDataTable() {
+interface UsersDataTableProps {
+  initialData: AdminUserRow[];
+  initialMeta: AdminUsersMeta;
+}
+
+export function UsersDataTable({
+  initialData,
+  initialMeta,
+}: UsersDataTableProps) {
   const parentRef = useRef<HTMLDivElement>(null);
   const { startImpersonation } = useImpersonation();
 
@@ -38,14 +48,15 @@ export function UsersDataTable() {
 
   // Defer search to debounce filtering
   const deferredFilters = useDeferredValue(userFilters);
+  const [, startTransition] = useTransition();
 
-  // Pagination state
-  const [pages, setPages] = useState<AdminUser[][]>([]);
-  const [cursor, setCursor] = useState<string | null>(null);
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const [filteredTotal, setFilteredTotal] = useState(0);
+  // Pagination state - initialize with SSR data
+  const [pages, setPages] = useState<AdminUserRow[][]>([initialData]);
+  const [cursor, setCursor] = useState<string | null>(initialMeta.cursor);
+  const [hasNextPage, setHasNextPage] = useState(initialMeta.hasMore);
+  const [filteredTotal, setFilteredTotal] = useState(initialMeta.total);
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isInitialLoad] = useState(false); // Already loaded via SSR
 
   // Create columns with impersonation handler
   const columns = useMemo(
@@ -58,32 +69,69 @@ export function UsersDataTable() {
 
   // Reset pagination when filters change
   useEffect(() => {
-    const response = getUsersPage(null, 20, deferredFilters);
-    setPages([response.data]);
-    setCursor(response.meta.cursor);
-    setHasNextPage(response.meta.hasMore);
-    setFilteredTotal(response.meta.filteredTotal);
-    setIsInitialLoad(false);
-  }, [deferredFilters]);
+    // Skip if this is the initial render (SSR data already loaded)
+    const filtersChanged =
+      deferredFilters.search !== userFilters.search ||
+      deferredFilters.role !== userFilters.role ||
+      deferredFilters.status !== userFilters.status ||
+      deferredFilters.workspaceId !== userFilters.workspaceId;
+
+    if (!filtersChanged && pages[0] === initialData) {
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await fetchAdminUsersAction(
+        null,
+        20,
+        {
+          search: deferredFilters.search || undefined,
+          role: deferredFilters.role || undefined,
+          status: deferredFilters.status || undefined,
+          workspaceId: deferredFilters.workspaceId || undefined,
+        },
+        sortColumn && sortDirection ? [sortColumn, sortDirection] : undefined
+      );
+
+      if (result.success) {
+        setPages([result.data.data]);
+        setCursor(result.data.meta.cursor);
+        setHasNextPage(result.data.meta.hasMore);
+        setFilteredTotal(result.data.meta.total);
+      }
+    });
+  }, [deferredFilters, sortColumn, sortDirection]);
 
   // Flatten all pages into single array
   const tableData = useMemo(() => pages.flat(), [pages]);
 
   // Fetch next page function
-  const fetchNextPage = useCallback(() => {
+  const fetchNextPage = useCallback(async () => {
     if (isFetchingNextPage || !hasNextPage) return;
 
     setIsFetchingNextPage(true);
 
-    setTimeout(() => {
-      const response = getUsersPage(cursor, 20, deferredFilters);
-      setPages((prev) => [...prev, response.data]);
-      setCursor(response.meta.cursor);
-      setHasNextPage(response.meta.hasMore);
-      setFilteredTotal(response.meta.filteredTotal);
-      setIsFetchingNextPage(false);
-    }, 300);
-  }, [cursor, hasNextPage, isFetchingNextPage, deferredFilters]);
+    const result = await fetchAdminUsersAction(
+      cursor,
+      20,
+      {
+        search: deferredFilters.search || undefined,
+        role: deferredFilters.role || undefined,
+        status: deferredFilters.status || undefined,
+        workspaceId: deferredFilters.workspaceId || undefined,
+      },
+      sortColumn && sortDirection ? [sortColumn, sortDirection] : undefined
+    );
+
+    if (result.success) {
+      setPages((prev) => [...prev, result.data.data]);
+      setCursor(result.data.meta.cursor);
+      setHasNextPage(result.data.meta.hasMore);
+      setFilteredTotal(result.data.meta.total);
+    }
+
+    setIsFetchingNextPage(false);
+  }, [cursor, hasNextPage, isFetchingNextPage, deferredFilters, sortColumn, sortDirection]);
 
   // Set up TanStack Table
   const table = useReactTable({

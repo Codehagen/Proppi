@@ -6,6 +6,8 @@ import type { Row } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
 import type { CSSProperties } from "react";
 import { memo } from "react";
+import { useRouter } from "next/navigation";
+import type { AdminUserRow } from "@/lib/types/admin";
 
 interface VirtualRowProps<TData> {
   row: Row<TData>;
@@ -18,11 +20,18 @@ function VirtualRowInner<TData>({
   virtualStart,
   rowHeight,
 }: VirtualRowProps<TData>) {
+  const router = useRouter();
   const cells = row.getVisibleCells();
+
+  const handleRowClick = () => {
+    const userId = (row.original as AdminUserRow).id;
+    router.push(`/admin/users/${userId}`);
+  };
 
   return (
     <TableRow
       data-index={row.index}
+      onClick={handleRowClick}
       className={cn(
         "group cursor-pointer select-text",
         "hover:bg-muted/50",

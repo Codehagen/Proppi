@@ -13,7 +13,7 @@ import {
   type UserStatus,
   type SortableUserColumn,
   type SortDirection,
-} from "@/lib/mock/admin-users";
+} from "@/lib/types/admin";
 
 // Parsers for URL state
 const userFiltersParsers = {

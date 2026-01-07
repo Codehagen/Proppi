@@ -1,7 +1,45 @@
 import { IconUsers } from "@tabler/icons-react";
 import { UsersDataTable } from "@/components/admin/tables/users/data-table";
+import { getAdminUsers } from "@/lib/db/queries";
+import type {
+  UserRole,
+  UserStatus,
+  SortableUserColumn,
+  SortDirection,
+} from "@/lib/types/admin";
 
-export default function AdminUsersPage() {
+interface AdminUsersPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function AdminUsersPage({
+  searchParams,
+}: AdminUsersPageProps) {
+  const params = await searchParams;
+
+  // Parse filters from URL
+  const filters = {
+    search: typeof params.q === "string" ? params.q : undefined,
+    role: typeof params.role === "string" ? (params.role as UserRole) : undefined,
+    status: typeof params.status === "string" ? (params.status as UserStatus) : undefined,
+    workspaceId: typeof params.workspaceId === "string" ? params.workspaceId : undefined,
+  };
+
+  // Parse sort from URL
+  const sortParam = params.sort;
+  let sort: [SortableUserColumn, SortDirection] | undefined;
+  if (Array.isArray(sortParam) && sortParam.length === 2) {
+    sort = [sortParam[0] as SortableUserColumn, sortParam[1] as SortDirection];
+  }
+
+  // Fetch initial data server-side
+  const initialData = await getAdminUsers({
+    cursor: null,
+    limit: 20,
+    filters,
+    sort,
+  });
+
   return (
     <div className="space-y-6 px-4 md:px-6 lg:px-8">
       {/* Page Header */}
@@ -24,7 +62,10 @@ export default function AdminUsersPage() {
 
       {/* Data Table */}
       <div className="animate-fade-in-up stagger-1">
-        <UsersDataTable />
+        <UsersDataTable
+          initialData={initialData.data}
+          initialMeta={initialData.meta}
+        />
       </div>
     </div>
   );
