@@ -1115,11 +1115,6 @@ export async function getAdminWorkspaces(options: {
 export async function getAdminWorkspaceById(
   workspaceId: string
 ): Promise<AdminWorkspaceRow | null> {
-  const result = await getAdminWorkspaces({
-    limit: 1,
-    filters: {},
-  });
-
   // Use a direct query for single workspace
   const workspaceData = await db
     .select()
