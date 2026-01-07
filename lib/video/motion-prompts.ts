@@ -97,8 +97,19 @@ export const DEFAULT_MOTION_PROMPTS: Record<VideoRoomType, string> = {
 }
 
 // Get motion prompt for a room type
-export function getMotionPrompt(roomType: VideoRoomType): string {
-  return DEFAULT_MOTION_PROMPTS[roomType] ?? DEFAULT_MOTION_PROMPTS.other
+export function getMotionPrompt(
+  roomType: VideoRoomType,
+  targetRoomLabel?: string | null
+): string {
+  const basePrompt =
+    DEFAULT_MOTION_PROMPTS[roomType] ?? DEFAULT_MOTION_PROMPTS.other
+
+  if (!targetRoomLabel) {
+    return basePrompt
+  }
+
+  // Add transition context
+  return `${basePrompt} The camera smoothly transitions towards the ${targetRoomLabel}.`
 }
 
 // Generate a custom motion prompt with room-specific base + user additions

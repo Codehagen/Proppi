@@ -7,6 +7,8 @@ import type { VideoRoomType } from "@/lib/db/schema"
 
 export interface GenerateVideoClipPayload {
   clipId: string
+  tailImageUrl?: string
+  targetRoomLabel?: string
 }
 
 export interface VideoClipStatus {
@@ -66,15 +68,17 @@ export const generateVideoClipTask = task({
       // Step 2: Upload source image to Fal.ai storage
       metadata.set("status", {
         step: "uploading",
-        label: "Preparing image…",
+        label: "Preparing images…",
         progress: 20,
       } satisfies VideoClipStatus)
 
-      logger.info("Fetching source image", {
+      logger.info("Fetching source images", {
         clipId,
         sourceImageUrl: clip.sourceImageUrl,
+        tailImageUrl: payload.tailImageUrl,
       })
 
+      // Fetch source image
       const imageResponse = await fetch(clip.sourceImageUrl)
       if (!imageResponse.ok) {
         throw new Error(`Failed to fetch source image: ${imageResponse.status}`)
@@ -85,10 +89,31 @@ export const generateVideoClipTask = task({
         new File([imageBlob], "source.jpg", { type: imageBlob.type })
       )
 
-      logger.info("Uploaded to Fal.ai storage", { falImageUrl })
+      logger.info("Uploaded source image to Fal.ai storage", { falImageUrl })
+
+      // Fetch and upload tail image if provided, otherwise use same as source for consistency
+      let falTailImageUrl = falImageUrl
+      if (payload.tailImageUrl) {
+        logger.info("Fetching tail image", { tailImageUrl: payload.tailImageUrl })
+        const tailResponse = await fetch(payload.tailImageUrl)
+        if (tailResponse.ok) {
+          const tailBlob = await tailResponse.blob()
+          falTailImageUrl = await fal.storage.upload(
+            new File([tailBlob], "tail.jpg", { type: tailBlob.type })
+          )
+          logger.info("Uploaded tail image to Fal.ai storage", { falTailImageUrl })
+        } else {
+          logger.warn("Failed to fetch tail image, falling back to source image", {
+            status: tailResponse.status,
+          })
+        }
+      }
 
       // Step 3: Generate motion prompt
-      let motionPrompt = clip.motionPrompt || getMotionPrompt(clip.roomType as VideoRoomType)
+      let motionPrompt = clip.motionPrompt || getMotionPrompt(
+        clip.roomType as VideoRoomType,
+        payload.targetRoomLabel
+      )
 
       // Step 3.5: Handle native audio generation
       const generateAudio = videoProjectData.videoProject.generateNativeAudio
@@ -128,7 +153,7 @@ export const generateVideoClipTask = task({
       // Prepare Kling input with proper typing
       const klingInput: KlingVideoInput = {
         image_url: falImageUrl,
-        tail_image_url: falImageUrl, // Start and end with the same frame for consistency
+        tail_image_url: falTailImageUrl, // Use provided tail image or same as source
         prompt: motionPrompt,
         duration: (clip.durationSeconds?.toString() || "5") as "5" | "10",
         aspect_ratio: videoProjectData.videoProject.aspectRatio as "16:9" | "9:16" | "1:1",

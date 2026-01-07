@@ -82,9 +82,20 @@ export const generateVideoTask = task({
         clipCount: clips.length,
       });
 
-      // Trigger all clip generation tasks and wait for them
+      // Trigger all clip generation tasks and wait for them with sequential transitions
       const clipResults = await generateVideoClipTask.batchTriggerAndWait(
-        clips.map((clip) => ({ payload: { clipId: clip.id } })),
+        clips.map((clip, index) => {
+          // Calculate the next clip for transition (wraps around for loop)
+          const nextClip = clips[(index + 1) % clips.length];
+          
+          return {
+            payload: {
+              clipId: clip.id,
+              tailImageUrl: nextClip.sourceImageUrl,
+              targetRoomLabel: nextClip.roomLabel || nextClip.roomType.replace(/-/g, " "),
+            }
+          };
+        }),
       );
 
       // Check results
