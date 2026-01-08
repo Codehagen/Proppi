@@ -107,8 +107,8 @@ const lastNames = [
 
 function seededRandom(seed: number): () => number {
   return () => {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    return seed / 0x7fffffff;
+    seed = (seed * 1_103_515_245 + 12_345) & 0x7f_ff_ff_ff;
+    return seed / 0x7f_ff_ff_ff;
   };
 }
 
@@ -218,7 +218,7 @@ export interface GetWorkspacesResponse {
 
 function filterWorkspaces(
   workspaces: AdminWorkspace[],
-  filters: WorkspaceFilters,
+  filters: WorkspaceFilters
 ): AdminWorkspace[] {
   return workspaces.filter((workspace) => {
     // Search filter (name, slug, owner email)
@@ -248,7 +248,7 @@ function filterWorkspaces(
 
 function sortWorkspaces(
   workspaces: AdminWorkspace[],
-  sort?: [SortableWorkspaceColumn, SortDirection],
+  sort?: [SortableWorkspaceColumn, SortDirection]
 ): AdminWorkspace[] {
   if (!sort) return workspaces;
 
@@ -285,13 +285,13 @@ function sortWorkspaces(
 
 export function getWorkspacesPage(
   cursor: string | null = null,
-  limit: number = 20,
-  filters: WorkspaceFilters = {},
+  limit = 20,
+  filters: WorkspaceFilters = {}
 ): GetWorkspacesResponse {
   const filteredWorkspaces = filterWorkspaces(mockWorkspaces, filters);
   const sortedWorkspaces = sortWorkspaces(filteredWorkspaces, filters.sort);
 
-  const startIndex = cursor ? parseInt(cursor, 10) : 0;
+  const startIndex = cursor ? Number.parseInt(cursor, 10) : 0;
   const endIndex = Math.min(startIndex + limit, sortedWorkspaces.length);
   const data = sortedWorkspaces.slice(startIndex, endIndex);
   const hasMore = endIndex < sortedWorkspaces.length;

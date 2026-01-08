@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  IconFileInvoice,
-  IconClock,
   IconCheck,
+  IconClock,
+  IconFileInvoice,
   IconReceipt,
 } from "@tabler/icons-react";
 import { type BillingStats, formatNOK } from "@/lib/mock/admin-billing";
@@ -31,18 +31,18 @@ export function BillingStatsBar({ stats }: BillingStatsBarProps) {
             />
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Ikke fakturert</p>
+            <p className="text-muted-foreground text-sm">Ikke fakturert</p>
             <div className="flex items-baseline gap-2">
               <span
-                className="text-2xl font-bold tabular-nums"
+                className="font-bold text-2xl tabular-nums"
                 style={{ color: "var(--accent-amber)" }}
               >
                 {stats.uninvoicedCount}
               </span>
-              <span className="text-sm text-muted-foreground">prosjekter</span>
+              <span className="text-muted-foreground text-sm">prosjekter</span>
             </div>
             <p
-              className="text-sm font-medium"
+              className="font-medium text-sm"
               style={{ color: "var(--accent-amber)" }}
             >
               {formatNOK(stats.uninvoicedAmount)}
@@ -67,18 +67,18 @@ export function BillingStatsBar({ stats }: BillingStatsBarProps) {
             />
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Venter betaling</p>
+            <p className="text-muted-foreground text-sm">Venter betaling</p>
             <div className="flex items-baseline gap-2">
               <span
-                className="text-2xl font-bold tabular-nums"
+                className="font-bold text-2xl tabular-nums"
                 style={{ color: "var(--accent-teal)" }}
               >
                 {stats.pendingPayment}
               </span>
-              <span className="text-sm text-muted-foreground">fakturaer</span>
+              <span className="text-muted-foreground text-sm">fakturaer</span>
             </div>
             <p
-              className="text-sm font-medium"
+              className="font-medium text-sm"
               style={{ color: "var(--accent-teal)" }}
             >
               {formatNOK(stats.pendingPaymentAmount)}
@@ -103,18 +103,18 @@ export function BillingStatsBar({ stats }: BillingStatsBarProps) {
             />
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Denne måneden</p>
+            <p className="text-muted-foreground text-sm">Denne måneden</p>
             <div className="flex items-baseline gap-2">
               <span
-                className="text-2xl font-bold tabular-nums"
+                className="font-bold text-2xl tabular-nums"
                 style={{ color: "var(--accent-green)" }}
               >
                 {stats.invoicedThisMonth}
               </span>
-              <span className="text-sm text-muted-foreground">fakturaer</span>
+              <span className="text-muted-foreground text-sm">fakturaer</span>
             </div>
             <p
-              className="text-sm font-medium"
+              className="font-medium text-sm"
               style={{ color: "var(--accent-green)" }}
             >
               {formatNOK(stats.invoicedAmountThisMonth)}
@@ -139,18 +139,18 @@ export function BillingStatsBar({ stats }: BillingStatsBarProps) {
             />
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Totalt fakturert</p>
+            <p className="text-muted-foreground text-sm">Totalt fakturert</p>
             <div className="flex items-baseline gap-2">
               <span
-                className="text-2xl font-bold tabular-nums"
+                className="font-bold text-2xl tabular-nums"
                 style={{ color: "var(--accent-violet)" }}
               >
                 {stats.invoicedCount}
               </span>
-              <span className="text-sm text-muted-foreground">fakturaer</span>
+              <span className="text-muted-foreground text-sm">fakturaer</span>
             </div>
             <p
-              className="text-sm font-medium"
+              className="font-medium text-sm"
               style={{ color: "var(--accent-violet)" }}
             >
               {formatNOK(stats.invoicedAmount)}

@@ -20,7 +20,7 @@ export default function WorkspaceDetailLoading() {
       {/* Stats bar skeleton */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="skeleton h-[72px] rounded-xl" />
+          <div className="skeleton h-[72px] rounded-xl" key={i} />
         ))}
       </div>
 
@@ -28,7 +28,7 @@ export default function WorkspaceDetailLoading() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Workspace Info skeleton */}
         <div className="rounded-xl bg-card ring-1 ring-foreground/5">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-border border-b px-4 py-3">
             <div className="skeleton h-5 w-32" />
           </div>
           <div className="space-y-4 p-4">
@@ -46,7 +46,7 @@ export default function WorkspaceDetailLoading() {
             {/* Info rows skeleton */}
             <div className="grid gap-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-2">
+                <div className="flex items-center gap-2" key={i}>
                   <div className="skeleton h-4 w-4" />
                   <div className="skeleton h-4 w-24" />
                   <div className="skeleton h-4 w-32" />
@@ -58,13 +58,16 @@ export default function WorkspaceDetailLoading() {
 
         {/* Members skeleton */}
         <div className="rounded-xl bg-card ring-1 ring-foreground/5">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-border border-b px-4 py-3">
             <div className="skeleton h-5 w-20" />
             <div className="skeleton h-5 w-8 rounded-full" />
           </div>
           <div className="space-y-2 p-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex items-center justify-between rounded-lg p-2">
+              <div
+                className="flex items-center justify-between rounded-lg p-2"
+                key={i}
+              >
                 <div className="flex items-center gap-3">
                   <div className="skeleton h-8 w-8 rounded-full" />
                   <div className="space-y-1">
@@ -83,12 +86,12 @@ export default function WorkspaceDetailLoading() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Projects skeleton */}
         <div className="rounded-xl bg-card ring-1 ring-foreground/5">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-border border-b px-4 py-3">
             <div className="skeleton h-5 w-32" />
           </div>
           <div className="space-y-3 p-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="space-y-2 rounded-lg p-3">
+              <div className="space-y-2 rounded-lg p-3" key={i}>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="skeleton h-4 w-36" />
@@ -107,12 +110,12 @@ export default function WorkspaceDetailLoading() {
 
         {/* Recent Videos skeleton */}
         <div className="rounded-xl bg-card ring-1 ring-foreground/5">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-border border-b px-4 py-3">
             <div className="skeleton h-5 w-28" />
           </div>
           <div className="space-y-3 p-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="space-y-2 rounded-lg p-3">
+              <div className="space-y-2 rounded-lg p-3" key={i}>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="skeleton h-4 w-32" />

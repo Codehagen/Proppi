@@ -1,19 +1,15 @@
 "use client";
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
 import {
-  IconX,
-  IconTrash,
-  IconPlus,
   IconArrowBackUp,
-  IconSparkles,
   IconLoader2,
+  IconPlus,
+  IconSparkles,
+  IconTrash,
+  IconX,
 } from "@tabler/icons-react";
-
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import * as React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,9 +20,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { useInpaint } from "@/hooks/use-inpaint";
-import { cn } from "@/lib/utils";
 import type { ImageGeneration } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 
 // Common real estate staging suggestions
 const OBJECT_SUGGESTIONS = [
@@ -138,7 +137,7 @@ export function ImageMaskEditor({
 
   // Step 2: Initialize Fabric.js after canvas is rendered
   React.useEffect(() => {
-    if (!imageLoaded || !canvasRef.current || imageDimensions.width === 0)
+    if (!(imageLoaded && canvasRef.current) || imageDimensions.width === 0)
       return;
 
     // Dynamic import to avoid SSR issues
@@ -180,7 +179,7 @@ export function ImageMaskEditor({
 
   // Update brush settings based on mode
   React.useEffect(() => {
-    if (!fabricRef.current?.freeDrawingBrush || !isCanvasReady) return;
+    if (!(fabricRef.current?.freeDrawingBrush && isCanvasReady)) return;
 
     fabricRef.current.freeDrawingBrush.width = brushSize;
     // Visual feedback colors - red for remove, green for add
@@ -198,8 +197,8 @@ export function ImageMaskEditor({
       return;
     }
 
-    let minX = Infinity;
-    let minY = Infinity;
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
     let maxX = 0;
     let maxY = 0;
 
@@ -221,7 +220,7 @@ export function ImageMaskEditor({
 
   // Track canvas history for undo
   React.useEffect(() => {
-    if (!fabricRef.current || !isCanvasReady) return;
+    if (!(fabricRef.current && isCanvasReady)) return;
 
     const canvas = fabricRef.current;
     const handlePathCreated = () => {
@@ -282,7 +281,7 @@ export function ImageMaskEditor({
         y: e.clientY - rect.top,
       });
     },
-    [],
+    []
   );
 
   const handleCanvasMouseLeave = React.useCallback(() => {
@@ -295,14 +294,14 @@ export function ImageMaskEditor({
       maskDataUrl: string,
       prompt: string,
       editMode: EditMode,
-      replaceNewerVersions: boolean,
+      replaceNewerVersions: boolean
     ) => {
       const result = await inpaint(
         image.id,
         maskDataUrl,
         prompt,
         editMode,
-        replaceNewerVersions,
+        replaceNewerVersions
       );
 
       if (result.success) {
@@ -312,7 +311,7 @@ export function ImageMaskEditor({
         onClose();
       }
     },
-    [image.id, inpaint, router, onClose],
+    [image.id, inpaint, router, onClose]
   );
 
   // Handle confirmed replace
@@ -324,7 +323,7 @@ export function ImageMaskEditor({
       pendingSubmitData.maskDataUrl,
       pendingSubmitData.prompt,
       pendingSubmitData.mode,
-      true, // replaceNewerVersions
+      true // replaceNewerVersions
     );
     setPendingSubmitData(null);
   }, [pendingSubmitData, executeInpaint]);
@@ -420,32 +419,32 @@ export function ImageMaskEditor({
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black/95">
       {/* Header / Toolbar */}
-      <div className="flex items-center justify-between border-b border-white/10 bg-black/50 px-4 py-3 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-white/10 border-b bg-black/50 px-4 py-3 backdrop-blur-sm">
         <div className="flex items-center gap-4">
-          <h2 className="text-lg font-semibold text-white">Edit Image</h2>
+          <h2 className="font-semibold text-lg text-white">Edit Image</h2>
 
           {/* Mode selector */}
           <div className="flex items-center gap-1 rounded-lg bg-white/10 p-1">
             <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setMode("remove")}
               className={cn(
                 "gap-1.5 text-white hover:bg-white/20 hover:text-white",
-                mode === "remove" && "bg-red-500/30",
+                mode === "remove" && "bg-red-500/30"
               )}
+              onClick={() => setMode("remove")}
+              size="sm"
+              variant="ghost"
             >
               <IconTrash className="h-4 w-4" />
               Remove Object
             </Button>
             <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setMode("add")}
               className={cn(
                 "gap-1.5 text-white hover:bg-white/20 hover:text-white",
-                mode === "add" && "bg-green-500/30",
+                mode === "add" && "bg-green-500/30"
               )}
+              onClick={() => setMode("add")}
+              size="sm"
+              variant="ghost"
             >
               <IconPlus className="h-4 w-4" />
               Add Object
@@ -456,25 +455,25 @@ export function ImageMaskEditor({
           <div className="flex items-center gap-3">
             <span className="text-sm text-white/70">Size:</span>
             <Slider
-              value={[brushSize]}
-              onValueChange={([value]) => setBrushSize(value)}
-              min={5}
-              max={100}
-              step={5}
               className="w-32"
+              max={100}
+              min={5}
+              onValueChange={([value]) => setBrushSize(value)}
+              step={5}
+              value={[brushSize]}
             />
-            <span className="w-8 text-sm tabular-nums text-white/70">
+            <span className="w-8 text-sm text-white/70 tabular-nums">
               {brushSize}
             </span>
           </div>
 
           {/* Undo button */}
           <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleUndo}
-            disabled={canvasHistory.length === 0}
             className="gap-1.5 text-white hover:bg-white/20 hover:text-white disabled:opacity-40"
+            disabled={canvasHistory.length === 0}
+            onClick={handleUndo}
+            size="sm"
+            variant="ghost"
           >
             <IconArrowBackUp className="h-4 w-4" />
             Undo
@@ -482,10 +481,10 @@ export function ImageMaskEditor({
 
           {/* Clear button */}
           <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleClear}
             className="gap-1.5 text-white/70 hover:bg-white/20 hover:text-white"
+            onClick={handleClear}
+            size="sm"
+            variant="ghost"
           >
             Clear
           </Button>
@@ -493,11 +492,11 @@ export function ImageMaskEditor({
 
         {/* Close button */}
         <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          disabled={isProcessing}
           className="text-white hover:bg-white/20 hover:text-white"
+          disabled={isProcessing}
+          onClick={onClose}
+          size="icon"
+          variant="ghost"
         >
           <IconX className="h-5 w-5" />
         </Button>
@@ -505,8 +504,8 @@ export function ImageMaskEditor({
 
       {/* Canvas area */}
       <div
-        ref={containerRef}
         className="relative flex flex-1 items-center justify-center overflow-hidden p-8"
+        ref={containerRef}
       >
         {/* Loading state */}
         {!imageLoaded && (
@@ -520,24 +519,24 @@ export function ImageMaskEditor({
         {imageLoaded && imageDimensions.width > 0 && (
           <div
             className="relative"
+            onMouseLeave={handleCanvasMouseLeave}
+            onMouseMove={handleCanvasMouseMove}
             style={{
               width: imageDimensions.width,
               height: imageDimensions.height,
             }}
-            onMouseMove={handleCanvasMouseMove}
-            onMouseLeave={handleCanvasMouseLeave}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={sourceImageUrl}
               alt="Source"
               className="absolute inset-0 h-full w-full rounded-lg object-cover"
+              src={sourceImageUrl}
             />
 
             {/* Canvas overlay */}
             <canvas
-              ref={canvasRef}
               className="absolute inset-0 rounded-lg"
+              ref={canvasRef}
               style={{ cursor: "none" }}
             />
 
@@ -562,7 +561,7 @@ export function ImageMaskEditor({
 
             {/* Canvas loading indicator */}
             {!isCanvasReady && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
+              <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/30">
                 <IconLoader2 className="h-6 w-6 animate-spin text-white" />
               </div>
             )}
@@ -574,28 +573,28 @@ export function ImageMaskEditor({
                 style={{
                   left: Math.max(
                     0,
-                    Math.min(maskBounds.x, imageDimensions.width - 256),
+                    Math.min(maskBounds.x, imageDimensions.width - 256)
                   ),
                   top: Math.min(
                     maskBounds.y + 12,
-                    imageDimensions.height - 160,
+                    imageDimensions.height - 160
                   ),
                 }}
               >
-                <p className="mb-2 text-xs font-medium text-white/70">
+                <p className="mb-2 font-medium text-white/70 text-xs">
                   Quick add:
                 </p>
                 <div className="mb-3 flex flex-wrap gap-1.5">
                   {OBJECT_SUGGESTIONS.map((suggestion) => (
                     <button
-                      key={suggestion}
-                      onClick={() => setObjectToAdd(suggestion)}
                       className={cn(
-                        "rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
+                        "rounded-full px-2.5 py-1 font-medium text-xs transition-colors",
                         objectToAdd === suggestion
                           ? "bg-green-500 text-white"
-                          : "bg-white/10 text-white/80 hover:bg-white/20",
+                          : "bg-white/10 text-white/80 hover:bg-white/20"
                       )}
+                      key={suggestion}
+                      onClick={() => setObjectToAdd(suggestion)}
                     >
                       {suggestion}
                     </button>
@@ -603,22 +602,22 @@ export function ImageMaskEditor({
                 </div>
                 <div className="flex gap-2">
                   <Input
-                    value={objectToAdd}
-                    onChange={(e) => setObjectToAdd(e.target.value)}
-                    placeholder="Or type custom…"
                     className="h-8 flex-1 border-white/20 bg-white/10 text-sm text-white placeholder:text-white/40"
                     disabled={isProcessing}
+                    onChange={(e) => setObjectToAdd(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && objectToAdd.trim()) {
                         handleSubmit();
                       }
                     }}
+                    placeholder="Or type custom…"
+                    value={objectToAdd}
                   />
                   <Button
-                    onClick={handleSubmit}
-                    disabled={isProcessing || !objectToAdd.trim()}
-                    size="sm"
                     className="h-8 gap-1.5 bg-green-500 hover:bg-green-600"
+                    disabled={isProcessing || !objectToAdd.trim()}
+                    onClick={handleSubmit}
+                    size="sm"
                   >
                     {isProcessing ? (
                       <IconLoader2 className="h-3.5 w-3.5 animate-spin" />
@@ -635,7 +634,7 @@ export function ImageMaskEditor({
       </div>
 
       {/* Footer */}
-      <div className="border-t border-white/10 bg-black/50 px-4 py-4 backdrop-blur-sm">
+      <div className="border-white/10 border-t bg-black/50 px-4 py-4 backdrop-blur-sm">
         <div className="mx-auto flex max-w-2xl items-center justify-center gap-3">
           {mode === "remove" ? (
             <>
@@ -643,11 +642,11 @@ export function ImageMaskEditor({
                 Draw on the object you want to remove
               </p>
               <Button
-                onClick={handleSubmit}
+                className="min-w-[120px] gap-2 bg-red-500 hover:bg-red-600"
                 disabled={
                   isProcessing || !isCanvasReady || canvasHistory.length === 0
                 }
-                className="gap-2 min-w-[120px] bg-red-500 hover:bg-red-600"
+                onClick={handleSubmit}
               >
                 {isProcessing ? (
                   <>
@@ -672,10 +671,10 @@ export function ImageMaskEditor({
         </div>
 
         {error && (
-          <p className="mt-2 text-center text-sm text-red-400">{error}</p>
+          <p className="mt-2 text-center text-red-400 text-sm">{error}</p>
         )}
 
-        <p className="mt-2 text-center text-xs text-white/50">
+        <p className="mt-2 text-center text-white/50 text-xs">
           {mode === "remove"
             ? "The AI will fill the marked area with seamless background."
             : "The AI will add the object matching the room's style."}
@@ -683,7 +682,7 @@ export function ImageMaskEditor({
       </div>
 
       {/* Replace versions confirmation dialog */}
-      <AlertDialog open={showReplaceDialog} onOpenChange={setShowReplaceDialog}>
+      <AlertDialog onOpenChange={setShowReplaceDialog} open={showReplaceDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Replace newer versions?</AlertDialogTitle>
@@ -700,8 +699,8 @@ export function ImageMaskEditor({
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleConfirmReplace}
               className="bg-red-500 hover:bg-red-600"
+              onClick={handleConfirmReplace}
             >
               Replace &amp; Edit
             </AlertDialogAction>

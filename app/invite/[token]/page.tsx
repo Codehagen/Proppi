@@ -21,11 +21,11 @@ export default async function InvitePage({ params }: InvitePageProps) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <InviteAcceptForm
-          token={token}
           email={invitation.email}
-          workspaceName={workspaceName}
-          isExpired={isExpired}
           isAccepted={isAccepted}
+          isExpired={isExpired}
+          token={token}
+          workspaceName={workspaceName}
         />
       </div>
     </div>

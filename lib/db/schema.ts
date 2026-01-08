@@ -1,11 +1,11 @@
 import {
+  boolean,
+  index,
+  integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
-  boolean,
-  index,
-  jsonb,
-  integer,
 } from "drizzle-orm/pg-core";
 
 // ============================================================================
@@ -253,7 +253,9 @@ export const videoProject = pgTable(
     aspectRatio: text("aspect_ratio").notNull().default("16:9"), // "16:9" | "9:16" | "1:1"
     musicTrackId: text("music_track_id"), // FK to music_track or null for no music
     musicVolume: integer("music_volume").notNull().default(50), // 0-100
-    generateNativeAudio: boolean("generate_native_audio").notNull().default(true),
+    generateNativeAudio: boolean("generate_native_audio")
+      .notNull()
+      .default(true),
 
     // Output
     finalVideoUrl: text("final_video_url"),
@@ -345,7 +347,10 @@ export const videoClip = pgTable(
   },
   (table) => [
     index("video_clip_project_idx").on(table.videoProjectId),
-    index("video_clip_sequence_idx").on(table.videoProjectId, table.sequenceOrder),
+    index("video_clip_sequence_idx").on(
+      table.videoProjectId,
+      table.sequenceOrder
+    ),
     index("video_clip_status_idx").on(table.status),
   ]
 );
@@ -447,10 +452,20 @@ export type RoomType =
   | "other";
 
 // Video types
-export type VideoProjectStatus = "draft" | "generating" | "compiling" | "completed" | "failed";
+export type VideoProjectStatus =
+  | "draft"
+  | "generating"
+  | "compiling"
+  | "completed"
+  | "failed";
 export type VideoClipStatus = "pending" | "processing" | "completed" | "failed";
 export type VideoAspectRatio = "16:9" | "9:16" | "1:1";
-export type MusicCategory = "modern" | "classical" | "upbeat" | "calm" | "cinematic";
+export type MusicCategory =
+  | "modern"
+  | "classical"
+  | "upbeat"
+  | "calm"
+  | "cinematic";
 export type VideoRoomType = RoomType; // Unified with RoomType for consistency
 
 // ============================================================================
@@ -605,7 +620,9 @@ export const affiliateRelationship = pgTable(
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => [
-    index("affiliate_relationship_affiliate_idx").on(table.affiliateWorkspaceId),
+    index("affiliate_relationship_affiliate_idx").on(
+      table.affiliateWorkspaceId
+    ),
     index("affiliate_relationship_referred_idx").on(table.referredWorkspaceId),
   ]
 );
@@ -666,7 +683,8 @@ export type NewInvoiceLineItem = typeof invoiceLineItem.$inferInsert;
 export type LineItemStatus = "pending" | "invoiced" | "cancelled";
 
 export type AffiliateRelationship = typeof affiliateRelationship.$inferSelect;
-export type NewAffiliateRelationship = typeof affiliateRelationship.$inferInsert;
+export type NewAffiliateRelationship =
+  typeof affiliateRelationship.$inferInsert;
 
 export type AffiliateEarning = typeof affiliateEarning.$inferSelect;
 export type NewAffiliateEarning = typeof affiliateEarning.$inferInsert;

@@ -1,18 +1,18 @@
 "use client";
 
 import {
+  parseAsArrayOf,
   parseAsString,
   parseAsStringLiteral,
-  parseAsArrayOf,
   useQueryStates,
 } from "nuqs";
+import type { WorkspacePlan, WorkspaceStatus } from "@/lib/db/schema";
 import {
-  ALL_WORKSPACE_STATUSES,
   ALL_WORKSPACE_PLANS,
+  ALL_WORKSPACE_STATUSES,
   type SortableWorkspaceColumn,
   type SortDirection,
 } from "@/lib/types/admin";
-import type { WorkspaceStatus, WorkspacePlan } from "@/lib/db/schema";
 
 // Parsers for URL state
 const workspaceFiltersParsers = {

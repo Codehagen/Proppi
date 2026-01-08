@@ -1,4 +1,4 @@
-import { getAllWorkspaces, type AdminWorkspace } from "./admin-workspaces";
+import { getAllWorkspaces } from "./admin-workspaces";
 
 // =============================================================================
 // Types
@@ -84,8 +84,8 @@ const orgNumbers = [
 
 function seededRandom(seed: number): () => number {
   return () => {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    return seed / 0x7fffffff;
+    seed = (seed * 1_103_515_245 + 12_345) & 0x7f_ff_ff_ff;
+    return seed / 0x7f_ff_ff_ff;
   };
 }
 
@@ -126,7 +126,7 @@ function generateUninvoicedProjects(): UninvoicedProject[] {
 
   // Sort by completedAt (newest first)
   return projects.sort(
-    (a, b) => b.completedAt.getTime() - a.completedAt.getTime(),
+    (a, b) => b.completedAt.getTime() - a.completedAt.getTime()
   );
 }
 
@@ -137,7 +137,7 @@ function generateInvoiceHistory(): InvoiceRecord[] {
 
   // Generate 20-30 historical invoices
   const invoiceCount = 25;
-  const invoiceNumber = 10026; // Starting from our test invoices
+  const invoiceNumber = 10_026; // Starting from our test invoices
 
   for (let i = 0; i < invoiceCount; i++) {
     const workspace = workspaces[Math.floor(random() * workspaces.length)];
@@ -147,7 +147,7 @@ function generateInvoiceHistory(): InvoiceRecord[] {
     const invoiceProjectNames: string[] = [];
     for (let j = 0; j < projectCount; j++) {
       invoiceProjectNames.push(
-        projectNames[Math.floor(random() * projectNames.length)],
+        projectNames[Math.floor(random() * projectNames.length)]
       );
     }
 
@@ -170,7 +170,7 @@ function generateInvoiceHistory(): InvoiceRecord[] {
 
     invoices.push({
       id: `inv_${String(i + 1).padStart(4, "0")}`,
-      fikenInvoiceId: 11305900000 + i,
+      fikenInvoiceId: 11_305_900_000 + i,
       fikenInvoiceNumber: String(invoiceNumber + i),
       workspaceId: workspace.id,
       workspaceName: workspace.name,
@@ -217,7 +217,7 @@ export function getBillingStats(): BillingStats {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
   const invoicesThisMonth = invoices.filter(
-    (inv) => inv.issueDate >= startOfMonth,
+    (inv) => inv.issueDate >= startOfMonth
   );
   const pendingInvoices = invoices.filter((inv) => inv.status !== "paid");
 
@@ -229,12 +229,12 @@ export function getBillingStats(): BillingStats {
     invoicedThisMonth: invoicesThisMonth.length,
     invoicedAmountThisMonth: invoicesThisMonth.reduce(
       (sum, inv) => sum + inv.amount,
-      0,
+      0
     ),
     pendingPayment: pendingInvoices.length,
     pendingPaymentAmount: pendingInvoices.reduce(
       (sum, inv) => sum + inv.amount,
-      0,
+      0
     ),
   };
 }

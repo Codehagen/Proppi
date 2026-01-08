@@ -1,28 +1,27 @@
 "use client";
 
-import * as React from "react";
-import { useState } from "react";
 import {
-  IconMail,
-  IconUserPlus,
+  IconCheck,
   IconLoader2,
+  IconMail,
   IconShield,
   IconUser,
-  IconCheck,
+  IconUserPlus,
 } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
+import type * as React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import type { UserRole } from "@/lib/mock/workspace";
+import { cn } from "@/lib/utils";
 
 interface InviteMemberDialogProps {
   open: boolean;
@@ -87,8 +86,8 @@ export function InviteMemberDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent size="default" className="p-0 overflow-hidden">
+    <Dialog onOpenChange={handleClose} open={open}>
+      <DialogContent className="overflow-hidden p-0" size="default">
         {/* Header */}
         <div className="border-b px-6 py-4">
           <DialogHeader>
@@ -114,10 +113,10 @@ export function InviteMemberDialog({
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="space-y-6 p-6">
+        <form className="space-y-6 p-6" onSubmit={handleSubmit}>
           {/* Success state */}
           {sent ? (
-            <div className="animate-fade-in-up flex flex-col items-center gap-4 py-8 text-center">
+            <div className="flex animate-fade-in-up flex-col items-center gap-4 py-8 text-center">
               <div
                 className="flex h-16 w-16 items-center justify-center rounded-full"
                 style={{
@@ -131,8 +130,8 @@ export function InviteMemberDialog({
                 />
               </div>
               <div>
-                <p className="text-lg font-semibold">Invitation Sent!</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-semibold text-lg">Invitation Sent!</p>
+                <p className="text-muted-foreground text-sm">
                   We&apos;ve sent an invite to {email}
                 </p>
               </div>
@@ -141,47 +140,47 @@ export function InviteMemberDialog({
             <>
               {/* Email input */}
               <div className="space-y-2">
-                <Label htmlFor="invite-email" className="text-sm font-medium">
+                <Label className="font-medium text-sm" htmlFor="invite-email">
                   Email Address
                 </Label>
                 <div className="relative">
-                  <IconMail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <IconMail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
+                    className="pl-10"
+                    disabled={isSending}
                     id="invite-email"
-                    type="email"
-                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="colleague@company.com"
-                    className="pl-10"
                     required
-                    disabled={isSending}
+                    type="email"
+                    value={email}
                   />
                 </div>
               </div>
 
               {/* Role selection */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Role</Label>
+                <Label className="font-medium text-sm">Role</Label>
                 <div className="grid gap-3">
                   {roleOptions.map((option) => (
                     <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => setRole(option.value)}
-                      disabled={isSending}
                       className={cn(
                         "flex items-start gap-3 rounded-xl p-4 text-left ring-2 transition-all duration-200",
                         role === option.value
-                          ? "ring-[var(--accent-teal)] bg-[var(--accent-teal)]/5"
-                          : "ring-foreground/5 hover:ring-foreground/10 hover:bg-muted/30",
+                          ? "bg-[var(--accent-teal)]/5 ring-[var(--accent-teal)]"
+                          : "ring-foreground/5 hover:bg-muted/30 hover:ring-foreground/10"
                       )}
+                      disabled={isSending}
+                      key={option.value}
+                      onClick={() => setRole(option.value)}
+                      type="button"
                     >
                       <div
                         className={cn(
                           "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors",
                           role === option.value
                             ? "bg-[var(--accent-teal)]/15 text-[var(--accent-teal)]"
-                            : "bg-muted text-muted-foreground",
+                            : "bg-muted text-muted-foreground"
                         )}
                       >
                         {option.icon}
@@ -198,7 +197,7 @@ export function InviteMemberDialog({
                             />
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                           {option.description}
                         </p>
                       </div>
@@ -214,17 +213,17 @@ export function InviteMemberDialog({
         {!sent && (
           <div className="flex items-center justify-end gap-3 border-t bg-muted/30 px-6 py-4">
             <Button
+              disabled={isSending}
+              onClick={handleClose}
               type="button"
               variant="outline"
-              onClick={handleClose}
-              disabled={isSending}
             >
               Cancel
             </Button>
             <Button
-              onClick={handleSubmit}
+              className="min-w-[120px] gap-2"
               disabled={!email || isSending}
-              className="gap-2 min-w-[120px]"
+              onClick={handleSubmit}
               style={{ backgroundColor: "var(--accent-teal)" }}
             >
               {isSending ? (

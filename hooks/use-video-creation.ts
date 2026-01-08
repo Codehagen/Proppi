@@ -1,18 +1,18 @@
 "use client";
 
+import { parseAsStringLiteral, useQueryState } from "nuqs";
 import * as React from "react";
-import { useQueryState, parseAsStringLiteral } from "nuqs";
 import type {
-  VideoRoomType,
-  VideoAspectRatio,
   MusicTrack,
+  VideoAspectRatio,
+  VideoRoomType,
 } from "@/lib/db/schema";
-import { VIDEO_DEFAULTS, VIDEO_LIMITS } from "@/lib/video/video-constants";
-import { getVideoTemplateById } from "@/lib/video/video-templates";
 import {
   autoSequenceClips,
   reindexSequenceOrders,
 } from "@/lib/video/room-sequence";
+import { VIDEO_DEFAULTS, VIDEO_LIMITS } from "@/lib/video/video-constants";
+import { getVideoTemplateById } from "@/lib/video/video-templates";
 
 export type VideoCreationStep =
   | "select-template"
@@ -112,7 +112,7 @@ export function useVideoCreation() {
         // Find the next available sequence order
         const maxOrder = prev.images.reduce(
           (max, img) => Math.max(max, img.sequenceOrder),
-          0,
+          0
         );
 
         const imagesWithOrder = newImages.map((img, i) => ({
@@ -134,16 +134,26 @@ export function useVideoCreation() {
         };
       });
     },
-    [],
+    []
   );
 
   // Specialized function for storyboard slots
   const addImageToSlot = React.useCallback(
-    (image: Omit<VideoImageItem, "sequenceOrder" | "startImageUrl" | "startImageGenerationId" | "endImageUrl" | "endImageGenerationId">, slotIndex: number) => {
+    (
+      image: Omit<
+        VideoImageItem,
+        | "sequenceOrder"
+        | "startImageUrl"
+        | "startImageGenerationId"
+        | "endImageUrl"
+        | "endImageGenerationId"
+      >,
+      slotIndex: number
+    ) => {
       setState((prev) => {
         // Remove any existing image in this slot
         const filtered = prev.images.filter(
-          (img) => img.sequenceOrder !== slotIndex + 1,
+          (img) => img.sequenceOrder !== slotIndex + 1
         );
 
         // Add new image at specific sequence order (1-based)
@@ -165,13 +175,19 @@ export function useVideoCreation() {
         };
       });
     },
-    [],
+    []
   );
 
   const updateSlotImage = React.useCallback(
-    (slotIndex: number, type: "start" | "end", image: { id: string; url: string; imageGenerationId?: string | null }) => {
+    (
+      slotIndex: number,
+      type: "start" | "end",
+      image: { id: string; url: string; imageGenerationId?: string | null }
+    ) => {
       setState((prev) => {
-        const existingImage = prev.images.find(img => img.sequenceOrder === slotIndex + 1);
+        const existingImage = prev.images.find(
+          (img) => img.sequenceOrder === slotIndex + 1
+        );
         if (!existingImage) return prev;
 
         const updatedImage = { ...existingImage };
@@ -189,7 +205,9 @@ export function useVideoCreation() {
 
         return {
           ...prev,
-          images: prev.images.map(img => img.sequenceOrder === slotIndex + 1 ? updatedImage : img)
+          images: prev.images.map((img) =>
+            img.sequenceOrder === slotIndex + 1 ? updatedImage : img
+          ),
         };
       });
     },
@@ -201,11 +219,11 @@ export function useVideoCreation() {
       setState((prev) => {
         return {
           ...prev,
-          images: prev.images.map(img => 
-            img.sequenceOrder === slotIndex + 1 
+          images: prev.images.map((img) =>
+            img.sequenceOrder === slotIndex + 1
               ? { ...img, transitionType }
               : img
-          )
+          ),
         };
       });
     },
@@ -234,11 +252,11 @@ export function useVideoCreation() {
       setState((prev) => ({
         ...prev,
         images: prev.images.map((img) =>
-          img.id === id ? { ...img, ...updates } : img,
+          img.id === id ? { ...img, ...updates } : img
         ),
       }));
     },
-    [],
+    []
   );
 
   const reorderImages = React.useCallback(
@@ -258,7 +276,7 @@ export function useVideoCreation() {
         return { ...prev, images: reindexed };
       });
     },
-    [],
+    []
   );
 
   const autoArrangeByRoomType = React.useCallback(() => {
@@ -330,7 +348,7 @@ export function useVideoCreation() {
       case "assign-rooms":
         return state.images.every((img) => img.roomType);
 
-      case "storyboard":
+      case "storyboard": {
         if (!state.selectedTemplateId) return false;
         const template = getVideoTemplateById(state.selectedTemplateId);
         if (!template) return false;
@@ -343,6 +361,7 @@ export function useVideoCreation() {
           if (!filledSlots.includes(i)) return false;
         }
         return true;
+      }
 
       case "select-music":
         return true; // Music is optional

@@ -99,7 +99,7 @@
   --landing-accent: oklch(0.62 0.14 50);
   --landing-accent-hover: oklch(0.56 0.16 50);
   --landing-accent-foreground: oklch(0.99 0 0);
-  --landing-border: oklch(0.22 0.05 55 / 0.10);
+  --landing-border: oklch(0.22 0.05 55 / 0.1);
   --landing-border-strong: oklch(0.22 0.05 55 / 0.18);
   --landing-card: oklch(0.99 0.008 85);
   --landing-card-hover: oklch(1 0.005 85);

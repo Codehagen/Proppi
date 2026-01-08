@@ -14,8 +14,8 @@ export default function ProjectDetailLoading() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
-            key={i}
             className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/5"
+            key={i}
           >
             <div className="skeleton h-9 w-9 rounded-lg" />
             <div className="space-y-1.5">
@@ -32,8 +32,8 @@ export default function ProjectDetailLoading() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
-              key={i}
               className="skeleton aspect-square rounded-xl"
+              key={i}
               style={{ animationDelay: `${i * 50}ms` }}
             />
           ))}

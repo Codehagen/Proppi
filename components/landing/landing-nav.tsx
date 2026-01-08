@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
-import Link from "next/link";
-import { useSession } from "@/lib/auth-client";
 import { IconArrowRight } from "@tabler/icons-react";
+import Link from "next/link";
+import { Suspense } from "react";
+import { useSession } from "@/lib/auth-client";
 
 function AuthButton() {
   const { data: session, isPending } = useSession();
@@ -11,7 +11,7 @@ function AuthButton() {
   if (isPending) {
     return (
       <div
-        className="h-10 w-28 rounded-full animate-pulse"
+        className="h-10 w-28 animate-pulse rounded-full"
         style={{ backgroundColor: "var(--landing-border)" }}
       />
     );
@@ -20,8 +20,8 @@ function AuthButton() {
   if (session) {
     return (
       <Link
+        className="inline-flex h-10 items-center gap-2 rounded-full px-5 font-medium text-sm transition-all duration-200 hover:scale-[1.02]"
         href="/dashboard"
-        className="inline-flex h-10 items-center gap-2 rounded-full px-5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
         style={{
           backgroundColor: "var(--landing-accent)",
           color: "var(--landing-accent-foreground)",
@@ -35,8 +35,8 @@ function AuthButton() {
 
   return (
     <Link
+      className="inline-flex h-10 items-center gap-2 rounded-full px-5 font-medium text-sm transition-all duration-200 hover:scale-[1.02]"
       href="/sign-in"
-      className="inline-flex h-10 items-center gap-2 rounded-full px-5 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
       style={{
         backgroundColor: "var(--landing-accent)",
         color: "var(--landing-accent-foreground)",
@@ -60,8 +60,8 @@ export function LandingNav() {
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         {/* Logo */}
         <Link
-          href="/"
           className="font-semibold tracking-tight transition-opacity hover:opacity-80"
+          href="/"
           style={{ color: "var(--landing-text)" }}
         >
           AI Studio
@@ -70,22 +70,22 @@ export function LandingNav() {
         {/* Navigation Links */}
         <div className="hidden items-center gap-8 md:flex">
           <Link
+            className="font-medium text-sm transition-colors hover:opacity-70"
             href="#features"
-            className="text-sm font-medium transition-colors hover:opacity-70"
             style={{ color: "var(--landing-text-muted)" }}
           >
             Features
           </Link>
           <Link
+            className="font-medium text-sm transition-colors hover:opacity-70"
             href="#how-it-works"
-            className="text-sm font-medium transition-colors hover:opacity-70"
             style={{ color: "var(--landing-text-muted)" }}
           >
             How It Works
           </Link>
           <Link
+            className="font-medium text-sm transition-colors hover:opacity-70"
             href="/pricing"
-            className="text-sm font-medium transition-colors hover:opacity-70"
             style={{ color: "var(--landing-text-muted)" }}
           >
             Pricing
@@ -96,7 +96,7 @@ export function LandingNav() {
         <Suspense
           fallback={
             <div
-              className="h-10 w-28 rounded-full animate-pulse"
+              className="h-10 w-28 animate-pulse rounded-full"
               style={{ backgroundColor: "var(--landing-border)" }}
             />
           }

@@ -1,4 +1,4 @@
-import type { VideoRoomType } from "@/lib/db/schema"
+import type { VideoRoomType } from "@/lib/db/schema";
 
 /**
  * Default motion prompts for video generation
@@ -56,8 +56,7 @@ export const DEFAULT_MOTION_PROMPTS: Record<VideoRoomType, string> = {
   library:
     "Camera tracks slowly across the built-in bookshelves and cozy reading area. Soft, warm lighting creates a peaceful, intellectual atmosphere. 4k high resolution.",
 
-  gym:
-    "Camera performs a slow pan across the home gym area, highlighting the fitness equipment and professional flooring. Bright, energetic lighting, 4k high resolution.",
+  gym: "Camera performs a slow pan across the home gym area, highlighting the fitness equipment and professional flooring. Bright, energetic lighting, 4k high resolution.",
 
   sauna:
     "Camera tracks slowly across the wooden sauna interior. Soft, warm lighting highlights the cedar textures and peaceful atmosphere. Steady motion, 4k high resolution.",
@@ -94,7 +93,7 @@ export const DEFAULT_MOTION_PROMPTS: Record<VideoRoomType, string> = {
 
   other:
     "Camera tracks slowly across the space at medium distance, maintaining a steady horizontal movement. Highlights the room's unique features, textures, and natural lighting. Professional real estate cinematography style, 4k high resolution.",
-}
+};
 
 // Get motion prompt for a room type
 export function getMotionPrompt(
@@ -102,14 +101,14 @@ export function getMotionPrompt(
   targetRoomLabel?: string | null
 ): string {
   const basePrompt =
-    DEFAULT_MOTION_PROMPTS[roomType] ?? DEFAULT_MOTION_PROMPTS.other
+    DEFAULT_MOTION_PROMPTS[roomType] ?? DEFAULT_MOTION_PROMPTS.other;
 
   if (!targetRoomLabel) {
-    return basePrompt
+    return basePrompt;
   }
 
   // Add transition context
-  return `${basePrompt} The camera smoothly transitions towards the ${targetRoomLabel}.`
+  return `${basePrompt} The camera smoothly transitions towards the ${targetRoomLabel}.`;
 }
 
 // Generate a custom motion prompt with room-specific base + user additions
@@ -117,18 +116,18 @@ export function generateMotionPrompt(
   roomType: VideoRoomType,
   customAdditions?: string
 ): string {
-  const basePrompt = getMotionPrompt(roomType)
+  const basePrompt = getMotionPrompt(roomType);
 
   if (!customAdditions?.trim()) {
-    return basePrompt
+    return basePrompt;
   }
 
-  return `${basePrompt} ${customAdditions.trim()}`
+  return `${basePrompt} ${customAdditions.trim()}`;
 }
 
 // Common negative prompts to avoid issues
 export const DEFAULT_NEGATIVE_PROMPT =
-  "blurry, low resolution, distorted, shaky camera, jerky motion, flickering, morphing, unstable geometry, warped textures, overexposed, underexposed, watermark, text overlay, extra limbs, floating objects"
+  "blurry, low resolution, distorted, shaky camera, jerky motion, flickering, morphing, unstable geometry, warped textures, overexposed, underexposed, watermark, text overlay, extra limbs, floating objects";
 
 /**
  * Prompt enhancement tips for real estate videos
@@ -145,4 +144,4 @@ export const PROMPT_TIPS = [
   "Use 'golden hour lighting' for exteriors to create a premium feel",
   "Avoid combining multiple camera movements (e.g., 'pan while zooming')",
   "Include 'professional real estate cinematography' for polished style",
-]
+];

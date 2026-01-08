@@ -1,21 +1,20 @@
 "use client";
 
-import * as React from "react";
-import Link from "next/link";
-import Image from "next/image";
 import {
-  IconPhoto,
-  IconClock,
-  IconCheck,
-  IconLoader2,
   IconAlertTriangle,
+  IconCheck,
+  IconClock,
+  IconLoader2,
+  IconPhoto,
   IconPhotoOff,
 } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import type * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import type { Project, ProjectStatus } from "@/lib/db/schema";
 import { getTemplateById } from "@/lib/style-templates";
+import { cn } from "@/lib/utils";
 
 interface ProjectCardProps {
   project: Project;
@@ -77,13 +76,13 @@ export function ProjectCard({ project, className, style }: ProjectCardProps) {
 
   return (
     <Link
-      href={`/dashboard/${project.id}`}
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-2xl bg-card ring-1 ring-foreground/5 transition-all duration-300",
-        "hover:ring-foreground/10 hover:shadow-lg hover:-translate-y-1",
+        "hover:-translate-y-1 hover:shadow-lg hover:ring-foreground/10",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-        className,
+        className
       )}
+      href={`/dashboard/${project.id}`}
       style={
         {
           ...style,
@@ -95,11 +94,11 @@ export function ProjectCard({ project, className, style }: ProjectCardProps) {
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         {project.thumbnailUrl ? (
           <Image
-            src={project.thumbnailUrl}
             alt={project.name}
-            fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
+            fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            src={project.thumbnailUrl}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -111,10 +110,10 @@ export function ProjectCard({ project, className, style }: ProjectCardProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
         {/* Status badge */}
-        <div className="absolute right-3 top-3">
+        <div className="absolute top-3 right-3">
           <Badge
-            variant={status.variant}
             className="gap-1 shadow-sm backdrop-blur-sm"
+            variant={status.variant}
           >
             {status.icon}
             {status.label}
@@ -123,7 +122,7 @@ export function ProjectCard({ project, className, style }: ProjectCardProps) {
 
         {/* Progress indicator for processing */}
         {project.status === "processing" && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/30">
+          <div className="absolute right-0 bottom-0 left-0 h-1 bg-black/30">
             <div
               className="h-full transition-all duration-300"
               style={{
@@ -145,15 +144,15 @@ export function ProjectCard({ project, className, style }: ProjectCardProps) {
 
       {/* Content */}
       <div className="flex flex-1 flex-col gap-1 p-4">
-        <h3 className="font-semibold leading-tight tracking-tight text-foreground line-clamp-1">
+        <h3 className="line-clamp-1 font-semibold text-foreground leading-tight tracking-tight">
           {project.name}
         </h3>
 
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm text-muted-foreground line-clamp-1">
+          <p className="line-clamp-1 text-muted-foreground text-sm">
             {template?.name || "Unknown Style"}
           </p>
-          <span className="shrink-0 text-xs text-muted-foreground/70">
+          <span className="shrink-0 text-muted-foreground/70 text-xs">
             {formatRelativeDate(project.createdAt)}
           </span>
         </div>

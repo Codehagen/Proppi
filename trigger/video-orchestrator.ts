@@ -1,18 +1,18 @@
-import { task, logger, metadata } from "@trigger.dev/sdk/v3";
+import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 import {
-  getVideoProjectById,
   getVideoClips,
+  getVideoProjectById,
   updateVideoProject,
   updateVideoProjectCounts,
 } from "@/lib/db/queries";
-import { generateVideoClipTask } from "./generate-video-clip";
-import { generateTransitionClipTask } from "./generate-transition-clip";
-import { compileVideoTask } from "./compile-video";
 import {
   calculateVideoCost,
   costToCents,
   VIDEO_DEFAULTS,
 } from "@/lib/video/video-constants";
+import { compileVideoTask } from "./compile-video";
+import { generateTransitionClipTask } from "./generate-transition-clip";
+import { generateVideoClipTask } from "./generate-video-clip";
 
 export interface GenerateVideoPayload {
   videoProjectId: string;
@@ -94,10 +94,11 @@ export const generateVideoTask = task({
             payload: {
               clipId: clip.id,
               tailImageUrl: clip.endImageUrl || clip.sourceImageUrl,
-              targetRoomLabel: clip.roomLabel || clip.roomType.replace(/-/g, " "),
-            }
+              targetRoomLabel:
+                clip.roomLabel || clip.roomType.replace(/-/g, " "),
+            },
           };
-        }),
+        })
       );
 
       // Check results
@@ -148,25 +149,31 @@ export const generateVideoTask = task({
         // Reload clips to get updated clip URLs
         const updatedClips = await getVideoClips(videoProjectId);
 
-        const transitionResults = await generateTransitionClipTask.batchTriggerAndWait(
-          clipsWithTransitions.map((clip, index) => {
-            const clipIndex = clips.findIndex(c => c.id === clip.id);
-            const nextClip = clips[clipIndex + 1];
-            
-            return {
-              payload: {
-                clipId: clip.id,
-                fromImageUrl: clip.endImageUrl || clip.sourceImageUrl,
-                toImageUrl: nextClip.sourceImageUrl,
-                videoProjectId,
-                workspaceId: videoProject.workspaceId,
-                aspectRatio: videoProject.aspectRatio as "16:9" | "9:16" | "1:1",
-              }
-            };
-          }),
-        );
+        const transitionResults =
+          await generateTransitionClipTask.batchTriggerAndWait(
+            clipsWithTransitions.map((clip, index) => {
+              const clipIndex = clips.findIndex((c) => c.id === clip.id);
+              const nextClip = clips[clipIndex + 1];
 
-        const successfulTransitions = transitionResults.runs.filter((r) => r.ok);
+              return {
+                payload: {
+                  clipId: clip.id,
+                  fromImageUrl: clip.endImageUrl || clip.sourceImageUrl,
+                  toImageUrl: nextClip.sourceImageUrl,
+                  videoProjectId,
+                  workspaceId: videoProject.workspaceId,
+                  aspectRatio: videoProject.aspectRatio as
+                    | "16:9"
+                    | "9:16"
+                    | "1:1",
+                },
+              };
+            })
+          );
+
+        const successfulTransitions = transitionResults.runs.filter(
+          (r) => r.ok
+        );
         const failedTransitions = transitionResults.runs.filter((r) => !r.ok);
 
         logger.info("Transition generation completed", {
@@ -265,7 +272,7 @@ export const generateVideoTask = task({
       try {
         await updateVideoProject(videoProjectId, {
           status: "failed",
-          errorMessage: errorMessage,
+          errorMessage,
         });
       } catch (dbError) {
         logger.error("Failed to update project status in database", {

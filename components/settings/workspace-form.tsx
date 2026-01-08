@@ -1,26 +1,25 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
-import { toast } from "sonner";
 import {
   IconBuilding,
-  IconHash,
-  IconMail,
-  IconUser,
   IconDeviceFloppy,
+  IconHash,
   IconLoader2,
+  IconMail,
   IconUpload,
+  IconUser,
 } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
+import { useActionState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Workspace } from "@/lib/db/schema";
 import {
   updateWorkspaceSettings,
   type WorkspaceActionResult,
 } from "@/lib/actions";
+import type { Workspace } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 
 interface WorkspaceFormProps {
   workspace: Workspace;
@@ -44,7 +43,7 @@ export function WorkspaceForm({ workspace }: WorkspaceFormProps) {
       const result = await updateWorkspaceSettings(formData);
       return result;
     },
-    null,
+    null
   );
 
   // Show toast when state changes (only once per state change)
@@ -60,10 +59,10 @@ export function WorkspaceForm({ workspace }: WorkspaceFormProps) {
   }, [state]);
 
   return (
-    <form ref={formRef} action={formAction} className="space-y-6">
+    <form action={formAction} className="space-y-6" ref={formRef}>
       {/* Logo upload */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Workspace Logo</Label>
+        <Label className="font-medium text-sm">Workspace Logo</Label>
         <div className="flex items-center gap-4">
           <div
             className="flex h-20 w-20 items-center justify-center rounded-xl bg-muted ring-1 ring-foreground/5"
@@ -81,11 +80,11 @@ export function WorkspaceForm({ workspace }: WorkspaceFormProps) {
             )}
           </div>
           <div className="space-y-1">
-            <Button type="button" variant="outline" size="sm" className="gap-2">
+            <Button className="gap-2" size="sm" type="button" variant="outline">
               <IconUpload className="h-4 w-4" />
               Upload Logo
             </Button>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               PNG, JPG up to 2MB. Recommended 200x200px.
             </p>
           </div>
@@ -96,73 +95,73 @@ export function WorkspaceForm({ workspace }: WorkspaceFormProps) {
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Workspace Name */}
         <div className="space-y-2">
-          <Label htmlFor="workspace-name" className="text-sm font-medium">
+          <Label className="font-medium text-sm" htmlFor="workspace-name">
             Workspace Name
           </Label>
           <div className="relative">
-            <IconBuilding className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <IconBuilding className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
+              className="pl-10"
+              defaultValue={workspace.name}
+              disabled={isPending}
               id="workspace-name"
               name="name"
-              defaultValue={workspace.name}
               placeholder="Your company name"
-              className="pl-10"
-              disabled={isPending}
             />
           </div>
         </div>
 
         {/* Organization Number */}
         <div className="space-y-2">
-          <Label htmlFor="org-number" className="text-sm font-medium">
+          <Label className="font-medium text-sm" htmlFor="org-number">
             Organization Number
           </Label>
           <div className="relative">
-            <IconHash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <IconHash className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
+              className="pl-10"
+              defaultValue={workspace.organizationNumber || ""}
+              disabled={isPending}
               id="org-number"
               name="organizationNumber"
-              defaultValue={workspace.organizationNumber || ""}
               placeholder="123456789"
-              className="pl-10"
-              disabled={isPending}
             />
           </div>
         </div>
 
         {/* Contact Email */}
         <div className="space-y-2">
-          <Label htmlFor="contact-email" className="text-sm font-medium">
+          <Label className="font-medium text-sm" htmlFor="contact-email">
             Contact Email
           </Label>
           <div className="relative">
-            <IconMail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <IconMail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
+              className="pl-10"
+              defaultValue={workspace.contactEmail || ""}
+              disabled={isPending}
               id="contact-email"
               name="contactEmail"
-              type="email"
-              defaultValue={workspace.contactEmail || ""}
               placeholder="contact@company.com"
-              className="pl-10"
-              disabled={isPending}
+              type="email"
             />
           </div>
         </div>
 
         {/* Contact Person */}
         <div className="space-y-2">
-          <Label htmlFor="contact-person" className="text-sm font-medium">
+          <Label className="font-medium text-sm" htmlFor="contact-person">
             Contact Person
           </Label>
           <div className="relative">
-            <IconUser className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <IconUser className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
+              className="pl-10"
+              defaultValue={workspace.contactPerson || ""}
+              disabled={isPending}
               id="contact-person"
               name="contactPerson"
-              defaultValue={workspace.contactPerson || ""}
               placeholder="Full name"
-              className="pl-10"
-              disabled={isPending}
             />
           </div>
         </div>
@@ -171,12 +170,12 @@ export function WorkspaceForm({ workspace }: WorkspaceFormProps) {
       {/* Save button */}
       <div className="flex items-center justify-end border-t pt-4">
         <Button
-          type="submit"
+          className={cn("gap-2 shadow-sm transition-all")}
           disabled={isPending}
-          className={cn("gap-2 transition-all shadow-sm")}
           style={{
             backgroundColor: "var(--accent-teal)",
           }}
+          type="submit"
         >
           {isPending ? (
             <>

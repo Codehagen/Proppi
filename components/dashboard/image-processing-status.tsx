@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
 import { useRealtimeRun } from "@trigger.dev/react-hooks";
 import { useRouter } from "next/navigation";
-import type { processImageTask } from "@/trigger/process-image";
+import { useCallback, useEffect } from "react";
 import type { inpaintImageTask } from "@/trigger/inpaint-image";
+import type { processImageTask } from "@/trigger/process-image";
 
 interface ProcessImageStatus {
   step: string;
@@ -44,12 +44,12 @@ export function ImageProcessingStatus({
   const status = run?.metadata?.status as ProcessImageStatus | undefined;
 
   if (error) {
-    return <span className="text-xs text-red-500">Error loading status</span>;
+    return <span className="text-red-500 text-xs">Error loading status</span>;
   }
 
   if (!run) {
     return (
-      <span className="text-xs text-muted-foreground animate-pulse">
+      <span className="animate-pulse text-muted-foreground text-xs">
         Connecting\u2026
       </span>
     );
@@ -57,7 +57,7 @@ export function ImageProcessingStatus({
 
   // Show different states based on run status
   if (run.status === "COMPLETED") {
-    return <span className="text-xs text-green-500">Complete</span>;
+    return <span className="text-green-500 text-xs">Complete</span>;
   }
 
   if (
@@ -65,13 +65,13 @@ export function ImageProcessingStatus({
     run.status === "CRASHED" ||
     run.status === "SYSTEM_FAILURE"
   ) {
-    return <span className="text-xs text-red-500">Failed</span>;
+    return <span className="text-red-500 text-xs">Failed</span>;
   }
 
   // Show the label from metadata, or a default based on run status
   const label = status?.label || getDefaultLabel(run.status);
 
-  return <span className="text-xs text-muted-foreground">{label}</span>;
+  return <span className="text-muted-foreground text-xs">{label}</span>;
 }
 
 function getDefaultLabel(status: string): string {
@@ -93,7 +93,7 @@ function getDefaultLabel(status: string): string {
 export function useProcessingRuns(
   runIds: string[],
   accessToken: string | null,
-  onComplete?: () => void,
+  onComplete?: () => void
 ) {
   const router = useRouter();
 
@@ -122,9 +122,9 @@ export function ImageCardStatus({
   accessToken?: string | null;
   fallbackLabel?: string;
 }) {
-  if (!runId || !accessToken) {
-    return <span className="text-xs text-white/90">{fallbackLabel}</span>;
+  if (!(runId && accessToken)) {
+    return <span className="text-white/90 text-xs">{fallbackLabel}</span>;
   }
 
-  return <ImageProcessingStatus runId={runId} accessToken={accessToken} />;
+  return <ImageProcessingStatus accessToken={accessToken} runId={runId} />;
 }

@@ -7,7 +7,7 @@ export default function AdminUserDetailLoading() {
       </div>
 
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-fade-in-up">
+      <div className="flex animate-fade-in-up flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <div className="skeleton h-14 w-14 rounded-2xl" />
           <div className="space-y-2">
@@ -27,8 +27,8 @@ export default function AdminUserDetailLoading() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
-            key={i}
             className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/5"
+            key={i}
           >
             <div className="skeleton h-9 w-9 rounded-lg" />
             <div className="space-y-1.5">
@@ -43,12 +43,12 @@ export default function AdminUserDetailLoading() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* User Info */}
         <div className="rounded-xl bg-card ring-1 ring-foreground/5">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-border border-b px-4 py-3">
             <div className="skeleton h-5 w-24" />
           </div>
-          <div className="p-4 space-y-4">
+          <div className="space-y-4 p-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-2">
+              <div className="flex items-center gap-2" key={i}>
                 <div className="skeleton h-4 w-4" />
                 <div className="skeleton h-4 w-20" />
                 <div className="skeleton h-4 w-32" />
@@ -59,7 +59,7 @@ export default function AdminUserDetailLoading() {
 
         {/* Workspace Card */}
         <div className="rounded-xl bg-card ring-1 ring-foreground/5">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-border border-b px-4 py-3">
             <div className="skeleton h-5 w-24" />
           </div>
           <div className="p-4">
@@ -81,12 +81,12 @@ export default function AdminUserDetailLoading() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Projects */}
         <div className="rounded-xl bg-card ring-1 ring-foreground/5">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-border border-b px-4 py-3">
             <div className="skeleton h-5 w-32" />
           </div>
-          <div className="p-4 space-y-3">
+          <div className="space-y-3 p-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="space-y-2 rounded-lg p-3">
+              <div className="space-y-2 rounded-lg p-3" key={i}>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1.5">
                     <div className="skeleton h-4 w-28" />
@@ -105,12 +105,12 @@ export default function AdminUserDetailLoading() {
 
         {/* Recent Videos */}
         <div className="rounded-xl bg-card ring-1 ring-foreground/5">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-border border-b px-4 py-3">
             <div className="skeleton h-5 w-28" />
           </div>
-          <div className="p-4 space-y-3">
+          <div className="space-y-3 p-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="space-y-2 rounded-lg p-3">
+              <div className="space-y-2 rounded-lg p-3" key={i}>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1.5">
                     <div className="skeleton h-4 w-28" />

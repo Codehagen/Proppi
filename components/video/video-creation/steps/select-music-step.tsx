@@ -1,25 +1,24 @@
 "use client";
 
-import * as React from "react";
 import {
+  IconAspectRatio,
+  IconCheck,
   IconMusic,
-  IconPlayerPlay,
   IconPlayerPause,
+  IconPlayerPlay,
+  IconSparkles,
   IconVolume,
   IconVolumeOff,
-  IconCheck,
-  IconAspectRatio,
-  IconSparkles,
 } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
-import { Slider } from "@/components/ui/slider";
+import * as React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import type { MusicTrack, VideoAspectRatio } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 import {
   MUSIC_CATEGORIES,
   VIDEO_ASPECT_RATIOS,
 } from "@/lib/video/video-constants";
-import type { MusicTrack, VideoAspectRatio } from "@/lib/db/schema";
 
 interface SelectMusicStepProps {
   selectedTrack: MusicTrack | null;
@@ -143,36 +142,44 @@ export function SelectMusicStep({
   return (
     <div className="space-y-8">
       {/* Native Audio Toggle */}
-      <div className="rounded-xl border-2 border-(--accent-teal)/30 bg-(--accent-teal)/5 p-6 transition-all">
+      <div className="rounded-xl border-(--accent-teal)/30 border-2 bg-(--accent-teal)/5 p-6 transition-all">
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-(--accent-teal) text-white shadow-lg shadow-(--accent-teal)/20">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-(--accent-teal) text-white shadow-(--accent-teal)/20 shadow-lg">
             <IconSparkles className="h-6 w-6" />
           </div>
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold">AI Native Audio Generation</h3>
-                <p className="text-sm text-muted-foreground">
-                  Our AI can generate cinematic audio and speech directly with the video.
+                <h3 className="font-semibold text-lg">
+                  AI Native Audio Generation
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  Our AI can generate cinematic audio and speech directly with
+                  the video.
                 </p>
               </div>
-              <Checkbox 
-                id="native-audio" 
-                checked={generateNativeAudio} 
-                onCheckedChange={(checked) => onGenerateNativeAudioChange(!!checked)}
+              <Checkbox
+                checked={generateNativeAudio}
                 className="h-6 w-6 border-2"
+                id="native-audio"
+                onCheckedChange={(checked) =>
+                  onGenerateNativeAudioChange(!!checked)
+                }
               />
             </div>
-            
+
             {generateNativeAudio && (
               <div className="mt-4 animate-fade-in space-y-3">
-                <div className="flex items-center gap-2 text-sm text-(--accent-teal) font-medium">
+                <div className="flex items-center gap-2 font-medium text-(--accent-teal) text-sm">
                   <IconCheck className="h-4 w-4" />
                   Premium Production Quality ($0.14/sec)
                 </div>
-                <div className="text-xs text-muted-foreground leading-relaxed">
+                <div className="text-muted-foreground text-xs leading-relaxed">
                   <p>• Synchronized environmental sounds and atmosphere</p>
-                  <p>• Native speech synthesis (lowercase for speech, UPPERCASE for proper nouns)</p>
+                  <p>
+                    • Native speech synthesis (lowercase for speech, UPPERCASE
+                    for proper nouns)
+                  </p>
                   <p>• Professional audio-visual coherence</p>
                 </div>
               </div>
@@ -183,22 +190,22 @@ export function SelectMusicStep({
 
       {/* Aspect Ratio Selection */}
       <div>
-        <h3 className="mb-3 flex items-center gap-2 text-sm font-medium">
+        <h3 className="mb-3 flex items-center gap-2 font-medium text-sm">
           <IconAspectRatio className="h-4 w-4" />
           Video Aspect Ratio
         </h3>
         <div className="grid grid-cols-3 gap-3">
           {VIDEO_ASPECT_RATIOS.map((ratio) => (
             <button
-              key={ratio.id}
-              type="button"
-              onClick={() => onAspectRatioChange(ratio.id as VideoAspectRatio)}
               className={cn(
                 "flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all duration-200",
                 aspectRatio === ratio.id
                   ? "border-(--accent-teal) bg-(--accent-teal)/5"
-                  : "border-transparent bg-muted/50 hover:bg-muted",
+                  : "border-transparent bg-muted/50 hover:bg-muted"
               )}
+              key={ratio.id}
+              onClick={() => onAspectRatioChange(ratio.id as VideoAspectRatio)}
+              type="button"
             >
               {/* Aspect Ratio Visual */}
               <div
@@ -206,7 +213,7 @@ export function SelectMusicStep({
                   "rounded border-2 transition-colors",
                   aspectRatio === ratio.id
                     ? "border-(--accent-teal)"
-                    : "border-muted-foreground/30",
+                    : "border-muted-foreground/30"
                 )}
                 style={{
                   width:
@@ -216,8 +223,8 @@ export function SelectMusicStep({
                 }}
               />
               <div className="text-center">
-                <div className="text-sm font-medium">{ratio.label}</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="font-medium text-sm">{ratio.label}</div>
+                <div className="text-muted-foreground text-xs">
                   {ratio.description}
                 </div>
               </div>
@@ -231,37 +238,37 @@ export function SelectMusicStep({
 
       {/* Music Selection */}
       <div>
-        <h3 className="mb-3 flex items-center gap-2 text-sm font-medium">
+        <h3 className="mb-3 flex items-center gap-2 font-medium text-sm">
           <IconMusic className="h-4 w-4" />
           Background Music
-          <span className="text-muted-foreground font-normal">(optional)</span>
+          <span className="font-normal text-muted-foreground">(optional)</span>
         </h3>
 
         {/* Category Tabs */}
         <div className="mb-4 flex flex-wrap gap-2">
           <button
-            type="button"
-            onClick={() => setActiveCategory("all")}
             className={cn(
-              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              "rounded-full px-4 py-1.5 font-medium text-sm transition-colors",
               activeCategory === "all"
                 ? "bg-(--accent-teal) text-white"
-                : "bg-muted text-muted-foreground hover:text-foreground",
+                : "bg-muted text-muted-foreground hover:text-foreground"
             )}
+            onClick={() => setActiveCategory("all")}
+            type="button"
           >
             All
           </button>
           {MUSIC_CATEGORIES.map((cat) => (
             <button
-              key={cat.id}
-              type="button"
-              onClick={() => setActiveCategory(cat.id)}
               className={cn(
-                "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+                "rounded-full px-4 py-1.5 font-medium text-sm transition-colors",
                 activeCategory === cat.id
                   ? "bg-(--accent-teal) text-white"
-                  : "bg-muted text-muted-foreground hover:text-foreground",
+                  : "bg-muted text-muted-foreground hover:text-foreground"
               )}
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              type="button"
             >
               {cat.label}
             </button>
@@ -270,21 +277,21 @@ export function SelectMusicStep({
 
         {/* No Music Option */}
         <button
-          type="button"
-          onClick={() => onSelectTrack(null)}
           className={cn(
             "mb-4 flex w-full items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200",
             selectedTrack === null
               ? "border-(--accent-teal) bg-(--accent-teal)/5"
-              : "border-transparent bg-muted/50 hover:bg-muted",
+              : "border-transparent bg-muted/50 hover:bg-muted"
           )}
+          onClick={() => onSelectTrack(null)}
+          type="button"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
             <IconVolumeOff className="h-5 w-5 text-muted-foreground" />
           </div>
           <div className="flex-1 text-left">
             <div className="font-medium">No Music</div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-muted-foreground text-sm">
               Video will have no background audio
             </div>
           </div>
@@ -297,9 +304,13 @@ export function SelectMusicStep({
         <div className="space-y-2">
           {filteredTracks.map((track) => (
             <div
+              className={cn(
+                "flex w-full cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200",
+                selectedTrack?.id === track.id
+                  ? "border-(--accent-teal) bg-(--accent-teal)/5"
+                  : "border-transparent bg-muted/50 hover:bg-muted"
+              )}
               key={track.id}
-              role="button"
-              tabIndex={0}
               onClick={() => onSelectTrack(track)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
@@ -307,40 +318,36 @@ export function SelectMusicStep({
                   onSelectTrack(track);
                 }
               }}
-              className={cn(
-                "flex w-full cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200",
-                selectedTrack?.id === track.id
-                  ? "border-(--accent-teal) bg-(--accent-teal)/5"
-                  : "border-transparent bg-muted/50 hover:bg-muted",
-              )}
+              role="button"
+              tabIndex={0}
             >
               {/* Play Button */}
               <button
-                type="button"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-(--accent-teal)/10 text-(--accent-teal) hover:bg-(--accent-teal)/20"
                 onClick={(e) => {
                   e.stopPropagation();
                   setPlayingId(playingId === track.id ? null : track.id);
                 }}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-(--accent-teal)/10 text-(--accent-teal) hover:bg-(--accent-teal)/20"
+                type="button"
               >
                 {playingId === track.id ? (
                   <IconPlayerPause className="h-5 w-5" />
                 ) : (
-                  <IconPlayerPlay className="h-5 w-5 ml-0.5" />
+                  <IconPlayerPlay className="ml-0.5 h-5 w-5" />
                 )}
               </button>
 
               {/* Track Info */}
               <div className="flex-1 text-left">
                 <div className="font-medium">{track.name}</div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-muted-foreground text-sm">
                   {track.artist} • {formatDuration(track.durationSeconds)} •{" "}
                   {track.bpm} BPM
                 </div>
               </div>
 
               {/* Category Badge */}
-              <div className="rounded-full bg-muted px-3 py-1 text-xs font-medium capitalize">
+              <div className="rounded-full bg-muted px-3 py-1 font-medium text-xs capitalize">
                 {track.category}
               </div>
 
@@ -359,19 +366,19 @@ export function SelectMusicStep({
             <IconVolume className="h-5 w-5 text-muted-foreground" />
             <div className="flex-1">
               <Slider
-                value={[volume]}
-                onValueChange={([v]) => onVolumeChange(v)}
-                min={0}
-                max={100}
-                step={5}
                 className="w-full"
+                max={100}
+                min={0}
+                onValueChange={([v]) => onVolumeChange(v)}
+                step={5}
+                value={[volume]}
               />
             </div>
-            <span className="w-12 text-right text-sm font-medium">
+            <span className="w-12 text-right font-medium text-sm">
               {volume}%
             </span>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-2 text-muted-foreground text-xs">
             Adjust the background music volume relative to the video
           </p>
         </div>

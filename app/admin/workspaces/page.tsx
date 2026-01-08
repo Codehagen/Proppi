@@ -1,7 +1,7 @@
 import { WorkspacesDataTable } from "@/components/admin/tables/workspaces/data-table";
 import { WorkspacesPageHeader } from "@/components/admin/workspaces-page-header";
 import { getAdminWorkspaces } from "@/lib/db/queries";
-import type { WorkspaceStatus, WorkspacePlan } from "@/lib/db/schema";
+import type { WorkspacePlan, WorkspaceStatus } from "@/lib/db/schema";
 import type { SortableWorkspaceColumn, SortDirection } from "@/lib/types/admin";
 
 interface SearchParams {
@@ -48,7 +48,7 @@ export default async function AdminWorkspacesPage({
       </div>
 
       {/* Data Table */}
-      <div className="animate-fade-in-up stagger-1">
+      <div className="stagger-1 animate-fade-in-up">
         <WorkspacesDataTable
           initialData={initialData.data}
           initialMeta={initialData.meta}

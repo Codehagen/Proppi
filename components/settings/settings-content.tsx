@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import {
-  IconSettings,
   IconBuilding,
-  IconUsers,
+  IconSettings,
   IconUserPlus,
+  IconUsers,
 } from "@tabler/icons-react";
-
-import { Button } from "@/components/ui/button";
-import { WorkspaceForm } from "@/components/settings/workspace-form";
-import { TeamMembersTable } from "@/components/settings/team-members-table";
+import { useState } from "react";
 import { InviteMemberDialog } from "@/components/settings/invite-member-dialog";
+import { TeamMembersTable } from "@/components/settings/team-members-table";
+import { WorkspaceForm } from "@/components/settings/workspace-form";
+import { Button } from "@/components/ui/button";
 import type { Workspace } from "@/lib/db/schema";
 import type { TeamMember } from "@/lib/mock/workspace";
 
@@ -43,8 +42,8 @@ export function SettingsContent({
             <IconSettings className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="font-bold text-2xl tracking-tight">Settings</h1>
+            <p className="text-muted-foreground text-sm">
               Manage your workspace and team
             </p>
           </div>
@@ -52,7 +51,7 @@ export function SettingsContent({
       </div>
 
       {/* Workspace Section */}
-      <section className="animate-fade-in-up stagger-1 space-y-4">
+      <section className="stagger-1 animate-fade-in-up space-y-4">
         <div className="flex items-center gap-2">
           <div
             className="flex h-8 w-8 items-center justify-center rounded-lg"
@@ -67,8 +66,8 @@ export function SettingsContent({
             />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Workspace</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="font-semibold text-lg">Workspace</h2>
+            <p className="text-muted-foreground text-sm">
               Your organization details and branding
             </p>
           </div>
@@ -80,7 +79,7 @@ export function SettingsContent({
       </section>
 
       {/* Team Section */}
-      <section className="animate-fade-in-up stagger-2 space-y-4">
+      <section className="stagger-2 animate-fade-in-up space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div
@@ -96,8 +95,8 @@ export function SettingsContent({
               />
             </div>
             <div>
-              <h2 className="text-lg font-semibold">Team Members</h2>
-              <p className="text-sm text-muted-foreground">
+              <h2 className="font-semibold text-lg">Team Members</h2>
+              <p className="text-muted-foreground text-sm">
                 {activeMembers} active member{activeMembers !== 1 ? "s" : ""}
                 {pendingInvites > 0 && (
                   <span className="text-amber-600 dark:text-amber-400">
@@ -111,8 +110,8 @@ export function SettingsContent({
           </div>
 
           <Button
+            className="gap-2 shadow-sm transition-all duration-200 hover:opacity-90 hover:shadow-md"
             onClick={() => setInviteDialogOpen(true)}
-            className="gap-2 shadow-sm hover:opacity-90 hover:shadow-md transition-all duration-200"
             style={{ backgroundColor: "var(--accent-teal)" }}
           >
             <IconUserPlus className="h-4 w-4" />
@@ -121,14 +120,14 @@ export function SettingsContent({
         </div>
 
         <div className="rounded-2xl border border-foreground/5 bg-card shadow-sm">
-          <TeamMembersTable members={members} currentUserId={currentUserId} />
+          <TeamMembersTable currentUserId={currentUserId} members={members} />
         </div>
       </section>
 
       {/* Invite Dialog */}
       <InviteMemberDialog
-        open={inviteDialogOpen}
         onOpenChange={setInviteDialogOpen}
+        open={inviteDialogOpen}
       />
     </div>
   );

@@ -1,33 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { format } from "date-fns";
 import {
-  IconPhoto,
-  IconFolder,
-  IconMovie,
-  IconCurrencyDollar,
-  IconMail,
   IconBuilding,
   IconCalendar,
-  IconUserCircle,
-  IconLoader2,
-  IconShieldCheck,
+  IconCheck,
+  IconCurrencyDollar,
   IconEdit,
   IconExternalLink,
-  IconCheck,
+  IconFolder,
+  IconLoader2,
+  IconMail,
+  IconMovie,
+  IconPhoto,
+  IconShieldCheck,
+  IconUserCircle,
   IconX,
 } from "@tabler/icons-react";
-
+import { format } from "date-fns";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { EditUserDialog } from "@/components/admin/edit-user-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { EditUserDialog } from "@/components/admin/edit-user-dialog";
-import type { AdminUserDetail } from "@/lib/types/admin";
-import type { WorkspaceStatus, WorkspacePlan } from "@/lib/db/schema";
 import { useImpersonation } from "@/hooks/use-impersonation";
-import { useRouter } from "next/navigation";
+import type { WorkspacePlan, WorkspaceStatus } from "@/lib/db/schema";
+import type { AdminUserDetail } from "@/lib/types/admin";
 import { cn } from "@/lib/utils";
 
 interface UserDetailContentProps {
@@ -51,7 +50,10 @@ const statusLabelMap: Record<string, string> = {
 };
 
 // Role badge variants
-const roleVariantMap: Record<string, "role-owner" | "role-admin" | "role-member"> = {
+const roleVariantMap: Record<
+  string,
+  "role-owner" | "role-admin" | "role-member"
+> = {
   owner: "role-owner",
   admin: "role-admin",
   member: "role-member",
@@ -109,7 +111,7 @@ function StatItem({
   return (
     <div
       className={`stats-card flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/5 transition-all duration-500 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
       }`}
     >
       <div
@@ -121,18 +123,18 @@ function StatItem({
         <div style={{ color: accentColor }}>{icon}</div>
       </div>
       <div className="min-w-0">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
           {label}
         </p>
         <div className="flex items-baseline gap-1.5">
           <p
-            className="font-mono text-lg font-semibold tabular-nums"
+            className="font-mono font-semibold text-lg tabular-nums"
             style={{ color: accentColor }}
           >
             {value}
           </p>
           {subValue && (
-            <span className="text-xs text-muted-foreground">{subValue}</span>
+            <span className="text-muted-foreground text-xs">{subValue}</span>
           )}
         </div>
       </div>
@@ -153,8 +155,13 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={cn("rounded-xl bg-card ring-1 ring-foreground/5 animate-fade-in-up", className)}>
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+    <div
+      className={cn(
+        "animate-fade-in-up rounded-xl bg-card ring-1 ring-foreground/5",
+        className
+      )}
+    >
+      <div className="flex items-center justify-between border-border border-b px-4 py-3">
         <h3 className="font-semibold">{title}</h3>
         {badge}
       </div>
@@ -208,9 +215,7 @@ function ProgressBar({
   );
 }
 
-export function UserDetailContent({
-  user: data,
-}: UserDetailContentProps) {
+export function UserDetailContent({ user: data }: UserDetailContentProps) {
   const router = useRouter();
   const { impersonateUser, isPending } = useImpersonation();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -227,15 +232,16 @@ export function UserDetailContent({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-fade-in-up">
+      <div className="flex animate-fade-in-up flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           {/* User avatar */}
           <Avatar className="h-14 w-14">
-            {user.image && <AvatarImage src={user.image} alt={user.name} />}
+            {user.image && <AvatarImage alt={user.name} src={user.image} />}
             <AvatarFallback
-              className="text-lg font-bold"
+              className="font-bold text-lg"
               style={{
-                backgroundColor: "color-mix(in oklch, var(--accent-teal) 15%, transparent)",
+                backgroundColor:
+                  "color-mix(in oklch, var(--accent-teal) 15%, transparent)",
                 color: "var(--accent-teal)",
               }}
             >
@@ -243,8 +249,8 @@ export function UserDetailContent({
             </AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="text-2xl font-bold">{user.name}</h1>
-            <p className="text-sm text-muted-foreground">{user.email}</p>
+            <h1 className="font-bold text-2xl">{user.name}</h1>
+            <p className="text-muted-foreground text-sm">{user.email}</p>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -255,25 +261,25 @@ export function UserDetailContent({
             {roleLabelMap[user.role]}
           </Badge>
           {user.isSystemAdmin && (
-            <Badge variant="default" className="gap-1">
+            <Badge className="gap-1" variant="default">
               <IconShieldCheck className="h-3 w-3" />
               System Admin
             </Badge>
           )}
           <Button
-            variant="outline"
-            size="sm"
             onClick={() => setEditDialogOpen(true)}
+            size="sm"
+            variant="outline"
           >
             <IconEdit className="mr-2 h-4 w-4" />
             Edit
           </Button>
           {user.workspaceId && (
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => impersonateUser(user.id)}
               disabled={isPending}
+              onClick={() => impersonateUser(user.id)}
+              size="sm"
+              variant="outline"
             >
               {isPending ? (
                 <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -289,39 +295,39 @@ export function UserDetailContent({
       {/* Stats Bar */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatItem
+          accentColor="var(--accent-violet)"
+          delay={0}
           icon={<IconPhoto className="h-4 w-4" />}
           label="Images"
           value={stats.imagesGenerated.toLocaleString()}
-          accentColor="var(--accent-violet)"
-          delay={0}
         />
         <StatItem
+          accentColor="var(--accent-teal)"
+          delay={50}
           icon={<IconFolder className="h-4 w-4" />}
           label="Projects"
           value={stats.projectsCreated}
-          accentColor="var(--accent-teal)"
-          delay={50}
         />
         <StatItem
+          accentColor="var(--accent-green)"
+          delay={100}
           icon={<IconMovie className="h-4 w-4" />}
           label="Videos"
           value={stats.videosCreated}
-          accentColor="var(--accent-green)"
-          delay={100}
         />
         <StatItem
+          accentColor="var(--accent-amber)"
+          delay={150}
           icon={<IconCurrencyDollar className="h-4 w-4" />}
           label="Total Spend"
           value={`$${stats.totalSpend.toFixed(2)}`}
-          accentColor="var(--accent-amber)"
-          delay={150}
         />
       </div>
 
       {/* User Info + Workspace Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* User Info */}
-        <Section title="User Info" className="stagger-1">
+        <Section className="stagger-1" title="User Info">
           <div className="space-y-4">
             {/* Info Rows */}
             <div className="grid gap-3">
@@ -367,25 +373,26 @@ export function UserDetailContent({
 
             {/* User ID */}
             <div className="rounded-lg bg-muted/50 p-3">
-              <p className="text-xs text-muted-foreground mb-1">User ID</p>
-              <p className="font-mono text-sm break-all">{user.id}</p>
+              <p className="mb-1 text-muted-foreground text-xs">User ID</p>
+              <p className="break-all font-mono text-sm">{user.id}</p>
             </div>
           </div>
         </Section>
 
         {/* Workspace Card */}
-        <Section title="Workspace" className="stagger-2">
+        <Section className="stagger-2" title="Workspace">
           {workspace ? (
             <Link
-              href={`/admin/workspaces/${workspace.id}`}
               className="block rounded-lg bg-muted/50 p-3 transition-colors hover:bg-muted"
+              href={`/admin/workspaces/${workspace.id}`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold text-sm"
                     style={{
-                      backgroundColor: "color-mix(in oklch, var(--accent-violet) 15%, transparent)",
+                      backgroundColor:
+                        "color-mix(in oklch, var(--accent-violet) 15%, transparent)",
                       color: "var(--accent-violet)",
                     }}
                   >
@@ -393,7 +400,7 @@ export function UserDetailContent({
                   </div>
                   <div>
                     <p className="font-medium">{workspace.name}</p>
-                    <p className="text-sm text-muted-foreground font-mono">
+                    <p className="font-mono text-muted-foreground text-sm">
                       /{workspace.slug}
                     </p>
                   </div>
@@ -414,7 +421,7 @@ export function UserDetailContent({
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
                 <IconBuilding className="h-6 w-6 text-muted-foreground" />
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 No workspace assigned
               </p>
             </div>
@@ -425,18 +432,18 @@ export function UserDetailContent({
       {/* Recent Projects + Recent Videos Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Projects */}
-        <Section title="Recent Projects" className="stagger-3">
+        <Section className="stagger-3" title="Recent Projects">
           <div className="space-y-3">
             {recentProjects.map((project) => (
               <Link
+                className="block space-y-2 rounded-lg p-3 transition-colors hover:bg-muted/50"
                 href={`/dashboard/${project.id}`}
                 key={project.id}
-                className="block space-y-2 rounded-lg p-3 transition-colors hover:bg-muted/50"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium">{project.name}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="font-medium text-sm">{project.name}</p>
+                    <p className="text-muted-foreground text-xs">
                       {format(project.createdAt, "MMM d, yyyy")}
                     </p>
                   </div>
@@ -454,22 +461,22 @@ export function UserDetailContent({
                 </div>
                 <div className="flex items-center gap-2">
                   <ProgressBar
-                    current={project.completedCount}
-                    total={project.imageCount}
                     color={
                       project.status === "completed"
                         ? "var(--accent-green)"
                         : "var(--accent-teal)"
                     }
+                    current={project.completedCount}
+                    total={project.imageCount}
                   />
-                  <span className="shrink-0 text-xs font-mono text-muted-foreground">
+                  <span className="shrink-0 font-mono text-muted-foreground text-xs">
                     {project.completedCount}/{project.imageCount}
                   </span>
                 </div>
               </Link>
             ))}
             {recentProjects.length === 0 && (
-              <p className="py-4 text-center text-sm text-muted-foreground">
+              <p className="py-4 text-center text-muted-foreground text-sm">
                 No projects yet
               </p>
             )}
@@ -477,18 +484,18 @@ export function UserDetailContent({
         </Section>
 
         {/* Recent Videos */}
-        <Section title="Recent Videos" className="stagger-4">
+        <Section className="stagger-4" title="Recent Videos">
           <div className="space-y-3">
             {recentVideos.map((video) => (
               <Link
+                className="block space-y-2 rounded-lg p-3 transition-colors hover:bg-muted/50"
                 href={`/video/${video.id}`}
                 key={video.id}
-                className="block space-y-2 rounded-lg p-3 transition-colors hover:bg-muted/50"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium">{video.name}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="font-medium text-sm">{video.name}</p>
+                    <p className="text-muted-foreground text-xs">
                       {format(video.createdAt, "MMM d, yyyy")}
                     </p>
                   </div>
@@ -509,8 +516,6 @@ export function UserDetailContent({
                 </div>
                 <div className="flex items-center gap-2">
                   <ProgressBar
-                    current={video.completedClipCount}
-                    total={video.clipCount}
                     color={
                       video.status === "completed"
                         ? "var(--accent-green)"
@@ -518,15 +523,17 @@ export function UserDetailContent({
                           ? "var(--accent-red)"
                           : "var(--accent-teal)"
                     }
+                    current={video.completedClipCount}
+                    total={video.clipCount}
                   />
-                  <span className="shrink-0 text-xs font-mono text-muted-foreground">
+                  <span className="shrink-0 font-mono text-muted-foreground text-xs">
                     {video.completedClipCount}/{video.clipCount}
                   </span>
                 </div>
               </Link>
             ))}
             {recentVideos.length === 0 && (
-              <p className="py-4 text-center text-sm text-muted-foreground">
+              <p className="py-4 text-center text-muted-foreground text-sm">
                 No videos yet
               </p>
             )}
@@ -536,10 +543,10 @@ export function UserDetailContent({
 
       {/* Edit User Dialog */}
       <EditUserDialog
-        open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
-        user={user}
         onSuccess={() => router.refresh()}
+        open={editDialogOpen}
+        user={user}
       />
     </div>
   );

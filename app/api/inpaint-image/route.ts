@@ -1,23 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 import {
-  fal,
+  createImageGeneration,
+  deleteVersionsAfter,
+  getImageGenerationById,
+  updateProjectCounts,
+} from "@/lib/db/queries";
+import {
   FLUX_FILL_PRO,
-  NANO_BANANA_PRO_EDIT,
   type FluxFillOutput,
+  fal,
+  NANO_BANANA_PRO_EDIT,
   type NanoBananaProOutput,
 } from "@/lib/fal";
 import {
-  getImageGenerationById,
-  createImageGeneration,
-  updateProjectCounts,
-  deleteVersionsAfter,
-} from "@/lib/db/queries";
-import {
-  uploadImage,
-  getImagePath,
   getExtensionFromContentType,
+  getImagePath,
+  uploadImage,
 } from "@/lib/supabase";
-import sharp from "sharp";
 
 type EditMode = "remove" | "add";
 
@@ -37,10 +37,10 @@ export async function POST(request: NextRequest) {
       replaceNewerVersions?: boolean;
     };
 
-    if (!imageId || !prompt) {
+    if (!(imageId && prompt)) {
       return NextResponse.json(
         { error: "Missing required fields: imageId, prompt" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     if (mode === "remove" && !maskDataUrl) {
       return NextResponse.json(
         { error: "Mask is required for remove mode" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       const imageResponse = await fetch(sourceImageUrl);
       if (!imageResponse.ok) {
         throw new Error(
-          `Failed to fetch source image: ${imageResponse.status}`,
+          `Failed to fetch source image: ${imageResponse.status}`
         );
       }
       const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
         type: imageResponse.headers.get("content-type") || "image/jpeg",
       });
       const falImageUrl = await fal.storage.upload(
-        new File([imageBlob], "input.jpg", { type: imageBlob.type }),
+        new File([imageBlob], "input.jpg", { type: imageBlob.type })
       );
 
       console.log("Uploaded image to Fal.ai storage:", falImageUrl);
@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
         // Upload resized mask to Fal.ai storage
         const maskBlob = new Blob([resizedMaskBuffer], { type: "image/png" });
         const falMaskUrl = await fal.storage.upload(
-          new File([maskBlob], "mask.png", { type: "image/png" }),
+          new File([maskBlob], "mask.png", { type: "image/png" })
         );
 
         console.log("Uploaded mask to Fal.ai storage:", falMaskUrl);
@@ -186,12 +186,12 @@ export async function POST(request: NextRequest) {
         image.workspaceId,
         image.projectId,
         `${newImageId}.${extension}`,
-        "result",
+        "result"
       );
       const storedResultUrl = await uploadImage(
         new Uint8Array(resultImageBuffer),
         resultPath,
-        contentType,
+        contentType
       );
 
       // Calculate version info
@@ -203,11 +203,11 @@ export async function POST(request: NextRequest) {
       if (replaceNewerVersions) {
         const deletedCount = await deleteVersionsAfter(
           rootImageId,
-          currentVersion,
+          currentVersion
         );
         if (deletedCount > 0) {
           console.log(
-            `Deleted ${deletedCount} newer version(s) before creating new edit`,
+            `Deleted ${deletedCount} newer version(s) before creating new edit`
           );
         }
       }
@@ -221,7 +221,7 @@ export async function POST(request: NextRequest) {
         projectId: image.projectId,
         originalImageUrl: image.originalImageUrl, // Keep the original source
         resultImageUrl: storedResultUrl,
-        prompt: prompt,
+        prompt,
         version: newVersion,
         parentId: rootImageId, // Link to the root/original image
         status: "completed",
@@ -254,7 +254,7 @@ export async function POST(request: NextRequest) {
       ) {
         console.error(
           "Fal.ai error body:",
-          JSON.stringify((processingError as { body: unknown }).body, null, 2),
+          JSON.stringify((processingError as { body: unknown }).body, null, 2)
         );
       }
 
@@ -266,14 +266,14 @@ export async function POST(request: NextRequest) {
               ? processingError.message
               : "Unknown error",
         },
-        { status: 500 },
+        { status: 500 }
       );
     }
   } catch (error) {
     console.error("API error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

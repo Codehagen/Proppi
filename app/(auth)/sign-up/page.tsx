@@ -1,14 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { toast } from "sonner";
 import { IconLoader } from "@tabler/icons-react";
-import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -17,6 +14,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function SignUpPage() {
           toast.error(ctx.error.message || "Failed to create account");
           setIsLoading(false);
         },
-      },
+      }
     );
   };
 
@@ -74,44 +74,44 @@ export default function SignUpPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input
-              id="name"
-              type="text"
-              placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={isLoading}
               autoComplete="name"
+              disabled={isLoading}
+              id="name"
+              onChange={(e) => setName(e.target.value)}
+              placeholder="John Doe"
+              type="text"
+              value={name}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="john@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
               autoComplete="email"
+              disabled={isLoading}
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="john@example.com"
+              type="email"
+              value={email}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
-              id="password"
-              type="password"
-              placeholder="At least 8 characters"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
               autoComplete="new-password"
+              disabled={isLoading}
+              id="password"
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="At least 8 characters"
+              type="password"
+              value={password}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button className="w-full" disabled={isLoading} type="submit">
             {isLoading ? (
               <>
                 <IconLoader className="mr-2 size-4 animate-spin" />
@@ -124,11 +124,11 @@ export default function SignUpPage() {
         </form>
       </CardContent>
       <CardFooter className="justify-center">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Already have an account?{" "}
           <Link
-            href="/sign-in"
             className="text-foreground underline underline-offset-4 hover:text-foreground/80"
+            href="/sign-in"
           >
             Sign in
           </Link>

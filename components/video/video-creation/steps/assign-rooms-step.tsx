@@ -1,25 +1,24 @@
 "use client";
 
-import * as React from "react";
-import Image from "next/image";
 import {
+  IconChevronDown,
   IconGripVertical,
   IconWand,
-  IconChevronDown,
 } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
+import Image from "next/image";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { VIDEO_ROOM_TYPES } from "@/lib/video/room-sequence";
 import type { VideoImageItem } from "@/hooks/use-video-creation";
 import type { VideoRoomType } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
+import { VIDEO_ROOM_TYPES } from "@/lib/video/room-sequence";
 
 interface AssignRoomsStepProps {
   images: VideoImageItem[];
   onUpdateImage: (
     id: string,
-    updates: Partial<Omit<VideoImageItem, "id" | "url">>,
+    updates: Partial<Omit<VideoImageItem, "id" | "url">>
   ) => void;
   onReorderImages: (fromIndex: number, toIndex: number) => void;
   onAutoArrange: () => void;
@@ -61,15 +60,15 @@ export function AssignRoomsStep({
     <div className="space-y-6">
       {/* Actions Bar */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-muted-foreground text-sm">
           <span className="font-medium text-foreground">{images.length}</span>{" "}
           clips in sequence
         </div>
         <Button
-          variant="outline"
-          size="sm"
-          onClick={onAutoArrange}
           className="gap-2"
+          onClick={onAutoArrange}
+          size="sm"
+          variant="outline"
         >
           <IconWand className="h-4 w-4" />
           Auto-arrange by room type
@@ -80,19 +79,19 @@ export function AssignRoomsStep({
       <div className="space-y-3">
         {images.map((image, index) => (
           <div
-            key={image.id}
-            draggable
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDragEnd={handleDragEnd}
             className={cn(
               "group flex items-center gap-4 rounded-xl border bg-card p-3 transition-all duration-200",
               "hover:border-(--accent-teal)/30 hover:shadow-md",
-              draggedIndex === index && "opacity-50 scale-[0.98]",
+              draggedIndex === index && "scale-[0.98] opacity-50",
               dragOverIndex === index &&
                 "border-(--accent-teal) bg-(--accent-teal)/5",
-              "animate-fade-in-up",
+              "animate-fade-in-up"
             )}
+            draggable
+            key={image.id}
+            onDragEnd={handleDragEnd}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDragStart={() => handleDragStart(index)}
             style={{ animationDelay: `${index * 30}ms` }}
           >
             {/* Drag Handle */}
@@ -101,18 +100,18 @@ export function AssignRoomsStep({
             </div>
 
             {/* Sequence Number */}
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-bold">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted font-bold text-sm">
               {index + 1}
             </div>
 
             {/* Image Thumbnail */}
             <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-lg bg-muted">
               <Image
-                src={image.url}
                 alt={`Clip ${index + 1}`}
-                fill
                 className="object-cover"
+                fill
                 sizes="96px"
+                src={image.url}
               />
             </div>
 
@@ -120,16 +119,16 @@ export function AssignRoomsStep({
             <div className="flex flex-1 items-center gap-3">
               <div className="relative min-w-[180px]">
                 <select
-                  value={image.roomType}
+                  className={cn(
+                    "w-full appearance-none rounded-lg border bg-background px-3 py-2 pr-10 text-sm",
+                    "focus:border-(--accent-teal) focus:outline-none focus:ring-(--accent-teal)/20 focus:ring-2"
+                  )}
                   onChange={(e) =>
                     onUpdateImage(image.id, {
                       roomType: e.target.value as VideoRoomType,
                     })
                   }
-                  className={cn(
-                    "w-full appearance-none rounded-lg border bg-background px-3 py-2 pr-10 text-sm",
-                    "focus:border-(--accent-teal) focus:outline-none focus:ring-2 focus:ring-(--accent-teal)/20",
-                  )}
+                  value={image.roomType}
                 >
                   {VIDEO_ROOM_TYPES.map((room) => (
                     <option key={room.id} value={room.id}>
@@ -137,22 +136,22 @@ export function AssignRoomsStep({
                     </option>
                   ))}
                 </select>
-                <IconChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <IconChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               </div>
 
               {/* Custom Label */}
               <Input
-                value={image.roomLabel}
+                className="max-w-[200px] text-sm"
                 onChange={(e) =>
                   onUpdateImage(image.id, { roomLabel: e.target.value })
                 }
                 placeholder="Custom label (optional)"
-                className="max-w-[200px] text-sm"
+                value={image.roomLabel}
               />
             </div>
 
             {/* Duration Badge */}
-            <div className="shrink-0 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+            <div className="shrink-0 rounded-full bg-muted px-3 py-1 font-medium text-muted-foreground text-xs">
               5 sec
             </div>
           </div>
@@ -161,16 +160,16 @@ export function AssignRoomsStep({
 
       {/* Sequence Preview */}
       <div className="mt-8 rounded-xl border bg-muted/30 p-4">
-        <h4 className="mb-3 text-sm font-medium">Sequence Preview</h4>
+        <h4 className="mb-3 font-medium text-sm">Sequence Preview</h4>
         <div className="flex flex-wrap gap-2">
           {images.map((image, index) => {
             const roomConfig = VIDEO_ROOM_TYPES.find(
-              (r) => r.id === image.roomType,
+              (r) => r.id === image.roomType
             );
             return (
               <div
+                className="flex items-center gap-1.5 rounded-full bg-background px-3 py-1.5 font-medium text-xs shadow-sm"
                 key={image.id}
-                className="flex items-center gap-1.5 rounded-full bg-background px-3 py-1.5 text-xs font-medium shadow-sm"
               >
                 <span className="text-muted-foreground">{index + 1}.</span>
                 <span>{image.roomLabel || roomConfig?.label || "Unknown"}</span>
@@ -181,7 +180,7 @@ export function AssignRoomsStep({
             );
           })}
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
+        <p className="mt-3 text-muted-foreground text-xs">
           Total duration: {images.length * 5} seconds ({images.length} clips × 5
           sec)
         </p>

@@ -1,7 +1,7 @@
 "use client";
 
-import { LandingNav } from "./landing-nav";
 import { LandingFooter } from "./landing-footer";
+import { LandingNav } from "./landing-nav";
 
 type LegalPageProps = {
   title: string;
@@ -25,10 +25,10 @@ export function LegalPage({
 
       <main>
         {/* Hero Section */}
-        <section className="px-6 pb-12 pt-20 text-center md:pt-28">
+        <section className="px-6 pt-20 pb-12 text-center md:pt-28">
           <div className="mx-auto max-w-3xl">
             <h1
-              className="text-4xl font-bold tracking-tight sm:text-5xl"
+              className="font-bold text-4xl tracking-tight sm:text-5xl"
               style={{ color: "var(--landing-text)" }}
             >
               {title}
@@ -90,7 +90,7 @@ export function LegalSection({
   return (
     <div className="mt-8 first:mt-0">
       <h2
-        className="text-xl font-semibold"
+        className="font-semibold text-xl"
         style={{ color: "var(--landing-text)" }}
       >
         {title}

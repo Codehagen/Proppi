@@ -1,11 +1,11 @@
 "use client";
 
-import { LandingNav } from "./landing-nav";
-import { LandingHero } from "./landing-hero";
-import { LandingFeatures } from "./landing-features";
-import { LandingHowItWorks } from "./landing-how-it-works";
 import { LandingCta } from "./landing-cta";
+import { LandingFeatures } from "./landing-features";
 import { LandingFooter } from "./landing-footer";
+import { LandingHero } from "./landing-hero";
+import { LandingHowItWorks } from "./landing-how-it-works";
+import { LandingNav } from "./landing-nav";
 
 export function LandingPage() {
   return (

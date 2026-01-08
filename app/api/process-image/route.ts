@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
-import { fal, NANO_BANANA_PRO_EDIT, type NanoBananaProOutput } from "@/lib/fal";
+import { type NextRequest, NextResponse } from "next/server";
 import {
   getImageGenerationById,
   updateImageGeneration,
   updateProjectCounts,
 } from "@/lib/db/queries";
+import { fal, NANO_BANANA_PRO_EDIT, type NanoBananaProOutput } from "@/lib/fal";
 import {
-  uploadImage,
-  getImagePath,
   getExtensionFromContentType,
+  getImagePath,
+  uploadImage,
 } from "@/lib/supabase";
 
 export async function POST(request: NextRequest) {
@@ -45,12 +45,12 @@ export async function POST(request: NextRequest) {
       const imageResponse = await fetch(image.originalImageUrl);
       if (!imageResponse.ok) {
         throw new Error(
-          `Failed to fetch original image: ${imageResponse.status}`,
+          `Failed to fetch original image: ${imageResponse.status}`
         );
       }
       const imageBlob = await imageResponse.blob();
       const falImageUrl = await fal.storage.upload(
-        new File([imageBlob], "input.jpg", { type: imageBlob.type }),
+        new File([imageBlob], "input.jpg", { type: imageBlob.type })
       );
 
       console.log("Uploaded to Fal.ai storage:", falImageUrl);
@@ -91,12 +91,12 @@ export async function POST(request: NextRequest) {
         image.workspaceId,
         image.projectId,
         `${imageId}.${extension}`,
-        "result",
+        "result"
       );
       const storedResultUrl = await uploadImage(
         new Uint8Array(resultImageBuffer),
         resultPath,
-        contentType,
+        contentType
       );
 
       // Update image record with result
@@ -136,14 +136,14 @@ export async function POST(request: NextRequest) {
               ? processingError.message
               : "Unknown error",
         },
-        { status: 500 },
+        { status: 500 }
       );
     }
   } catch (error) {
     console.error("API error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

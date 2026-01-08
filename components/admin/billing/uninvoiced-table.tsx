@@ -1,17 +1,24 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import {
-  IconSend,
-  IconFileInvoice,
-  IconPhoto,
-  IconBuilding,
-  IconLoader2,
   IconAlertTriangle,
+  IconBuilding,
+  IconFileInvoice,
+  IconLoader2,
+  IconPhoto,
+  IconSend,
   IconVideo,
 } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -22,13 +29,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import {
-  Alert,
-  AlertTitle,
-  AlertDescription,
-  AlertAction,
-} from "@/components/ui/alert";
 import {
   Tooltip,
   TooltipContent,
@@ -62,8 +62,7 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
   const [isSendingBatch, setIsSendingBatch] = useState(false);
   const [sendingSingleId, setSendingSingleId] = useState<string | null>(null);
 
-  const allSelected =
-    items.length > 0 && selectedIds.size === items.length;
+  const allSelected = items.length > 0 && selectedIds.size === items.length;
   const someSelected = selectedIds.size > 0 && !allSelected;
 
   const toggleAll = () => {
@@ -230,8 +229,8 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
             style={{ color: "var(--accent-green)" }}
           />
         </div>
-        <h3 className="text-lg font-semibold">Alt er fakturert!</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h3 className="font-semibold text-lg">Alt er fakturert!</h3>
+        <p className="mt-1 text-muted-foreground text-sm">
           Det er ingen prosjekter som venter på fakturering.
         </p>
       </div>
@@ -248,7 +247,7 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
             <AlertTitle className="flex items-center gap-2">
               {selectedIds.size} prosjekt{selectedIds.size !== 1 ? "er" : ""}{" "}
               valgt
-              <Badge variant="outline" className="font-mono font-normal">
+              <Badge className="font-mono font-normal" variant="outline">
                 {formatNOK(selectedTotal)}
               </Badge>
             </AlertTitle>
@@ -268,9 +267,9 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
         )}
         <AlertAction>
           <Button
+            disabled={selectedIds.size === 0 || isSendingBatch}
             onClick={handleSendInvoices}
             size="sm"
-            disabled={selectedIds.size === 0 || isSendingBatch}
           >
             {isSendingBatch ? (
               <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -292,11 +291,11 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
               <TableRow>
                 <TableHead className="w-12">
                   <Checkbox
+                    aria-label="Velg alle"
                     checked={
                       allSelected || (someSelected ? "indeterminate" : false)
                     }
                     onCheckedChange={toggleAll}
-                    aria-label="Velg alle"
                   />
                 </TableHead>
                 <TableHead>Prosjekt</TableHead>
@@ -304,31 +303,32 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
                 <TableHead className="text-center">Type</TableHead>
                 <TableHead className="text-right">Beløp</TableHead>
                 <TableHead>Opprettet</TableHead>
-                <TableHead className="w-24"></TableHead>
+                <TableHead className="w-24" />
               </TableRow>
             </TableHeader>
             <TableBody>
               {items.map((item) => {
                 const isVideo = !!item.videoProjectId;
-                const itemName = item.projectName || item.videoProjectName || "Ukjent";
+                const itemName =
+                  item.projectName || item.videoProjectName || "Ukjent";
                 const hasMissingOrg = !item.workspaceOrgNumber;
 
                 return (
                   <TableRow
+                    className={`cursor-pointer transition-colors hover:bg-muted/50 ${selectedIds.has(item.id) ? "bg-muted/30" : ""}`}
                     key={item.id}
                     onClick={() => toggleItem(item.id)}
-                    className={`cursor-pointer transition-colors hover:bg-muted/50 ${selectedIds.has(item.id) ? "bg-muted/30" : ""}`}
                   >
                     <TableCell onClick={(e) => e.stopPropagation()}>
                       <Checkbox
+                        aria-label={`Velg ${itemName}`}
                         checked={selectedIds.has(item.id)}
                         onCheckedChange={() => toggleItem(item.id)}
-                        aria-label={`Velg ${itemName}`}
                       />
                     </TableCell>
                     <TableCell>
                       <div className="font-medium">{itemName}</div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-muted-foreground text-xs">
                         {item.description}
                       </div>
                     </TableCell>
@@ -362,10 +362,10 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
                           )}
                         </div>
                         <div>
-                          <div className="text-sm font-medium">
+                          <div className="font-medium text-sm">
                             {item.workspaceName}
                           </div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-muted-foreground text-xs">
                             {item.workspaceOrgNumber
                               ? `Org: ${item.workspaceOrgNumber}`
                               : "Mangler org.nr"}
@@ -380,7 +380,7 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
                         ) : (
                           <IconPhoto className="h-4 w-4 text-muted-foreground" />
                         )}
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-muted-foreground text-xs">
                           {isVideo ? "Video" : "Foto"}
                         </span>
                       </div>
@@ -394,7 +394,7 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-muted-foreground text-sm">
                         {item.createdAt.toLocaleDateString("nb-NO", {
                           day: "numeric",
                           month: "short",
@@ -403,11 +403,11 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
                     </TableCell>
                     <TableCell onClick={(e) => e.stopPropagation()}>
                       <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleSendSingle(item)}
-                        disabled={sendingSingleId === item.id || hasMissingOrg}
                         className="h-8"
+                        disabled={sendingSingleId === item.id || hasMissingOrg}
+                        onClick={() => handleSendSingle(item)}
+                        size="sm"
+                        variant="ghost"
                       >
                         {sendingSingleId === item.id ? (
                           <IconLoader2 className="h-4 w-4 animate-spin" />
@@ -423,7 +423,7 @@ export function UninvoicedTable({ items }: UninvoicedTableProps) {
           </Table>
 
           {/* Footer */}
-          <div className="border-t px-4 py-3 text-sm text-muted-foreground">
+          <div className="border-t px-4 py-3 text-muted-foreground text-sm">
             <span
               className="font-mono font-semibold"
               style={{ color: "var(--accent-amber)" }}

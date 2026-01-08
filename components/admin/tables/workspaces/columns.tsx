@@ -1,10 +1,20 @@
 "use client";
 
+import {
+  IconBan,
+  IconDotsVertical,
+  IconEye,
+  IconPlayerPlay,
+  IconTrash,
+  IconUserCircle,
+} from "@tabler/icons-react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import Link from "next/link";
+import { memo } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,18 +22,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { WorkspacePlan, WorkspaceStatus } from "@/lib/db/schema";
 import type { AdminWorkspaceRow } from "@/lib/types/admin";
-import type { WorkspaceStatus, WorkspacePlan } from "@/lib/db/schema";
-import {
-  IconDotsVertical,
-  IconEye,
-  IconUserCircle,
-  IconBan,
-  IconTrash,
-  IconPlayerPlay,
-} from "@tabler/icons-react";
-import type { ColumnDef } from "@tanstack/react-table";
-import { memo } from "react";
 
 // Status badge variants
 const statusVariantMap: Record<
@@ -59,9 +59,9 @@ const planLabelMap: Record<WorkspacePlan, string> = {
 
 // Memoized cell components
 const WorkspaceCell = memo(({ name, slug }: { name: string; slug: string }) => (
-  <div className="flex flex-col min-w-0">
-    <span className="font-medium truncate">{name}</span>
-    <span className="text-xs text-muted-foreground truncate font-mono">
+  <div className="flex min-w-0 flex-col">
+    <span className="truncate font-medium">{name}</span>
+    <span className="truncate font-mono text-muted-foreground text-xs">
       /{slug}
     </span>
   </div>
@@ -78,9 +78,9 @@ const OwnerCell = memo(
     email: string | null;
     image: string | null;
   }) => {
-    if (!name || !email) {
+    if (!(name && email)) {
       return (
-        <span className="text-sm text-muted-foreground italic">No owner</span>
+        <span className="text-muted-foreground text-sm italic">No owner</span>
       );
     }
 
@@ -92,27 +92,27 @@ const OwnerCell = memo(
       .slice(0, 2);
 
     return (
-      <div className="flex items-center gap-2.5 min-w-0">
+      <div className="flex min-w-0 items-center gap-2.5">
         <Avatar className="h-7 w-7 shrink-0">
-          {image && <AvatarImage src={image} alt={name} />}
-          <AvatarFallback className="text-[10px] font-medium">
+          {image && <AvatarImage alt={name} src={image} />}
+          <AvatarFallback className="font-medium text-[10px]">
             {initials}
           </AvatarFallback>
         </Avatar>
-        <div className="flex flex-col min-w-0">
-          <span className="text-sm font-medium truncate">{name}</span>
-          <span className="text-xs text-muted-foreground truncate">
+        <div className="flex min-w-0 flex-col">
+          <span className="truncate font-medium text-sm">{name}</span>
+          <span className="truncate text-muted-foreground text-xs">
             {email}
           </span>
         </div>
       </div>
     );
-  },
+  }
 );
 OwnerCell.displayName = "OwnerCell";
 
 const MemberCountCell = memo(({ count }: { count: number }) => (
-  <Badge variant="secondary" className="font-mono">
+  <Badge className="font-mono" variant="secondary">
     {count}
   </Badge>
 ));
@@ -140,7 +140,7 @@ PlanCell.displayName = "PlanCell";
 
 const SpendCell = memo(({ amount }: { amount: number }) => (
   <span
-    className="font-mono text-sm font-medium"
+    className="font-medium font-mono text-sm"
     style={{ color: "var(--accent-amber)" }}
   >
     ${amount.toFixed(2)}
@@ -150,7 +150,7 @@ SpendCell.displayName = "SpendCell";
 
 const DateCell = memo(({ date }: { date: Date }) => {
   const formatted = format(date, "MMM d, yyyy");
-  return <span className="text-sm text-muted-foreground">{formatted}</span>;
+  return <span className="text-muted-foreground text-sm">{formatted}</span>;
 });
 DateCell.displayName = "DateCell";
 
@@ -191,7 +191,7 @@ const ActionsCell = memo(
       <div className="flex items-center justify-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button className="h-8 w-8 p-0" variant="ghost">
               <IconDotsVertical className="h-4 w-4" />
               <span className="sr-only">Open menu</span>
             </Button>
@@ -224,24 +224,24 @@ const ActionsCell = memo(
             <DropdownMenuSeparator />
             {isSuspended ? (
               <DropdownMenuItem
-                onClick={() => onActivate?.(workspaceId, workspaceName)}
                 className="text-[var(--accent-green)] focus:text-[var(--accent-green)]"
+                onClick={() => onActivate?.(workspaceId, workspaceName)}
               >
                 <IconPlayerPlay className="mr-2 h-4 w-4" />
                 Activate workspace
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem
-                onClick={() => onSuspend?.(workspaceId, workspaceName)}
                 className="text-[var(--accent-amber)] focus:text-[var(--accent-amber)]"
+                onClick={() => onSuspend?.(workspaceId, workspaceName)}
               >
                 <IconBan className="mr-2 h-4 w-4" />
                 Suspend workspace
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
-              onClick={() => onDelete?.(workspaceId, workspaceName)}
               className="text-destructive focus:text-destructive"
+              onClick={() => onDelete?.(workspaceId, workspaceName)}
             >
               <IconTrash className="mr-2 h-4 w-4" />
               Delete workspace
@@ -250,7 +250,7 @@ const ActionsCell = memo(
         </DropdownMenu>
       </div>
     );
-  },
+  }
 );
 ActionsCell.displayName = "ActionsCell";
 
@@ -285,9 +285,9 @@ export function createWorkspaceColumns(options?: {
       minSize: 180,
       cell: ({ row }) => (
         <OwnerCell
-          name={row.original.ownerName}
           email={row.original.ownerEmail}
           image={row.original.ownerImage}
+          name={row.original.ownerName}
         />
       ),
     },
@@ -365,16 +365,16 @@ export function createWorkspaceColumns(options?: {
       enableHiding: false,
       cell: ({ row }) => (
         <ActionsCell
-          workspaceId={row.original.id}
-          ownerId={row.original.ownerId}
-          ownerName={row.original.ownerName}
-          ownerEmail={row.original.ownerEmail}
-          workspaceName={row.original.name}
-          status={row.original.status}
-          onImpersonate={options?.onImpersonate}
-          onSuspend={options?.onSuspend}
           onActivate={options?.onActivate}
           onDelete={options?.onDelete}
+          onImpersonate={options?.onImpersonate}
+          onSuspend={options?.onSuspend}
+          ownerEmail={row.original.ownerEmail}
+          ownerId={row.original.ownerId}
+          ownerName={row.original.ownerName}
+          status={row.original.status}
+          workspaceId={row.original.id}
+          workspaceName={row.original.name}
         />
       ),
     },

@@ -1,9 +1,12 @@
 "use client";
 
+import { IconDotsVertical, IconEye, IconUserCircle } from "@tabler/icons-react";
+import type { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
+import { memo } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { AdminUserRow, UserRole, UserStatus } from "@/lib/types/admin";
-import { IconDotsVertical, IconEye, IconUserCircle } from "@tabler/icons-react";
-import type { ColumnDef } from "@tanstack/react-table";
-import { memo } from "react";
 
 // Role badge variants
 const roleVariantMap: Record<
@@ -67,27 +67,27 @@ const UserCell = memo(
       .slice(0, 2);
 
     return (
-      <div className="flex items-center gap-2.5 min-w-0">
+      <div className="flex min-w-0 items-center gap-2.5">
         <Avatar className="h-8 w-8 shrink-0">
-          {image && <AvatarImage src={image} alt={name} />}
-          <AvatarFallback className="text-[10px] font-medium">
+          {image && <AvatarImage alt={name} src={image} />}
+          <AvatarFallback className="font-medium text-[10px]">
             {initials}
           </AvatarFallback>
         </Avatar>
-        <div className="flex flex-col min-w-0">
-          <span className="font-medium truncate">{name}</span>
-          <span className="text-xs text-muted-foreground truncate">
+        <div className="flex min-w-0 flex-col">
+          <span className="truncate font-medium">{name}</span>
+          <span className="truncate text-muted-foreground text-xs">
             {email}
           </span>
         </div>
       </div>
     );
-  },
+  }
 );
 UserCell.displayName = "UserCell";
 
 const WorkspaceCell = memo(({ name }: { name: string | null }) => (
-  <span className="text-sm truncate">{name || "No workspace"}</span>
+  <span className="truncate text-sm">{name || "No workspace"}</span>
 ));
 WorkspaceCell.displayName = "WorkspaceCell";
 
@@ -109,13 +109,13 @@ ImagesCell.displayName = "ImagesCell";
 const DateCell = memo(
   ({ date, relative }: { date: Date | null; relative?: boolean }) => {
     if (!date) {
-      return <span className="text-sm text-muted-foreground">Never</span>;
+      return <span className="text-muted-foreground text-sm">Never</span>;
     }
 
     if (relative) {
       const now = new Date();
       const diffMs = now.getTime() - date.getTime();
-      const diffMins = Math.floor(diffMs / 60000);
+      const diffMins = Math.floor(diffMs / 60_000);
       const diffHours = Math.floor(diffMins / 60);
       const diffDays = Math.floor(diffHours / 24);
 
@@ -130,7 +130,7 @@ const DateCell = memo(
           day: "numeric",
         }).format(date);
       }
-      return <span className="text-sm text-muted-foreground">{formatted}</span>;
+      return <span className="text-muted-foreground text-sm">{formatted}</span>;
     }
 
     const formatted = new Intl.DateTimeFormat("en-US", {
@@ -138,8 +138,8 @@ const DateCell = memo(
       day: "numeric",
       year: "numeric",
     }).format(date);
-    return <span className="text-sm text-muted-foreground">{formatted}</span>;
-  },
+    return <span className="text-muted-foreground text-sm">{formatted}</span>;
+  }
 );
 DateCell.displayName = "DateCell";
 
@@ -171,7 +171,7 @@ const ActionsCell = memo(
       <div className="flex items-center justify-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button className="h-8 w-8 p-0" variant="ghost">
               <IconDotsVertical className="h-4 w-4" />
               <span className="sr-only">Open menu</span>
             </Button>
@@ -208,7 +208,7 @@ const ActionsCell = memo(
         </DropdownMenu>
       </div>
     );
-  },
+  }
 );
 ActionsCell.displayName = "ActionsCell";
 
@@ -219,7 +219,7 @@ export function createUserColumns(
     email: string;
     workspaceId: string;
     workspaceName: string;
-  }) => void,
+  }) => void
 ): ColumnDef<AdminUserRow>[] {
   return [
     {
@@ -230,9 +230,9 @@ export function createUserColumns(
       minSize: 200,
       cell: ({ row }) => (
         <UserCell
-          name={row.original.name}
           email={row.original.email}
           image={row.original.image}
+          name={row.original.name}
         />
       ),
     },
@@ -301,12 +301,12 @@ export function createUserColumns(
       enableHiding: false,
       cell: ({ row }) => (
         <ActionsCell
+          onImpersonate={onImpersonate}
+          userEmail={row.original.email}
           userId={row.original.id}
           userName={row.original.name}
-          userEmail={row.original.email}
           workspaceId={row.original.workspaceId}
           workspaceName={row.original.workspaceName}
-          onImpersonate={onImpersonate}
         />
       ),
     },

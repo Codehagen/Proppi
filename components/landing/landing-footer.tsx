@@ -1,7 +1,7 @@
 "use client";
 
+import { IconBrandLinkedin, IconBrandX } from "@tabler/icons-react";
 import Link from "next/link";
-import { IconBrandX, IconBrandLinkedin } from "@tabler/icons-react";
 
 const footerLinks = {
   product: [
@@ -36,8 +36,8 @@ export function LandingFooter() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link
-              href="/"
               className="font-semibold tracking-tight"
+              href="/"
               style={{ color: "var(--landing-text)" }}
             >
               AI Studio
@@ -53,15 +53,15 @@ export function LandingFooter() {
             {/* Social Links */}
             <div className="mt-6 flex gap-3">
               <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                aria-label="Follow us on X (Twitter)"
                 className="flex size-10 items-center justify-center rounded-full transition-colors hover:opacity-70"
+                href="https://twitter.com"
+                rel="noopener noreferrer"
                 style={{
                   backgroundColor: "var(--landing-bg)",
                   border: "1px solid var(--landing-border)",
                 }}
-                aria-label="Follow us on X (Twitter)"
+                target="_blank"
               >
                 <IconBrandX
                   className="size-4"
@@ -69,15 +69,15 @@ export function LandingFooter() {
                 />
               </a>
               <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                aria-label="Follow us on LinkedIn"
                 className="flex size-10 items-center justify-center rounded-full transition-colors hover:opacity-70"
+                href="https://linkedin.com"
+                rel="noopener noreferrer"
                 style={{
                   backgroundColor: "var(--landing-bg)",
                   border: "1px solid var(--landing-border)",
                 }}
-                aria-label="Follow us on LinkedIn"
+                target="_blank"
               >
                 <IconBrandLinkedin
                   className="size-4"
@@ -90,7 +90,7 @@ export function LandingFooter() {
           {/* Product Links */}
           <div>
             <h3
-              className="text-sm font-semibold"
+              className="font-semibold text-sm"
               style={{ color: "var(--landing-text)" }}
             >
               Product
@@ -99,8 +99,8 @@ export function LandingFooter() {
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
                   <Link
-                    href={link.href}
                     className="text-sm transition-colors hover:opacity-70"
+                    href={link.href}
                     style={{ color: "var(--landing-text-muted)" }}
                   >
                     {link.label}
@@ -113,7 +113,7 @@ export function LandingFooter() {
           {/* Company Links */}
           <div>
             <h3
-              className="text-sm font-semibold"
+              className="font-semibold text-sm"
               style={{ color: "var(--landing-text)" }}
             >
               Company
@@ -122,8 +122,8 @@ export function LandingFooter() {
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
                   <Link
-                    href={link.href}
                     className="text-sm transition-colors hover:opacity-70"
+                    href={link.href}
                     style={{ color: "var(--landing-text-muted)" }}
                   >
                     {link.label}
@@ -136,7 +136,7 @@ export function LandingFooter() {
           {/* Legal Links */}
           <div>
             <h3
-              className="text-sm font-semibold"
+              className="font-semibold text-sm"
               style={{ color: "var(--landing-text)" }}
             >
               Legal
@@ -145,8 +145,8 @@ export function LandingFooter() {
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
                   <Link
-                    href={link.href}
                     className="text-sm transition-colors hover:opacity-70"
+                    href={link.href}
                     style={{ color: "var(--landing-text-muted)" }}
                   >
                     {link.label}
@@ -162,16 +162,10 @@ export function LandingFooter() {
           className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row"
           style={{ borderColor: "var(--landing-border)" }}
         >
-          <p
-            className="text-sm"
-            style={{ color: "var(--landing-text-muted)" }}
-          >
+          <p className="text-sm" style={{ color: "var(--landing-text-muted)" }}>
             &copy; {currentYear} AI Studio. All rights reserved.
           </p>
-          <p
-            className="text-sm"
-            style={{ color: "var(--landing-text-muted)" }}
-          >
+          <p className="text-sm" style={{ color: "var(--landing-text-muted)" }}>
             Made with care in Norway
           </p>
         </div>

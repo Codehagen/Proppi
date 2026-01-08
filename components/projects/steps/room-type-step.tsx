@@ -1,18 +1,17 @@
 "use client";
 
-import * as React from "react";
 import {
-  IconSofa,
-  IconBed,
-  IconToolsKitchen2,
-  IconBath,
   IconArmchair,
-  IconDesk,
+  IconBath,
+  IconBed,
   IconCheck,
+  IconDesk,
+  IconSofa,
+  IconToolsKitchen2,
 } from "@tabler/icons-react";
-
+import type * as React from "react";
+import { ROOM_TYPES } from "@/lib/style-templates";
 import { cn } from "@/lib/utils";
-import { ROOM_TYPES, type RoomTypeOption } from "@/lib/style-templates";
 
 // Map icon names to actual icons
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -36,7 +35,7 @@ export function RoomTypeStep({
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Select the room type to help the AI better understand and transform
           your space.
         </p>
@@ -49,16 +48,16 @@ export function RoomTypeStep({
 
           return (
             <button
-              key={roomType.id}
-              type="button"
-              onClick={() => onSelectRoomType(roomType.id)}
               className={cn(
-                "animate-fade-in-up group relative flex flex-col items-center gap-3 rounded-xl p-5 text-center ring-2 transition-all duration-200",
+                "group relative flex animate-fade-in-up flex-col items-center gap-3 rounded-xl p-5 text-center ring-2 transition-all duration-200",
                 isSelected
-                  ? "bg-[var(--accent-teal)]/10 ring-[var(--accent-teal)] shadow-lg"
-                  : "bg-muted/30 ring-transparent hover:bg-muted/50 hover:ring-foreground/10",
+                  ? "bg-[var(--accent-teal)]/10 shadow-lg ring-[var(--accent-teal)]"
+                  : "bg-muted/30 ring-transparent hover:bg-muted/50 hover:ring-foreground/10"
               )}
+              key={roomType.id}
+              onClick={() => onSelectRoomType(roomType.id)}
               style={{ animationDelay: `${index * 50}ms` }}
+              type="button"
             >
               {/* Icon */}
               <div
@@ -66,7 +65,7 @@ export function RoomTypeStep({
                   "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
                   isSelected
                     ? "bg-[var(--accent-teal)] text-white"
-                    : "bg-muted text-muted-foreground group-hover:text-foreground",
+                    : "bg-muted text-muted-foreground group-hover:text-foreground"
                 )}
               >
                 {IconComponent && <IconComponent className="h-6 w-6" />}
@@ -77,19 +76,19 @@ export function RoomTypeStep({
                 <h3
                   className={cn(
                     "font-semibold leading-tight",
-                    isSelected ? "text-foreground" : "text-foreground",
+                    isSelected ? "text-foreground" : "text-foreground"
                   )}
                 >
                   {roomType.label}
                 </h3>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   {roomType.description}
                 </p>
               </div>
 
               {/* Selected checkmark */}
               {isSelected && (
-                <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent-teal)]">
+                <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent-teal)]">
                   <IconCheck className="h-3 w-3 text-white" />
                 </div>
               )}

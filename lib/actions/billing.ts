@@ -3,25 +3,25 @@
 import { revalidatePath } from "next/cache";
 import { verifySystemAdmin } from "@/lib/admin-auth";
 import {
-  getWorkspacePricing,
-  upsertWorkspacePricing,
-  getUninvoicedLineItems,
-  createInvoiceLineItem,
-  updateInvoiceLineItemStatus,
-  getInvoiceHistory,
-  getInvoiceById,
-  createInvoice,
-  updateInvoice,
-  getBillingStats,
-  getWorkspaceById,
-  getAffiliateRelationshipByReferred,
-  createAffiliateEarning,
-  type UninvoicedLineItemRow,
-  type InvoiceHistoryRow,
   type BillingStats,
+  createAffiliateEarning,
+  createInvoice,
+  createInvoiceLineItem,
+  getAffiliateRelationshipByReferred,
+  getBillingStats,
+  getInvoiceById,
+  getInvoiceHistory,
+  getUninvoicedLineItems,
+  getWorkspaceById,
+  getWorkspacePricing,
+  type InvoiceHistoryRow,
+  type UninvoicedLineItemRow,
+  updateInvoice,
+  updateInvoiceLineItemStatus,
+  upsertWorkspacePricing,
 } from "@/lib/db/queries";
-import { getFikenClient, FIKEN_CONFIG } from "@/lib/fiken-client";
 import type { Invoice, InvoiceStatus, WorkspacePricing } from "@/lib/db/schema";
+import { FIKEN_CONFIG, getFikenClient } from "@/lib/fiken-client";
 
 // ============================================================================
 // Types
@@ -40,7 +40,9 @@ export type ActionResult<T> =
  */
 export async function getWorkspacePricingAction(
   workspaceId: string
-): Promise<ActionResult<{ imageProjectPriceOre: number; videoProjectPriceOre: number }>> {
+): Promise<
+  ActionResult<{ imageProjectPriceOre: number; videoProjectPriceOre: number }>
+> {
   try {
     const pricing = await getWorkspacePricing(workspaceId);
     return {
@@ -235,7 +237,9 @@ export async function createInvoiceFromLineItemsAction(
  */
 export async function sendInvoiceToFikenAction(
   invoiceId: string
-): Promise<ActionResult<{ fikenInvoiceId: number; fikenInvoiceNumber: string }>> {
+): Promise<
+  ActionResult<{ fikenInvoiceId: number; fikenInvoiceNumber: string }>
+> {
   const adminCheck = await verifySystemAdmin();
   if (adminCheck.error) {
     return { success: false, error: adminCheck.error };
@@ -309,7 +313,10 @@ export async function sendInvoiceToFikenAction(
     console.error("[billing:sendInvoiceToFiken] Error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to send invoice to Fiken",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to send invoice to Fiken",
     };
   }
 }
@@ -390,7 +397,9 @@ export async function getInvoiceHistoryAction(filters?: {
 /**
  * Get billing stats (admin only)
  */
-export async function getBillingStatsAction(): Promise<ActionResult<BillingStats>> {
+export async function getBillingStatsAction(): Promise<
+  ActionResult<BillingStats>
+> {
   const adminCheck = await verifySystemAdmin();
   if (adminCheck.error) {
     return { success: false, error: adminCheck.error };

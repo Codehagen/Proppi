@@ -1,12 +1,12 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { auth } from "@/lib/auth";
 import {
-  getUserWithWorkspace,
-  getProjects,
   getProjectStats,
+  getProjects,
+  getUserWithWorkspace,
 } from "@/lib/db/queries";
-import { DashboardContent } from "@/components/dashboard/dashboard-content";
 
 export default async function DashboardPage() {
   // Get session

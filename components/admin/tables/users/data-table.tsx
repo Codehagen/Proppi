@@ -1,11 +1,6 @@
 "use client";
 
-import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
-import { useAdminUserFilters } from "@/hooks/use-admin-user-filters";
-import { useImpersonation } from "@/hooks/use-impersonation";
-import { fetchAdminUsersAction } from "@/lib/actions/admin";
-import type { AdminUserRow, AdminUsersMeta } from "@/lib/types/admin";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { IconLoader2, IconUserOff } from "@tabler/icons-react";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
@@ -17,11 +12,16 @@ import {
   useState,
   useTransition,
 } from "react";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useAdminUserFilters } from "@/hooks/use-admin-user-filters";
+import { useImpersonation } from "@/hooks/use-impersonation";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import { fetchAdminUsersAction } from "@/lib/actions/admin";
+import type { AdminUserRow, AdminUsersMeta } from "@/lib/types/admin";
 import { createUserColumns } from "./columns";
-import { UserVirtualRow } from "./virtual-row";
-import { UsersTableToolbar } from "./table-toolbar";
 import { UsersTableHeader } from "./table-header";
-import { IconLoader2, IconUserOff } from "@tabler/icons-react";
+import { UsersTableToolbar } from "./table-toolbar";
+import { UserVirtualRow } from "./virtual-row";
 
 const ROW_HEIGHT = 60;
 
@@ -64,7 +64,7 @@ export function UsersDataTable({
       createUserColumns((user) => {
         startImpersonation(user);
       }),
-    [startImpersonation],
+    [startImpersonation]
   );
 
   // Reset pagination when filters change
@@ -131,7 +131,14 @@ export function UsersDataTable({
     }
 
     setIsFetchingNextPage(false);
-  }, [cursor, hasNextPage, isFetchingNextPage, deferredFilters, sortColumn, sortDirection]);
+  }, [
+    cursor,
+    hasNextPage,
+    isFetchingNextPage,
+    deferredFilters,
+    sortColumn,
+    sortDirection,
+  ]);
 
   // Set up TanStack Table
   const table = useReactTable({
@@ -182,11 +189,11 @@ export function UsersDataTable({
           <div className="divide-y">
             {Array.from({ length: 8 }).map((_, i) => (
               <div
-                key={i}
                 className="flex items-center gap-4 px-4 py-3"
+                key={i}
                 style={{ animationDelay: `${i * 50}ms` }}
               >
-                <div className="flex items-center gap-2.5 flex-1">
+                <div className="flex flex-1 items-center gap-2.5">
                   <div className="skeleton h-8 w-8 rounded-full" />
                   <div className="flex flex-col gap-1">
                     <div className="skeleton h-4 w-28" />
@@ -230,8 +237,8 @@ export function UsersDataTable({
               style={{ color: "var(--accent-teal)" }}
             />
           </div>
-          <h3 className="text-lg font-semibold">No users yet</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h3 className="font-semibold text-lg">No users yet</h3>
+          <p className="mt-1 text-muted-foreground text-sm">
             Users will appear here once they join workspaces.
           </p>
         </div>
@@ -248,8 +255,8 @@ export function UsersDataTable({
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
             <IconUserOff className="h-6 w-6 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-semibold">No matching users</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h3 className="font-semibold text-lg">No matching users</h3>
+          <p className="mt-1 text-muted-foreground text-sm">
             Try adjusting your search or filter criteria.
           </p>
         </div>
@@ -265,25 +272,25 @@ export function UsersDataTable({
 
       <div className="relative overflow-hidden rounded-xl bg-card shadow-xs ring-1 ring-foreground/10">
         {/* Table Header */}
-        <div className="border-b border-border">
+        <div className="border-border border-b">
           <Table>
             <UsersTableHeader
+              onSort={toggleSort}
               sortColumn={sortColumn}
               sortDirection={sortDirection}
-              onSort={toggleSort}
             />
           </Table>
         </div>
 
         {/* Scrollable body with virtualization */}
         <div
+          className="scrollbar-thin overflow-auto"
           ref={parentRef}
-          className="overflow-auto scrollbar-thin"
           style={{ height: "calc(100vh - 400px)", minHeight: "300px" }}
         >
           <Table>
             <TableBody
-              className="block relative"
+              className="relative block"
               style={{ height: rowVirtualizer.getTotalSize() }}
             >
               {virtualItems.length > 0 ? (
@@ -295,16 +302,16 @@ export function UsersDataTable({
                     <UserVirtualRow
                       key={row.id}
                       row={row}
-                      virtualStart={virtualRow.start}
                       rowHeight={ROW_HEIGHT}
+                      virtualStart={virtualRow.start}
                     />
                   );
                 })
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
                     className="h-24 text-center"
+                    colSpan={columns.length}
                   >
                     No results.
                   </TableCell>
@@ -317,7 +324,7 @@ export function UsersDataTable({
           {isFetchingNextPage && (
             <div className="flex items-center justify-center py-4">
               <IconLoader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-              <span className="ml-2 text-sm text-muted-foreground">
+              <span className="ml-2 text-muted-foreground text-sm">
                 Loading more...
               </span>
             </div>
@@ -325,7 +332,7 @@ export function UsersDataTable({
         </div>
 
         {/* Footer with count */}
-        <div className="border-t px-4 py-3 text-sm text-muted-foreground">
+        <div className="border-t px-4 py-3 text-muted-foreground text-sm">
           <span
             className="font-mono font-semibold"
             style={{ color: "var(--accent-teal)" }}

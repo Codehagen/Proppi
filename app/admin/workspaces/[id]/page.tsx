@@ -1,11 +1,10 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
 import { IconArrowLeft } from "@tabler/icons-react";
-
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { WorkspaceDetailContent } from "@/components/admin/workspace-detail-content";
+import { Button } from "@/components/ui/button";
 import { requireSystemAdmin } from "@/lib/admin-auth";
 import { getAdminWorkspaceDetail } from "@/lib/db/queries";
-import { Button } from "@/components/ui/button";
-import { WorkspaceDetailContent } from "@/components/admin/workspace-detail-content";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -25,7 +24,7 @@ export default async function AdminWorkspaceDetailPage({ params }: PageProps) {
     <div className="space-y-6">
       {/* Back button */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
+        <Button asChild size="sm" variant="ghost">
           <Link href="/admin/workspaces">
             <IconArrowLeft className="mr-2 h-4 w-4" />
             Back to Workspaces

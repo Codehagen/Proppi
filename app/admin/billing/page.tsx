@@ -4,8 +4,8 @@ import { BillingTabs } from "@/components/admin/billing/billing-tabs";
 import { requireSystemAdmin } from "@/lib/admin-auth";
 import {
   getBillingStats,
-  getUninvoicedLineItems,
   getInvoiceHistory,
+  getUninvoicedLineItems,
 } from "@/lib/db/queries";
 
 export default async function AdminBillingPage() {
@@ -43,8 +43,8 @@ export default async function AdminBillingPage() {
             <IconFileInvoice className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Betalinger</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="font-bold text-2xl tracking-tight">Betalinger</h1>
+            <p className="text-muted-foreground text-sm">
               Administrer fakturaer og spor inntekter fra fullførte prosjekter
             </p>
           </div>
@@ -52,13 +52,13 @@ export default async function AdminBillingPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="animate-fade-in-up stagger-1">
+      <div className="stagger-1 animate-fade-in-up">
         <BillingStatsBar stats={formattedStats} />
       </div>
 
       {/* Tabs: Uninvoiced / History */}
-      <div className="animate-fade-in-up stagger-2">
-        <BillingTabs uninvoicedItems={uninvoicedItems} invoices={invoices} />
+      <div className="stagger-2 animate-fade-in-up">
+        <BillingTabs invoices={invoices} uninvoicedItems={uninvoicedItems} />
       </div>
     </div>
   );

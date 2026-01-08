@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
-import Link from "next/link";
-import { useSession } from "@/lib/auth-client";
 import { IconArrowRight, IconPlayerPlay } from "@tabler/icons-react";
+import Link from "next/link";
+import { Suspense } from "react";
+import { useSession } from "@/lib/auth-client";
 
 function HeroAuthButton() {
   const { data: session, isPending } = useSession();
@@ -11,7 +11,7 @@ function HeroAuthButton() {
   if (isPending) {
     return (
       <div
-        className="h-12 w-36 rounded-full animate-pulse"
+        className="h-12 w-36 animate-pulse rounded-full"
         style={{ backgroundColor: "var(--landing-border)" }}
       />
     );
@@ -22,8 +22,8 @@ function HeroAuthButton() {
 
   return (
     <Link
+      className="inline-flex h-12 items-center gap-2 rounded-full px-7 font-medium text-base transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
       href={href}
-      className="inline-flex h-12 items-center gap-2 rounded-full px-7 text-base font-medium transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
       style={{
         backgroundColor: "var(--landing-accent)",
         color: "var(--landing-accent-foreground)",
@@ -38,10 +38,10 @@ function HeroAuthButton() {
 
 export function LandingHero() {
   return (
-    <section className="relative overflow-hidden px-6 pb-24 pt-16 md:pb-32 md:pt-24">
+    <section className="relative overflow-hidden px-6 pt-16 pb-24 md:pt-24 md:pb-32">
       {/* Subtle gradient accent */}
       <div
-        className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full blur-3xl"
+        className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full blur-3xl"
         style={{
           background:
             "radial-gradient(circle, var(--landing-accent) 0%, transparent 70%)",
@@ -51,7 +51,8 @@ export function LandingHero() {
 
       <div className="mx-auto max-w-4xl text-center">
         {/* Badge */}
-        <div className="animate-spring-up landing-stagger-1 mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider"
+        <div
+          className="landing-stagger-1 mb-6 inline-flex animate-spring-up items-center gap-2 rounded-full px-4 py-1.5 font-semibold text-xs uppercase tracking-wider"
           style={{
             backgroundColor: "var(--landing-bg-alt)",
             color: "var(--landing-text-muted)",
@@ -67,7 +68,7 @@ export function LandingHero() {
 
         {/* Main Headline */}
         <h1
-          className="animate-spring-up landing-stagger-2 text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+          className="landing-stagger-2 animate-spring-up font-bold text-4xl leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
           style={{ color: "var(--landing-text)" }}
         >
           Create Stunning
@@ -81,18 +82,18 @@ export function LandingHero() {
 
         {/* Subheadline */}
         <p
-          className="animate-spring-up landing-stagger-3 mx-auto mt-6 max-w-xl text-lg leading-relaxed md:text-xl"
+          className="landing-stagger-3 mx-auto mt-6 max-w-xl animate-spring-up text-lg leading-relaxed md:text-xl"
           style={{ color: "var(--landing-text-muted)" }}
         >
           Transform photos 10x faster. No design skills needed.
         </p>
 
         {/* CTA Buttons */}
-        <div className="animate-spring-up landing-stagger-4 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <div className="landing-stagger-4 mt-10 flex animate-spring-up flex-col items-center justify-center gap-4 sm:flex-row">
           <Suspense
             fallback={
               <div
-                className="h-12 w-36 rounded-full animate-pulse"
+                className="h-12 w-36 animate-pulse rounded-full"
                 style={{ backgroundColor: "var(--landing-border)" }}
               />
             }
@@ -101,13 +102,13 @@ export function LandingHero() {
           </Suspense>
 
           <button
-            type="button"
-            className="inline-flex h-12 items-center gap-2 rounded-full px-6 text-base font-medium transition-all duration-200 hover:scale-[1.02]"
+            className="inline-flex h-12 items-center gap-2 rounded-full px-6 font-medium text-base transition-all duration-200 hover:scale-[1.02]"
             style={{
               backgroundColor: "var(--landing-card)",
               color: "var(--landing-text)",
               border: "1px solid var(--landing-border-strong)",
             }}
+            type="button"
           >
             <IconPlayerPlay className="size-5" />
             Watch Demo
@@ -115,10 +116,10 @@ export function LandingHero() {
         </div>
 
         {/* Stats Row */}
-        <div className="animate-spring-up landing-stagger-5 mt-12 flex flex-wrap items-center justify-center gap-8 md:gap-12">
+        <div className="landing-stagger-5 mt-12 flex animate-spring-up flex-wrap items-center justify-center gap-8 md:gap-12">
           <div className="text-center">
             <p
-              className="text-2xl font-bold tabular-nums md:text-3xl"
+              className="font-bold text-2xl tabular-nums md:text-3xl"
               style={{ color: "var(--landing-text)" }}
             >
               50,000+
@@ -136,7 +137,7 @@ export function LandingHero() {
           />
           <div className="text-center">
             <p
-              className="text-2xl font-bold tabular-nums md:text-3xl"
+              className="font-bold text-2xl tabular-nums md:text-3xl"
               style={{ color: "var(--landing-text)" }}
             >
               30 sec
@@ -154,7 +155,7 @@ export function LandingHero() {
           />
           <div className="text-center">
             <p
-              className="text-2xl font-bold tabular-nums md:text-3xl"
+              className="font-bold text-2xl tabular-nums md:text-3xl"
               style={{ color: "var(--landing-accent)" }}
             >
               +85%
@@ -170,7 +171,7 @@ export function LandingHero() {
       </div>
 
       {/* Hero Image Preview */}
-      <div className="animate-spring-up landing-stagger-6 mx-auto mt-16 max-w-5xl px-4">
+      <div className="landing-stagger-6 mx-auto mt-16 max-w-5xl animate-spring-up px-4">
         <div
           className="relative overflow-hidden rounded-2xl p-1.5 md:rounded-3xl"
           style={{
@@ -199,7 +200,7 @@ export function LandingHero() {
               />
             </div>
             <div
-              className="ml-4 hidden h-6 flex-1 max-w-xs rounded-md sm:block"
+              className="ml-4 hidden h-6 max-w-xs flex-1 rounded-md sm:block"
               style={{ backgroundColor: "var(--landing-bg)" }}
             />
           </div>
@@ -220,7 +221,7 @@ export function LandingHero() {
                   }}
                 />
                 <p
-                  className="text-sm font-medium"
+                  className="font-medium text-sm"
                   style={{ color: "var(--landing-text-muted)" }}
                 >
                   App Preview
@@ -232,7 +233,8 @@ export function LandingHero() {
             <div
               className="absolute inset-0"
               style={{
-                backgroundImage: `linear-gradient(var(--landing-border) 1px, transparent 1px), linear-gradient(90deg, var(--landing-border) 1px, transparent 1px)`,
+                backgroundImage:
+                  "linear-gradient(var(--landing-border) 1px, transparent 1px), linear-gradient(90deg, var(--landing-border) 1px, transparent 1px)",
                 backgroundSize: "40px 40px",
               }}
             />

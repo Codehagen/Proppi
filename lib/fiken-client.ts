@@ -59,7 +59,7 @@ export const FIKEN_CONFIG = {
   bankAccountCode: "1920:10001",
   incomeAccount: "3000",
   vatType: "HIGH" as const,
-  projectPrice: 100000, // 1000 NOK in øre
+  projectPrice: 100_000, // 1000 NOK in øre
   defaultDueDays: 14,
 } as const;
 
@@ -68,8 +68,8 @@ export const FIKEN_CONFIG = {
  * These are used when workspace doesn't have custom pricing set
  */
 export const BILLING_DEFAULTS = {
-  IMAGE_PROJECT_PRICE_ORE: 100000, // 1000 NOK
-  VIDEO_PROJECT_PRICE_ORE: 100000, // 1000 NOK
+  IMAGE_PROJECT_PRICE_ORE: 100_000, // 1000 NOK
+  VIDEO_PROJECT_PRICE_ORE: 100_000, // 1000 NOK
   VAT_RATE: 0.25, // 25% Norwegian VAT
   DEFAULT_AFFILIATE_COMMISSION: 20, // 20%
   DUE_DAYS: 14, // Payment due in 14 days
@@ -101,7 +101,7 @@ export class FikenClient {
 
   private async request<T>(
     path: string,
-    options: RequestInit = {},
+    options: RequestInit = {}
   ): Promise<{ data: T | null; locationHeader?: string; status: number }> {
     const response = await fetch(`${this.baseUrl}${path}`, {
       ...options,
@@ -115,7 +115,7 @@ export class FikenClient {
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `Fiken API error: ${response.status} - ${errorText || response.statusText}`,
+        `Fiken API error: ${response.status} - ${errorText || response.statusText}`
       );
     }
 
@@ -146,10 +146,10 @@ export class FikenClient {
    * Returns the contact if found, null if not found
    */
   async findContactByOrgNumber(
-    organizationNumber: string,
+    organizationNumber: string
   ): Promise<FikenContact | null> {
     const { data } = await this.request<FikenContact[]>(
-      `/companies/${this.companySlug}/contacts?organizationNumber=${organizationNumber}`,
+      `/companies/${this.companySlug}/contacts?organizationNumber=${organizationNumber}`
     );
 
     if (!data || data.length === 0) {
@@ -178,12 +178,12 @@ export class FikenClient {
 
     // Fiken returns 201 with no body, need to search to get the contactId
     const createdContact = await this.findContactByOrgNumber(
-      contact.organizationNumber,
+      contact.organizationNumber
     );
 
     if (!createdContact) {
       throw new Error(
-        `Failed to find contact after creation: ${contact.organizationNumber}`,
+        `Failed to find contact after creation: ${contact.organizationNumber}`
       );
     }
 
@@ -196,7 +196,7 @@ export class FikenClient {
    */
   async getOrCreateContact(
     name: string,
-    organizationNumber: string,
+    organizationNumber: string
   ): Promise<number> {
     // First, try to find existing contact
     const existingContact =
@@ -224,7 +224,7 @@ export class FikenClient {
       {
         method: "POST",
         body: JSON.stringify(invoice),
-      },
+      }
     );
 
     if (!locationHeader) {
@@ -233,11 +233,14 @@ export class FikenClient {
 
     // Extract invoiceId from Location header
     // Example: https://api.fiken.no/api/v2/companies/.../invoices/11305922354
-    const invoiceId = parseInt(locationHeader.split("/").pop() || "", 10);
+    const invoiceId = Number.parseInt(
+      locationHeader.split("/").pop() || "",
+      10
+    );
 
     if (isNaN(invoiceId)) {
       throw new Error(
-        `Failed to parse invoiceId from Location: ${locationHeader}`,
+        `Failed to parse invoiceId from Location: ${locationHeader}`
       );
     }
 
@@ -259,7 +262,7 @@ export class FikenClient {
     const dueDate =
       params.dueDate ||
       new Date(
-        today.getTime() + FIKEN_CONFIG.defaultDueDays * 24 * 60 * 60 * 1000,
+        today.getTime() + FIKEN_CONFIG.defaultDueDays * 24 * 60 * 60 * 1000
       )
         .toISOString()
         .split("T")[0];
@@ -297,7 +300,7 @@ export class FikenClient {
     const dueDate =
       params.dueDate ||
       new Date(
-        today.getTime() + FIKEN_CONFIG.defaultDueDays * 24 * 60 * 60 * 1000,
+        today.getTime() + FIKEN_CONFIG.defaultDueDays * 24 * 60 * 60 * 1000
       )
         .toISOString()
         .split("T")[0];
@@ -338,7 +341,7 @@ export class FikenClient {
     // Step 1: Get or create contact
     const contactId = await this.getOrCreateContact(
       params.workspaceName,
-      params.organizationNumber,
+      params.organizationNumber
     );
 
     // Step 2: Create invoice

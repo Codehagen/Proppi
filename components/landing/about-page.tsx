@@ -1,13 +1,13 @@
 "use client";
 
-import { LandingNav } from "./landing-nav";
-import { LandingFooter } from "./landing-footer";
 import {
-  IconSparkles,
-  IconRocket,
   IconHeart,
+  IconRocket,
+  IconSparkles,
   IconTarget,
 } from "@tabler/icons-react";
+import { LandingFooter } from "./landing-footer";
+import { LandingNav } from "./landing-nav";
 
 const values = [
   {
@@ -46,16 +46,16 @@ export function AboutPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="px-6 pb-16 pt-20 text-center md:pb-24 md:pt-28">
+        <section className="px-6 pt-20 pb-16 text-center md:pt-28 md:pb-24">
           <div className="mx-auto max-w-3xl">
             <p
-              className="text-sm font-semibold uppercase tracking-wider"
+              className="font-semibold text-sm uppercase tracking-wider"
               style={{ color: "var(--landing-accent)" }}
             >
               About Us
             </p>
             <h1
-              className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
+              className="mt-3 font-bold text-4xl tracking-tight sm:text-5xl md:text-6xl"
               style={{ color: "var(--landing-text)" }}
             >
               Making property photos
@@ -85,7 +85,7 @@ export function AboutPage() {
             }}
           >
             <h2
-              className="text-2xl font-bold tracking-tight sm:text-3xl"
+              className="font-bold text-2xl tracking-tight sm:text-3xl"
               style={{ color: "var(--landing-text)" }}
             >
               Our Story
@@ -95,9 +95,9 @@ export function AboutPage() {
               style={{ color: "var(--landing-text-muted)" }}
             >
               <p>
-                We started AI Studio because we saw a gap in the market.
-                Real estate professionals needed high-quality photo enhancement,
-                but existing solutions were either too expensive, too slow, or
+                We started AI Studio because we saw a gap in the market. Real
+                estate professionals needed high-quality photo enhancement, but
+                existing solutions were either too expensive, too slow, or
                 required technical expertise.
               </p>
               <p>
@@ -115,7 +115,8 @@ export function AboutPage() {
               <p>
                 Today, we&apos;ve processed over 50,000 images for real estate
                 professionals across Norway. Our users report up to 85% higher
-                engagement on their listings. And we&apos;re just getting started.
+                engagement on their listings. And we&apos;re just getting
+                started.
               </p>
             </div>
           </div>
@@ -129,13 +130,13 @@ export function AboutPage() {
           <div className="mx-auto max-w-5xl">
             <div className="text-center">
               <p
-                className="text-sm font-semibold uppercase tracking-wider"
+                className="font-semibold text-sm uppercase tracking-wider"
                 style={{ color: "var(--landing-accent)" }}
               >
                 Our Values
               </p>
               <h2
-                className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl"
+                className="mt-3 font-bold text-3xl tracking-tight sm:text-4xl"
                 style={{ color: "var(--landing-text)" }}
               >
                 What we believe in
@@ -145,8 +146,8 @@ export function AboutPage() {
             <div className="mt-12 grid gap-8 sm:grid-cols-2">
               {values.map((value) => (
                 <div
-                  key={value.title}
                   className="rounded-2xl p-6"
+                  key={value.title}
                   style={{
                     backgroundColor: "var(--landing-card)",
                     border: "1px solid var(--landing-border)",
@@ -165,7 +166,7 @@ export function AboutPage() {
                     />
                   </div>
                   <h3
-                    className="text-lg font-semibold"
+                    className="font-semibold text-lg"
                     style={{ color: "var(--landing-text)" }}
                   >
                     {value.title}
@@ -186,13 +187,13 @@ export function AboutPage() {
         <section className="px-6 py-24">
           <div className="mx-auto max-w-3xl text-center">
             <p
-              className="text-sm font-semibold uppercase tracking-wider"
+              className="font-semibold text-sm uppercase tracking-wider"
               style={{ color: "var(--landing-accent)" }}
             >
               Our Mission
             </p>
             <h2
-              className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl"
+              className="mt-3 font-bold text-3xl tracking-tight sm:text-4xl"
               style={{ color: "var(--landing-text)" }}
             >
               Empowering real estate professionals
@@ -220,7 +221,7 @@ export function AboutPage() {
             }}
           >
             <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl"
+              className="font-bold text-3xl tracking-tight sm:text-4xl"
               style={{ color: "var(--landing-text)" }}
             >
               Want to learn more?
@@ -234,8 +235,8 @@ export function AboutPage() {
             </p>
             <div className="mt-8">
               <a
+                className="inline-flex h-12 items-center rounded-full px-8 font-medium text-base transition-all duration-200 hover:scale-[1.03]"
                 href="/contact"
-                className="inline-flex h-12 items-center rounded-full px-8 text-base font-medium transition-all duration-200 hover:scale-[1.03]"
                 style={{
                   backgroundColor: "var(--landing-accent)",
                   color: "var(--landing-accent-foreground)",

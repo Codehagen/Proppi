@@ -1,31 +1,30 @@
 "use client";
 
-import * as React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { format } from "date-fns";
 import {
-  IconArrowLeft,
-  IconDownload,
-  IconPhoto,
-  IconSparkles,
-  IconClock,
-  IconCheck,
-  IconLoader2,
   IconAlertTriangle,
+  IconArrowLeft,
   IconArrowsMaximize,
-  IconPlus,
-  IconRefresh,
-  IconPencil,
-  IconX,
-  IconTrash,
+  IconCheck,
   IconChevronLeft,
   IconChevronRight,
+  IconClock,
+  IconDownload,
+  IconLoader2,
+  IconPencil,
+  IconPhoto,
+  IconPlus,
+  IconRefresh,
+  IconSparkles,
+  IconTrash,
+  IconX,
 } from "@tabler/icons-react";
-
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useRealtimeRun } from "@trigger.dev/react-hooks";
+import { format } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import * as React from "react";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,15 +35,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Project, ImageGeneration, ProjectStatus } from "@/lib/db/schema";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { deleteSelectedImages, retryImageProcessing } from "@/lib/actions";
+import type { ImageGeneration, Project, ProjectStatus } from "@/lib/db/schema";
 import { getTemplateById } from "@/lib/style-templates";
 import { cn } from "@/lib/utils";
+import type { processImageTask } from "@/trigger/process-image";
 import { AddImagesDialog } from "./add-images-dialog";
 import { ImageMaskEditor } from "./image-mask-editor";
-import { retryImageProcessing, deleteSelectedImages } from "@/lib/actions";
-import { toast } from "sonner";
-import { useRealtimeRun } from "@trigger.dev/react-hooks";
-import type { processImageTask } from "@/trigger/process-image";
 
 const statusConfig: Record<
   ProjectStatus,
@@ -119,8 +118,8 @@ function RealtimeProcessingLabel({
     }
   }, [run?.status, onComplete]);
 
-  if (!runId || !accessToken) {
-    return <span className="text-sm font-medium text-white">{fallback}</span>;
+  if (!(runId && accessToken)) {
+    return <span className="font-medium text-sm text-white">{fallback}</span>;
   }
 
   const status = run?.metadata?.status as
@@ -128,7 +127,7 @@ function RealtimeProcessingLabel({
     | undefined;
   const label = status?.label || fallback;
 
-  return <span className="text-sm font-medium text-white">{label}</span>;
+  return <span className="font-medium text-sm text-white">{label}</span>;
 }
 
 function ImageCard({
@@ -172,25 +171,25 @@ function ImageCard({
   return (
     <div
       className={cn(
-        "animate-fade-in-up group relative aspect-square overflow-hidden rounded-xl bg-muted ring-1 transition-all duration-200",
+        "group relative aspect-square animate-fade-in-up overflow-hidden rounded-xl bg-muted ring-1 transition-all duration-200",
         isCompleted &&
           !isSelected &&
-          "ring-foreground/5 hover:ring-foreground/10 hover:shadow-lg",
-        isSelected && "ring-2 ring-[var(--accent-teal)] shadow-lg",
+          "ring-foreground/5 hover:shadow-lg hover:ring-foreground/10",
+        isSelected && "shadow-lg ring-2 ring-[var(--accent-teal)]"
       )}
-      style={{ animationDelay: `${index * 50}ms` }}
       onClick={() => {
         if (isCompleted) {
           onToggleSelect();
         }
       }}
+      style={{ animationDelay: `${index * 50}ms` }}
     >
       <Image
-        src={displayUrl}
         alt={`Image ${index + 1}`}
-        fill
         className="object-cover transition-transform duration-300 group-hover:scale-105"
+        fill
         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        src={displayUrl}
       />
 
       {/* Status overlay for non-completed */}
@@ -208,32 +207,32 @@ function ImageCard({
                   <div className="absolute inset-0 h-12 w-12 animate-spin rounded-full border-2 border-transparent border-t-white" />
                 </div>
                 <RealtimeProcessingLabel
-                  runId={runId}
                   accessToken={accessToken}
                   fallback="Enhancing…"
                   onComplete={onProcessingComplete}
+                  runId={runId}
                 />
               </div>
             ) : image.status === "pending" ? (
               <div className="flex flex-col items-center gap-2">
                 <IconClock className="h-8 w-8 text-white/70" />
-                <span className="text-sm font-medium text-white/70">
+                <span className="font-medium text-sm text-white/70">
                   Queued
                 </span>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-2">
                 <IconAlertTriangle className="h-8 w-8 text-red-400" />
-                <span className="text-sm font-medium text-red-400">Failed</span>
+                <span className="font-medium text-red-400 text-sm">Failed</span>
                 <Button
-                  variant="secondary"
-                  size="sm"
+                  className="mt-1 gap-1.5 bg-white/90 text-foreground hover:bg-white"
+                  disabled={isRetrying}
                   onClick={(e) => {
                     e.stopPropagation();
                     onRetry();
                   }}
-                  disabled={isRetrying}
-                  className="mt-1 gap-1.5 bg-white/90 text-foreground hover:bg-white"
+                  size="sm"
+                  variant="secondary"
                 >
                   {isRetrying ? (
                     <IconLoader2 className="h-3.5 w-3.5 animate-spin" />
@@ -252,10 +251,10 @@ function ImageCard({
       {isCompleted && (
         <div
           className={cn(
-            "absolute left-2 top-2 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all",
+            "absolute top-2 left-2 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all",
             isSelected
               ? "border-[var(--accent-teal)] bg-[var(--accent-teal)]"
-              : "border-white/50 bg-black/20 opacity-0 group-hover:opacity-100",
+              : "border-white/50 bg-black/20 opacity-0 group-hover:opacity-100"
           )}
         >
           {isSelected && <IconCheck className="h-3.5 w-3.5 text-white" />}
@@ -266,31 +265,31 @@ function ImageCard({
       {isCompleted && (
         <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/40 group-hover:opacity-100">
           <button
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-teal)]"
             onClick={(e) => {
               e.stopPropagation();
               onCompare();
             }}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-teal)]"
             title="Compare"
           >
             <IconArrowsMaximize className="h-5 w-5" />
           </button>
           <button
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-teal)]"
             onClick={(e) => {
               e.stopPropagation();
               onEdit();
             }}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-teal)]"
             title="Edit"
           >
             <IconPencil className="h-5 w-5" />
           </button>
           <button
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-teal)]"
             onClick={(e) => {
               e.stopPropagation();
               onDownload();
             }}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-teal)]"
             title="Download"
           >
             <IconDownload className="h-5 w-5" />
@@ -299,18 +298,18 @@ function ImageCard({
       )}
 
       {/* Image number */}
-      <div className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
+      <div className="absolute right-2 bottom-2 rounded-full bg-black/60 px-2 py-1 font-medium text-white text-xs backdrop-blur-sm">
         {index + 1}
       </div>
 
       {/* Version badge - show if multiple versions exist */}
       {hasMultipleVersions && (
         <button
+          className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-purple-500 px-2 py-1 font-medium text-white text-xs shadow-md transition-colors hover:bg-purple-600"
           onClick={(e) => {
             e.stopPropagation();
             onVersionClick?.();
           }}
-          className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-purple-500 px-2 py-1 text-xs font-medium text-white shadow-md transition-colors hover:bg-purple-600"
           title={`${versionCount} versions available`}
         >
           v{image.version || 1}
@@ -340,15 +339,15 @@ function VersionSelector({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
       <div className="relative w-full max-w-2xl rounded-2xl bg-card p-6 shadow-xl">
         <button
-          onClick={onClose}
-          className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label="Close"
+          className="absolute top-4 right-4 rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          onClick={onClose}
         >
           <IconArrowLeft className="h-5 w-5" />
         </button>
 
-        <h3 className="mb-4 text-lg font-semibold">Version History</h3>
-        <p className="mb-4 text-sm text-muted-foreground">
+        <h3 className="mb-4 font-semibold text-lg">Version History</h3>
+        <p className="mb-4 text-muted-foreground text-sm">
           Click on a version to select it, then compare or edit.
         </p>
 
@@ -359,29 +358,29 @@ function VersionSelector({
               version.resultImageUrl || version.originalImageUrl;
             return (
               <button
-                key={version.id}
-                onClick={() => setSelectedVersion(version)}
                 className={cn(
                   "group relative aspect-square overflow-hidden rounded-lg ring-2 transition-all",
                   isSelected
                     ? "ring-purple-500"
-                    : "ring-transparent hover:ring-foreground/20",
+                    : "ring-transparent hover:ring-foreground/20"
                 )}
+                key={version.id}
+                onClick={() => setSelectedVersion(version)}
               >
                 <Image
-                  src={displayUrl}
                   alt={`Version ${version.version || 1}`}
-                  fill
                   className="object-cover"
+                  fill
                   sizes="150px"
+                  src={displayUrl}
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                  <span className="text-xs font-medium text-white">
+                  <span className="font-medium text-white text-xs">
                     v{version.version || 1}
                   </span>
                 </div>
                 {isSelected && (
-                  <div className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-purple-500">
+                  <div className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-purple-500">
                     <IconCheck className="h-3 w-3 text-white" />
                   </div>
                 )}
@@ -391,27 +390,27 @@ function VersionSelector({
         </div>
 
         <div className="mt-4 flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>
+          <Button onClick={onClose} variant="outline">
             Close
           </Button>
           <Button
-            variant="outline"
+            className="gap-2"
             onClick={() => {
               onSelect(selectedVersion);
               onClose();
             }}
-            className="gap-2"
+            variant="outline"
           >
             <IconArrowsMaximize className="h-4 w-4" />
             Compare
           </Button>
           {selectedVersion.status === "completed" && (
             <Button
+              className="gap-2"
               onClick={() => {
                 onEdit(selectedVersion);
                 onClose();
               }}
-              className="gap-2"
             >
               <IconPencil className="h-4 w-4" />
               Edit v{selectedVersion.version || 1}
@@ -448,36 +447,36 @@ function ComparisonView({
       if (e.buttons !== 1) return;
       handleMove(e.clientX);
     },
-    [handleMove],
+    [handleMove]
   );
 
   const handleTouchMove = React.useCallback(
     (e: React.TouchEvent) => {
       handleMove(e.touches[0].clientX);
     },
-    [handleMove],
+    [handleMove]
   );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
       <button
-        onClick={onClose}
-        className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
         aria-label="Close comparison view"
+        className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+        onClick={onClose}
       >
         <IconArrowLeft className="h-6 w-6" />
       </button>
 
       <div
-        ref={containerRef}
         className="relative aspect-[4/3] w-full max-w-4xl cursor-col-resize overflow-hidden rounded-2xl"
+        onMouseDown={(e) => handleMove(e.clientX)}
         onMouseMove={handleMouseMove}
         onTouchMove={handleTouchMove}
-        onMouseDown={(e) => handleMove(e.clientX)}
         onTouchStart={(e) => handleMove(e.touches[0].clientX)}
+        ref={containerRef}
       >
         {/* Enhanced image (full width) */}
-        <Image src={enhancedUrl} alt="Enhanced" fill className="object-cover" />
+        <Image alt="Enhanced" className="object-cover" fill src={enhancedUrl} />
 
         {/* Original image (clipped) */}
         <div
@@ -485,19 +484,19 @@ function ComparisonView({
           style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
         >
           <Image
-            src={originalUrl}
             alt="Original"
-            fill
             className="object-cover"
+            fill
+            src={originalUrl}
           />
         </div>
 
         {/* Slider line */}
         <div
-          className="absolute bottom-0 top-0 w-1 bg-white shadow-lg"
+          className="absolute top-0 bottom-0 w-1 bg-white shadow-lg"
           style={{ left: `${sliderPosition}%`, transform: "translateX(-50%)" }}
         >
-          <div className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg">
+          <div className="absolute top-1/2 left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg">
             <div className="flex gap-0.5">
               <IconArrowLeft className="h-4 w-4 text-foreground" />
               <IconArrowLeft className="h-4 w-4 rotate-180 text-foreground" />
@@ -506,10 +505,10 @@ function ComparisonView({
         </div>
 
         {/* Labels */}
-        <div className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-black/60 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+        <div className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-black/60 px-3 py-1.5 font-medium text-sm text-white backdrop-blur-sm">
           Original
         </div>
-        <div className="pointer-events-none absolute bottom-4 right-4 rounded-full bg-black/60 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+        <div className="pointer-events-none absolute right-4 bottom-4 rounded-full bg-black/60 px-3 py-1.5 font-medium text-sm text-white backdrop-blur-sm">
           Enhanced
         </div>
       </div>
@@ -567,7 +566,7 @@ function ImageLightbox({
     hasEnhancedVersion,
   ]);
 
-  if (!currentImage || !displayUrl) return null;
+  if (!(currentImage && displayUrl)) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black/95">
@@ -578,7 +577,7 @@ function ImageLightbox({
             {currentIndex + 1} / {images.length}
           </span>
           {currentGroup.versions.length > 1 && (
-            <span className="rounded-full bg-purple-500/20 px-2 py-0.5 text-xs text-purple-300">
+            <span className="rounded-full bg-purple-500/20 px-2 py-0.5 text-purple-300 text-xs">
               v{currentImage.version || 1}
             </span>
           )}
@@ -586,30 +585,30 @@ function ImageLightbox({
         <div className="flex items-center gap-2">
           {hasEnhancedVersion && (
             <button
-              onClick={() => onCompare(currentImage)}
               className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+              onClick={() => onCompare(currentImage)}
               title="Compare (C)"
             >
               <IconArrowsMaximize className="h-5 w-5" />
             </button>
           )}
           <button
-            onClick={() => onDownload(currentImage)}
             className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            onClick={() => onDownload(currentImage)}
             title="Download"
           >
             <IconDownload className="h-5 w-5" />
           </button>
           <button
-            onClick={() => onEdit(currentImage)}
             className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            onClick={() => onEdit(currentImage)}
             title="Edit"
           >
             <IconPencil className="h-5 w-5" />
           </button>
           <button
-            onClick={onClose}
             className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            onClick={onClose}
             title="Close (Esc)"
           >
             <IconX className="h-5 w-5" />
@@ -622,8 +621,8 @@ function ImageLightbox({
         {/* Previous button */}
         {currentIndex > 0 && (
           <button
-            onClick={() => onNavigate(currentIndex - 1)}
             className="absolute left-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+            onClick={() => onNavigate(currentIndex - 1)}
           >
             <IconChevronLeft className="h-6 w-6" />
           </button>
@@ -632,20 +631,20 @@ function ImageLightbox({
         {/* Image */}
         <div className="relative h-full w-full max-w-5xl">
           <Image
-            src={displayUrl}
             alt={`Image ${currentIndex + 1}`}
-            fill
             className="object-contain"
-            sizes="(max-width: 1280px) 100vw, 1280px"
+            fill
             priority
+            sizes="(max-width: 1280px) 100vw, 1280px"
+            src={displayUrl}
           />
         </div>
 
         {/* Next button */}
         {currentIndex < images.length - 1 && (
           <button
-            onClick={() => onNavigate(currentIndex + 1)}
             className="absolute right-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+            onClick={() => onNavigate(currentIndex + 1)}
           >
             <IconChevronRight className="h-6 w-6" />
           </button>
@@ -661,21 +660,21 @@ function ImageLightbox({
           const isActive = index === currentIndex;
           return (
             <button
-              key={group.rootId}
-              onClick={() => onNavigate(index)}
               className={cn(
                 "relative h-16 w-16 shrink-0 overflow-hidden rounded-lg ring-2 transition-all",
                 isActive
                   ? "ring-white"
-                  : "ring-transparent opacity-50 hover:opacity-80",
+                  : "opacity-50 ring-transparent hover:opacity-80"
               )}
+              key={group.rootId}
+              onClick={() => onNavigate(index)}
             >
               <Image
-                src={thumbUrl}
                 alt={`Thumbnail ${index + 1}`}
-                fill
                 className="object-cover"
+                fill
                 sizes="64px"
+                src={thumbUrl}
               />
             </button>
           );
@@ -704,12 +703,12 @@ export function ProjectDetailContent({
   const [addImagesOpen, setAddImagesOpen] = React.useState(false);
   const [lightboxIndex, setLightboxIndex] = React.useState<number | null>(null);
   const [retryingImageId, setRetryingImageId] = React.useState<string | null>(
-    null,
+    null
   );
   const [versionSelectorGroup, setVersionSelectorGroup] =
     React.useState<ImageGroup | null>(null);
   const [selectedImageIds, setSelectedImageIds] = React.useState<Set<string>>(
-    new Set(),
+    new Set()
   );
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
 
@@ -785,7 +784,7 @@ export function ProjectDetailContent({
     groups.sort(
       (a, b) =>
         new Date(b.latestVersion.createdAt).getTime() -
-        new Date(a.latestVersion.createdAt).getTime(),
+        new Date(a.latestVersion.createdAt).getTime()
     );
 
     return groups;
@@ -806,7 +805,7 @@ export function ProjectDetailContent({
       setEditingImage(image);
       setEditingImageLatestVersion(latestVersion);
     },
-    [imageGroups],
+    [imageGroups]
   );
 
   const handleRetry = async (imageId: string) => {
@@ -947,13 +946,13 @@ export function ProjectDetailContent({
   // Polling for processing images (fallback when we don't have realtime)
   React.useEffect(() => {
     const processingImages = images.filter(
-      (img) => img.status === "processing" || img.status === "pending",
+      (img) => img.status === "processing" || img.status === "pending"
     );
 
     if (processingImages.length === 0) return;
 
     // Poll less frequently if we have realtime tracking
-    const pollInterval = runIds.size > 0 ? 10000 : 5000;
+    const pollInterval = runIds.size > 0 ? 10_000 : 5000;
 
     const interval = setInterval(() => {
       router.refresh();
@@ -1016,7 +1015,7 @@ export function ProjectDetailContent({
         if (selectedImageIds.size === 1) {
           const selectedId = Array.from(selectedImageIds)[0];
           const group = imageGroups.find(
-            (g) => g.latestVersion.id === selectedId,
+            (g) => g.latestVersion.id === selectedId
           );
           if (group && group.latestVersion.status === "completed") {
             startEditing(group.latestVersion);
@@ -1045,24 +1044,24 @@ export function ProjectDetailContent({
     <>
       <div className="space-y-6 px-4 md:px-6 lg:px-8">
         {/* Header */}
-        <div className="animate-fade-in-up flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex animate-fade-in-up flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <Button asChild variant="ghost" size="icon" className="shrink-0">
+            <Button asChild className="shrink-0" size="icon" variant="ghost">
               <Link href="/dashboard">
                 <IconArrowLeft className="h-5 w-5" />
               </Link>
             </Button>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold tracking-tight">
+                <h1 className="font-bold text-2xl tracking-tight">
                   {project.name}
                 </h1>
-                <Badge variant={status.variant} className="gap-1">
+                <Badge className="gap-1" variant={status.variant}>
                   {status.icon}
                   {status.label}
                 </Badge>
               </div>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-muted-foreground text-sm">
                 {template?.name || "Unknown Style"} • {project.imageCount} image
                 {project.imageCount !== 1 ? "s" : ""}
               </p>
@@ -1072,9 +1071,9 @@ export function ProjectDetailContent({
           <div className="flex items-center gap-2">
             {canAddMore && (
               <Button
-                variant="outline"
                 className="gap-2"
                 onClick={() => setAddImagesOpen(true)}
+                variant="outline"
               >
                 <IconPlus className="h-4 w-4" />
                 Add More
@@ -1083,8 +1082,8 @@ export function ProjectDetailContent({
             {completedImages.length > 0 && selectedImageIds.size === 0 && (
               <Button
                 className="gap-2"
-                style={{ backgroundColor: "var(--accent-teal)" }}
                 onClick={handleDownload}
+                style={{ backgroundColor: "var(--accent-teal)" }}
               >
                 <IconDownload className="h-4 w-4" />
                 Download All
@@ -1094,7 +1093,7 @@ export function ProjectDetailContent({
         </div>
 
         {/* Stats */}
-        <div className="animate-fade-in-up stagger-1 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="stagger-1 grid animate-fade-in-up grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="stats-card flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/5">
             <div
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
@@ -1109,11 +1108,11 @@ export function ProjectDetailContent({
               />
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                 Total
               </p>
               <p
-                className="font-mono text-lg font-semibold tabular-nums"
+                className="font-mono font-semibold text-lg tabular-nums"
                 style={{ color: "var(--accent-teal)" }}
               >
                 {project.imageCount}
@@ -1135,11 +1134,11 @@ export function ProjectDetailContent({
               />
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                 Completed
               </p>
               <p
-                className="font-mono text-lg font-semibold tabular-nums"
+                className="font-mono font-semibold text-lg tabular-nums"
                 style={{ color: "var(--accent-green)" }}
               >
                 {project.completedCount}
@@ -1161,10 +1160,10 @@ export function ProjectDetailContent({
               />
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                 Style
               </p>
-              <p className="text-sm font-medium text-foreground truncate max-w-[120px]">
+              <p className="max-w-[120px] truncate font-medium text-foreground text-sm">
                 {template?.name || "Unknown"}
               </p>
             </div>
@@ -1184,10 +1183,10 @@ export function ProjectDetailContent({
               />
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                 Created
               </p>
-              <p className="text-sm font-medium text-foreground">
+              <p className="font-medium text-foreground text-sm">
                 {format(project.createdAt, "MMM dd, yyyy")}
               </p>
             </div>
@@ -1195,57 +1194,57 @@ export function ProjectDetailContent({
         </div>
 
         {/* Image grid */}
-        <div className="animate-fade-in-up stagger-2">
-          <h2 className="mb-4 text-lg font-semibold">Images</h2>
+        <div className="stagger-2 animate-fade-in-up">
+          <h2 className="mb-4 font-semibold text-lg">Images</h2>
           {imageGroups.length > 0 ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {imageGroups.map((group, index) => (
                 <ImageCard
-                  key={group.rootId}
+                  accessToken={accessToken}
                   image={group.latestVersion}
                   index={index}
-                  versionCount={group.versions.length}
+                  isRetrying={retryingImageId === group.latestVersion.id}
                   isSelected={selectedImageIds.has(group.latestVersion.id)}
-                  onToggleSelect={() =>
-                    toggleImageSelection(group.latestVersion.id)
-                  }
+                  key={group.rootId}
                   onCompare={() => {
                     if (group.latestVersion.status === "completed") {
                       setLightboxIndex(index);
                     }
                   }}
+                  onDownload={() => handleDownloadSingle(group.latestVersion)}
                   onEdit={() => {
                     if (group.latestVersion.status === "completed") {
                       startEditing(group.latestVersion);
                     }
                   }}
+                  onProcessingComplete={() => {
+                    toast.success("Image processing complete!");
+                    router.refresh();
+                  }}
                   onRetry={() => handleRetry(group.latestVersion.id)}
-                  onDownload={() => handleDownloadSingle(group.latestVersion)}
-                  isRetrying={retryingImageId === group.latestVersion.id}
+                  onToggleSelect={() =>
+                    toggleImageSelection(group.latestVersion.id)
+                  }
                   onVersionClick={() => {
                     if (group.versions.length > 1) {
                       setVersionSelectorGroup(group);
                     }
                   }}
                   runId={runIds.get(group.latestVersion.id)}
-                  accessToken={accessToken}
-                  onProcessingComplete={() => {
-                    toast.success("Image processing complete!");
-                    router.refresh();
-                  }}
+                  versionCount={group.versions.length}
                 />
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-foreground/10 py-12 text-center">
+            <div className="flex flex-col items-center justify-center rounded-xl border border-foreground/10 border-dashed py-12 text-center">
               <IconPhoto className="h-12 w-12 text-muted-foreground/30" />
-              <p className="mt-4 text-sm text-muted-foreground">
+              <p className="mt-4 text-muted-foreground text-sm">
                 No images in this project yet
               </p>
               <Button
-                variant="outline"
                 className="mt-4 gap-2"
                 onClick={() => setAddImagesOpen(true)}
+                variant="outline"
               >
                 <IconPlus className="h-4 w-4" />
                 Add Images
@@ -1257,7 +1256,7 @@ export function ProjectDetailContent({
 
       {/* Floating Selection Bar */}
       {selectedImageIds.size > 0 && (
-        <div className="animate-slide-up fixed inset-x-0 bottom-0 z-40 flex items-center justify-center p-4">
+        <div className="fixed inset-x-0 bottom-0 z-40 flex animate-slide-up items-center justify-center p-4">
           <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-card/95 px-6 py-3 shadow-2xl backdrop-blur-xl">
             <div className="flex items-center gap-2">
               <div
@@ -1275,29 +1274,29 @@ export function ProjectDetailContent({
 
             <div className="flex items-center gap-2">
               <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearSelection}
                 className="gap-1.5 text-muted-foreground hover:text-foreground"
+                onClick={clearSelection}
+                size="sm"
+                variant="ghost"
               >
                 <IconX className="h-4 w-4" />
                 Clear
               </Button>
 
               <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setDeleteDialogOpen(true)}
                 className="gap-1.5 text-red-500 hover:bg-red-500/10 hover:text-red-500"
+                onClick={() => setDeleteDialogOpen(true)}
+                size="sm"
+                variant="ghost"
               >
                 <IconTrash className="h-4 w-4" />
                 Delete
               </Button>
 
               <Button
-                size="sm"
-                onClick={handleDownload}
                 className="gap-1.5"
+                onClick={handleDownload}
+                size="sm"
                 style={{ backgroundColor: "var(--accent-teal)" }}
               >
                 <IconDownload className="h-4 w-4" />
@@ -1311,19 +1310,19 @@ export function ProjectDetailContent({
       {/* Comparison modal */}
       {selectedImage && selectedImage.resultImageUrl && (
         <ComparisonView
-          originalUrl={selectedImage.originalImageUrl}
           enhancedUrl={selectedImage.resultImageUrl}
           onClose={() => setSelectedImage(null)}
+          originalUrl={selectedImage.originalImageUrl}
         />
       )}
 
       {/* Add images dialog */}
       <AddImagesDialog
+        currentImageCount={images.length}
+        onOpenChange={setAddImagesOpen}
+        open={addImagesOpen}
         projectId={project.id}
         projectName={project.name}
-        currentImageCount={images.length}
-        open={addImagesOpen}
-        onOpenChange={setAddImagesOpen}
       />
 
       {/* Mask editor for inpainting */}
@@ -1338,40 +1337,40 @@ export function ProjectDetailContent({
       {/* Version selector modal */}
       {versionSelectorGroup && (
         <VersionSelector
-          versions={versionSelectorGroup.versions}
           initialVersion={versionSelectorGroup.latestVersion}
+          onClose={() => setVersionSelectorGroup(null)}
+          onEdit={(version) => {
+            startEditing(version);
+          }}
           onSelect={(version) => {
             // Open comparison view for the selected version
             setSelectedImage(version);
           }}
-          onEdit={(version) => {
-            startEditing(version);
-          }}
-          onClose={() => setVersionSelectorGroup(null)}
+          versions={versionSelectorGroup.versions}
         />
       )}
 
       {/* Image Lightbox Gallery */}
       {lightboxIndex !== null && (
         <ImageLightbox
-          images={imageGroups}
           currentIndex={lightboxIndex}
+          images={imageGroups}
           onClose={() => setLightboxIndex(null)}
-          onNavigate={setLightboxIndex}
-          onEdit={(image) => {
-            setLightboxIndex(null);
-            startEditing(image);
-          }}
-          onDownload={handleDownloadSingle}
           onCompare={(image) => {
             setLightboxIndex(null);
             setSelectedImage(image);
           }}
+          onDownload={handleDownloadSingle}
+          onEdit={(image) => {
+            setLightboxIndex(null);
+            startEditing(image);
+          }}
+          onNavigate={setLightboxIndex}
         />
       )}
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      <AlertDialog onOpenChange={setDeleteDialogOpen} open={deleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -1386,8 +1385,8 @@ export function ProjectDetailContent({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDeleteSelected}
               className="bg-red-500 text-white hover:bg-red-600"
+              onClick={handleDeleteSelected}
             >
               Delete
             </AlertDialogAction>

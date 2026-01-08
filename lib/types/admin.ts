@@ -1,4 +1,4 @@
-import type { WorkspaceStatus, WorkspacePlan } from "@/lib/db/schema";
+import type { WorkspacePlan, WorkspaceStatus } from "@/lib/db/schema";
 
 // ============================================================================
 // Admin Workspace Types
@@ -157,4 +157,8 @@ export const ALL_WORKSPACE_PLANS: WorkspacePlan[] = [
 export const COST_PER_IMAGE = 0.039; // USD per image
 
 export const ALL_USER_ROLES: UserRole[] = ["owner", "admin", "member"];
-export const ALL_USER_STATUSES: UserStatus[] = ["active", "pending", "inactive"];
+export const ALL_USER_STATUSES: UserStatus[] = [
+  "active",
+  "pending",
+  "inactive",
+];

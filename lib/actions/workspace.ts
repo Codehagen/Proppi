@@ -1,8 +1,8 @@
 "use server";
 
-import { headers } from "next/headers";
-import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { user, workspace } from "@/lib/db/schema";
@@ -13,7 +13,7 @@ export type WorkspaceActionResult = {
 };
 
 export async function updateWorkspaceSettings(
-  formData: FormData,
+  formData: FormData
 ): Promise<WorkspaceActionResult> {
   const session = await auth.api.getSession({
     headers: await headers(),

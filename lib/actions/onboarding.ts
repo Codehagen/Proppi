@@ -1,9 +1,9 @@
 "use server";
 
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { user, workspace } from "@/lib/db/schema";
@@ -25,7 +25,7 @@ export async function completeOnboarding(formData: FormData) {
   const contactPerson = (formData.get("contactPerson") as string) || null;
 
   // Validate required fields
-  if (!name || !workspaceName) {
+  if (!(name && workspaceName)) {
     throw new Error("Name and workspace name are required");
   }
 

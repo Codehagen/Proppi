@@ -64,7 +64,7 @@ export function getRoomTypeById(id: string): RoomTypeOption | undefined {
 // Generate a prompt with room type context and architectural preservation
 export function generatePrompt(
   template: StyleTemplate,
-  roomType: string | null,
+  roomType: string | null
 ): string {
   const preserveStructure =
     "Do not move, remove, or modify windows, walls, doors, or any architectural elements. Keep the room layout exactly as shown.";
@@ -107,7 +107,7 @@ export function getTemplateById(id: string): StyleTemplate | undefined {
 }
 
 export function getTemplatesByCategory(
-  category: StyleCategory,
+  category: StyleCategory
 ): StyleTemplate[] {
   return STYLE_TEMPLATES.filter((t) => t.category === category);
 }

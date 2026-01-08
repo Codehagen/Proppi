@@ -1,7 +1,6 @@
 import { Button, Heading, Section, Text } from "@react-email/components";
-import * as React from "react";
-import { EmailLayout } from "./components/email-layout";
 import { siteConfig } from "../lib/siteconfig";
+import { EmailLayout } from "./components/email-layout";
 
 interface WelcomeEmailProps {
   name: string;
@@ -45,7 +44,7 @@ export function WelcomeEmail({ name }: WelcomeEmailProps) {
       </Section>
 
       <Section style={buttonContainer}>
-        <Button style={button} href={dashboardUrl}>
+        <Button href={dashboardUrl} style={button}>
           Go to Dashboard
         </Button>
       </Section>

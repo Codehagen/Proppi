@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { SettingsContent } from "@/components/settings/settings-content";
 import { auth } from "@/lib/auth";
 import { getUserWithWorkspace, getWorkspaceMembers } from "@/lib/db/queries";
-import { SettingsContent } from "@/components/settings/settings-content";
 
 export default async function SettingsPage() {
   // Get session
@@ -37,9 +37,9 @@ export default async function SettingsPage() {
 
   return (
     <SettingsContent
-      workspace={data.workspace}
-      members={teamMembers}
       currentUserId={session.user.id}
+      members={teamMembers}
+      workspace={data.workspace}
     />
   );
 }

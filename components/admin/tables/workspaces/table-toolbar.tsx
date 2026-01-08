@@ -1,8 +1,9 @@
 "use client";
 
+import { IconSearch, IconX } from "@tabler/icons-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -10,13 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  ALL_WORKSPACE_STATUSES,
-  ALL_WORKSPACE_PLANS,
-} from "@/lib/types/admin";
-import type { WorkspaceStatus, WorkspacePlan } from "@/lib/db/schema";
 import { useAdminWorkspaceFilters } from "@/hooks/use-admin-workspace-filters";
-import { IconSearch, IconX } from "@tabler/icons-react";
+import type { WorkspacePlan, WorkspaceStatus } from "@/lib/db/schema";
+import { ALL_WORKSPACE_PLANS, ALL_WORKSPACE_STATUSES } from "@/lib/types/admin";
 
 const statusLabels: Record<WorkspaceStatus, string> = {
   active: "Active",
@@ -47,12 +44,12 @@ export function WorkspacesTableToolbar() {
       <div className="flex flex-col gap-3 rounded-xl bg-muted/30 p-3 ring-1 ring-foreground/5 sm:flex-row sm:items-center">
         {/* Search input */}
         <div className="relative flex-1 sm:max-w-[320px]">
-          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <IconSearch className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
+            className="focus-ring border-foreground/10 bg-background/80 pl-9 transition-shadow"
+            onChange={(e) => setSearch(e.target.value || null)}
             placeholder="Search workspaces..."
             value={filters.q || ""}
-            onChange={(e) => setSearch(e.target.value || null)}
-            className="pl-9 bg-background/80 border-foreground/10 focus-ring transition-shadow"
           />
         </div>
 
@@ -60,12 +57,12 @@ export function WorkspacesTableToolbar() {
         <div className="flex flex-wrap items-center gap-2">
           {/* Status filter */}
           <Select
-            value={filters.status || "all"}
             onValueChange={(value) =>
               setStatus(value === "all" ? null : (value as WorkspaceStatus))
             }
+            value={filters.status || "all"}
           >
-            <SelectTrigger className="w-full bg-background/80 border-foreground/10 sm:w-[130px]">
+            <SelectTrigger className="w-full border-foreground/10 bg-background/80 sm:w-[130px]">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -80,12 +77,12 @@ export function WorkspacesTableToolbar() {
 
           {/* Plan filter */}
           <Select
-            value={filters.plan || "all"}
             onValueChange={(value) =>
               setPlan(value === "all" ? null : (value as WorkspacePlan))
             }
+            value={filters.plan || "all"}
           >
-            <SelectTrigger className="w-full bg-background/80 border-foreground/10 sm:w-[130px]">
+            <SelectTrigger className="w-full border-foreground/10 bg-background/80 sm:w-[130px]">
               <SelectValue placeholder="Plan" />
             </SelectTrigger>
             <SelectContent>
@@ -101,10 +98,10 @@ export function WorkspacesTableToolbar() {
           {/* Clear all button */}
           {hasActiveFilters && (
             <Button
-              variant="ghost"
-              size="sm"
+              className="text-muted-foreground transition-colors hover:text-destructive"
               onClick={clearAll}
-              className="text-muted-foreground hover:text-destructive transition-colors"
+              size="sm"
+              variant="ghost"
             >
               <IconX className="mr-1 h-3.5 w-3.5" />
               Clear
@@ -115,19 +112,19 @@ export function WorkspacesTableToolbar() {
 
       {/* Active filters pills */}
       {hasActiveFilters && (
-        <div className="flex flex-wrap items-center gap-2 animate-fade-in">
-          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        <div className="flex animate-fade-in flex-wrap items-center gap-2">
+          <span className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
             Active filters:
           </span>
           {filters.q && (
             <Badge
+              className="animate-scale-in gap-1.5 pr-1.5"
               variant="secondary"
-              className="gap-1.5 pr-1.5 animate-scale-in"
             >
               <span className="text-muted-foreground">Search:</span> {filters.q}
               <button
+                className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-foreground/10"
                 onClick={() => clearFilter("q")}
-                className="ml-0.5 rounded-full p-0.5 hover:bg-foreground/10 transition-colors"
               >
                 <IconX className="h-3 w-3" />
               </button>
@@ -136,14 +133,14 @@ export function WorkspacesTableToolbar() {
 
           {filters.status && (
             <Badge
+              className="animate-scale-in gap-1.5 pr-1.5"
               variant="secondary"
-              className="gap-1.5 pr-1.5 animate-scale-in"
             >
               <span className="text-muted-foreground">Status:</span>{" "}
               {statusLabels[filters.status]}
               <button
+                className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-foreground/10"
                 onClick={() => clearFilter("status")}
-                className="ml-0.5 rounded-full p-0.5 hover:bg-foreground/10 transition-colors"
               >
                 <IconX className="h-3 w-3" />
               </button>
@@ -152,14 +149,14 @@ export function WorkspacesTableToolbar() {
 
           {filters.plan && (
             <Badge
+              className="animate-scale-in gap-1.5 pr-1.5"
               variant="secondary"
-              className="gap-1.5 pr-1.5 animate-scale-in"
             >
               <span className="text-muted-foreground">Plan:</span>{" "}
               {planLabels[filters.plan]}
               <button
+                className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-foreground/10"
                 onClick={() => clearFilter("plan")}
-                className="ml-0.5 rounded-full p-0.5 hover:bg-foreground/10 transition-colors"
               >
                 <IconX className="h-3 w-3" />
               </button>

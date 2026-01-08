@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 // Server-side client with secret key (for uploads)
 export const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SECRET_KEY!,
+  process.env.SUPABASE_SECRET_KEY!
 );
 
 // Storage bucket name
@@ -14,7 +14,7 @@ export function getImagePath(
   workspaceId: string,
   projectId: string,
   imageId: string,
-  type: "original" | "result",
+  type: "original" | "result"
 ): string {
   return `${workspaceId}/${projectId}/${type}/${imageId}`;
 }
@@ -23,7 +23,7 @@ export function getImagePath(
 export async function uploadImage(
   file: Buffer | Uint8Array,
   path: string,
-  contentType: string,
+  contentType: string
 ): Promise<string> {
   const { data, error } = await supabaseAdmin.storage
     .from(STORAGE_BUCKET)
@@ -57,7 +57,7 @@ export async function deleteImage(path: string): Promise<void> {
 // Delete all images for a project
 export async function deleteProjectImages(
   workspaceId: string,
-  projectId: string,
+  projectId: string
 ): Promise<void> {
   const folderPath = `${workspaceId}/${projectId}`;
 
@@ -136,7 +136,7 @@ export function getPublicUrl(path: string): string {
 // Path helper for video source images
 export function getVideoSourceImagePath(
   workspaceId: string,
-  imageId: string,
+  imageId: string
 ): string {
   return `${workspaceId}/video-sources/${imageId}`;
 }
@@ -145,7 +145,7 @@ export function getVideoSourceImagePath(
 export async function uploadVideoSourceImage(
   file: Buffer | Uint8Array,
   path: string,
-  contentType: string,
+  contentType: string
 ): Promise<string> {
   const { data, error } = await supabaseAdmin.storage
     .from(STORAGE_BUCKET)
@@ -169,7 +169,7 @@ export async function uploadVideoSourceImage(
 export function getVideoPath(
   workspaceId: string,
   videoProjectId: string,
-  filename: string,
+  filename: string
 ): string {
   return `${workspaceId}/videos/${videoProjectId}/${filename}`;
 }
@@ -178,7 +178,7 @@ export function getVideoPath(
 export async function uploadVideo(
   file: Buffer | Uint8Array,
   path: string,
-  contentType: string,
+  contentType: string
 ): Promise<string> {
   const { data, error } = await supabaseAdmin.storage
     .from(STORAGE_BUCKET)
@@ -212,7 +212,7 @@ export async function deleteVideo(path: string): Promise<void> {
 // Delete all videos for a video project
 export async function deleteVideoProjectFiles(
   workspaceId: string,
-  videoProjectId: string,
+  videoProjectId: string
 ): Promise<void> {
   const folderPath = `${workspaceId}/videos/${videoProjectId}`;
 

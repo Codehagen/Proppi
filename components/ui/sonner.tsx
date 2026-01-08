@@ -1,21 +1,20 @@
 "use client";
 
-import { useTheme } from "next-themes";
-import { Toaster as Sonner, type ToasterProps } from "sonner";
 import {
+  IconAlertOctagon,
+  IconAlertTriangle,
   IconCircleCheck,
   IconInfoCircle,
-  IconAlertTriangle,
-  IconAlertOctagon,
   IconLoader,
 } from "@tabler/icons-react";
+import { useTheme } from "next-themes";
+import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme();
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
       className="toaster group"
       icons={{
         success: (
@@ -77,6 +76,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           "--info-text": "var(--popover-foreground)",
         } as React.CSSProperties
       }
+      theme={theme as ToasterProps["theme"]}
       toastOptions={{
         classNames: {
           toast: "cn-toast shadow-lg ring-1 ring-foreground/10",

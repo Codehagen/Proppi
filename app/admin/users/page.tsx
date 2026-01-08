@@ -2,10 +2,10 @@ import { IconUsers } from "@tabler/icons-react";
 import { UsersDataTable } from "@/components/admin/tables/users/data-table";
 import { getAdminUsers } from "@/lib/db/queries";
 import type {
-  UserRole,
-  UserStatus,
   SortableUserColumn,
   SortDirection,
+  UserRole,
+  UserStatus,
 } from "@/lib/types/admin";
 
 interface AdminUsersPageProps {
@@ -20,9 +20,14 @@ export default async function AdminUsersPage({
   // Parse filters from URL
   const filters = {
     search: typeof params.q === "string" ? params.q : undefined,
-    role: typeof params.role === "string" ? (params.role as UserRole) : undefined,
-    status: typeof params.status === "string" ? (params.status as UserStatus) : undefined,
-    workspaceId: typeof params.workspaceId === "string" ? params.workspaceId : undefined,
+    role:
+      typeof params.role === "string" ? (params.role as UserRole) : undefined,
+    status:
+      typeof params.status === "string"
+        ? (params.status as UserStatus)
+        : undefined,
+    workspaceId:
+      typeof params.workspaceId === "string" ? params.workspaceId : undefined,
   };
 
   // Parse sort from URL
@@ -52,8 +57,8 @@ export default async function AdminUsersPage({
             <IconUsers className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Users</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="font-bold text-2xl tracking-tight">Users</h1>
+            <p className="text-muted-foreground text-sm">
               Manage and monitor all users across workspaces
             </p>
           </div>
@@ -61,7 +66,7 @@ export default async function AdminUsersPage({
       </div>
 
       {/* Data Table */}
-      <div className="animate-fade-in-up stagger-1">
+      <div className="stagger-1 animate-fade-in-up">
         <UsersDataTable
           initialData={initialData.data}
           initialMeta={initialData.meta}

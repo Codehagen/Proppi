@@ -1,10 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { IconPhotoPlus, IconSparkles } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface EmptyProjectsProps {
   onCreateClick?: () => void;
@@ -18,8 +16,8 @@ export function EmptyProjects({
   return (
     <div
       className={cn(
-        "relative flex min-h-[500px] flex-col items-center justify-center gap-6 overflow-hidden rounded-2xl border border-dashed border-foreground/10 bg-muted/30 px-8 py-16 text-center",
-        className,
+        "relative flex min-h-[500px] flex-col items-center justify-center gap-6 overflow-hidden rounded-2xl border border-foreground/10 border-dashed bg-muted/30 px-8 py-16 text-center",
+        className
       )}
     >
       {/* Background pattern */}
@@ -31,28 +29,29 @@ export function EmptyProjects({
       />
 
       {/* Icon */}
-      <div className="animate-fade-in-up relative">
+      <div className="relative animate-fade-in-up">
         <div
           className="flex h-28 w-28 items-center justify-center rounded-3xl shadow-lg ring-1 ring-white/10"
           style={{
-            background: `linear-gradient(135deg, color-mix(in oklch, var(--accent-teal) 20%, transparent) 0%, color-mix(in oklch, var(--accent-teal) 5%, transparent) 100%)`,
+            background:
+              "linear-gradient(135deg, color-mix(in oklch, var(--accent-teal) 20%, transparent) 0%, color-mix(in oklch, var(--accent-teal) 5%, transparent) 100%)",
           }}
         >
           <IconPhotoPlus
             className="h-14 w-14"
-            style={{ color: "var(--accent-teal)" }}
             strokeWidth={1.5}
+            style={{ color: "var(--accent-teal)" }}
           />
         </div>
         {/* Sparkle accent */}
-        <div className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-card shadow-md ring-1 ring-foreground/5">
+        <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-card shadow-md ring-1 ring-foreground/5">
           <IconSparkles className="h-4 w-4 text-amber-500" />
         </div>
       </div>
 
       {/* Text content */}
-      <div className="animate-fade-in-up stagger-1 max-w-md space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight text-foreground">
+      <div className="stagger-1 max-w-md animate-fade-in-up space-y-2">
+        <h2 className="font-bold text-3xl text-foreground tracking-tight">
           Your first masterpiece awaits
         </h2>
         <p className="text-base text-muted-foreground">
@@ -62,11 +61,11 @@ export function EmptyProjects({
       </div>
 
       {/* CTA */}
-      <div className="animate-fade-in-up stagger-2">
+      <div className="stagger-2 animate-fade-in-up">
         <Button
-          size="lg"
-          onClick={onCreateClick}
           className="gap-2 px-8 shadow-lg transition-all hover:shadow-xl"
+          onClick={onCreateClick}
+          size="lg"
           style={{
             backgroundColor: "var(--accent-teal)",
           }}
@@ -77,7 +76,7 @@ export function EmptyProjects({
       </div>
 
       {/* Feature hints */}
-      <div className="animate-fade-in-up stagger-3 flex flex-wrap items-center justify-center gap-6 pt-4 text-sm text-muted-foreground/70">
+      <div className="stagger-3 flex animate-fade-in-up flex-wrap items-center justify-center gap-6 pt-4 text-muted-foreground/70 text-sm">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
           Virtual Staging

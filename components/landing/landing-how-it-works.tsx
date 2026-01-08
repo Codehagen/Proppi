@@ -1,6 +1,6 @@
 "use client";
 
-import { IconUpload, IconWand, IconDownload } from "@tabler/icons-react";
+import { IconDownload, IconUpload, IconWand } from "@tabler/icons-react";
 
 const steps = [
   {
@@ -29,21 +29,21 @@ const steps = [
 export function LandingHowItWorks() {
   return (
     <section
-      id="how-it-works"
       className="px-6 py-24 md:py-32"
+      id="how-it-works"
       style={{ backgroundColor: "var(--landing-bg)" }}
     >
       <div className="mx-auto max-w-6xl">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center">
           <p
-            className="text-sm font-semibold uppercase tracking-wider"
+            className="font-semibold text-sm uppercase tracking-wider"
             style={{ color: "var(--landing-accent)" }}
           >
             How It Works
           </p>
           <h2
-            className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+            className="mt-3 font-bold text-3xl tracking-tight sm:text-4xl md:text-5xl"
             style={{ color: "var(--landing-text)" }}
           >
             Three simple steps to
@@ -63,13 +63,13 @@ export function LandingHowItWorks() {
         <div className="relative mt-16">
           {/* Connecting line - desktop only */}
           <div
-            className="absolute left-0 right-0 top-16 hidden h-0.5 lg:block"
+            className="absolute top-16 right-0 left-0 hidden h-0.5 lg:block"
             style={{ backgroundColor: "var(--landing-border)" }}
           />
 
           <div className="grid gap-8 lg:grid-cols-3 lg:gap-12">
             {steps.map((step) => (
-              <div key={step.step} className="relative text-center">
+              <div className="relative text-center" key={step.step}>
                 {/* Step Number Circle */}
                 <div className="relative mx-auto mb-6">
                   <div
@@ -88,7 +88,7 @@ export function LandingHowItWorks() {
 
                   {/* Step number badge */}
                   <div
-                    className="absolute -right-2 -top-2 flex size-10 items-center justify-center rounded-full text-sm font-bold"
+                    className="absolute -top-2 -right-2 flex size-10 items-center justify-center rounded-full font-bold text-sm"
                     style={{
                       backgroundColor: "var(--landing-accent)",
                       color: "var(--landing-accent-foreground)",
@@ -100,7 +100,7 @@ export function LandingHowItWorks() {
 
                 {/* Content */}
                 <h3
-                  className="text-xl font-semibold"
+                  className="font-semibold text-xl"
                   style={{ color: "var(--landing-text)" }}
                 >
                   {step.title}
@@ -129,7 +129,7 @@ export function LandingHowItWorks() {
             {/* Before */}
             <div className="relative p-6 md:p-8">
               <span
-                className="absolute left-6 top-6 rounded-full px-3 py-1 text-xs font-medium md:left-8 md:top-8"
+                className="absolute top-6 left-6 rounded-full px-3 py-1 font-medium text-xs md:top-8 md:left-8"
                 style={{
                   backgroundColor: "var(--landing-bg-alt)",
                   color: "var(--landing-text-muted)",
@@ -159,7 +159,7 @@ export function LandingHowItWorks() {
               style={{ backgroundColor: "var(--landing-bg-alt)" }}
             >
               <span
-                className="absolute left-6 top-6 rounded-full px-3 py-1 text-xs font-medium md:left-8 md:top-8"
+                className="absolute top-6 left-6 rounded-full px-3 py-1 font-medium text-xs md:top-8 md:left-8"
                 style={{
                   backgroundColor: "var(--landing-accent)",
                   color: "var(--landing-accent-foreground)",

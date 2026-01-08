@@ -1,11 +1,11 @@
-import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot } from "radix-ui";
+import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "h-5 gap-1 rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&>svg]:size-3! inline-flex items-center justify-center w-fit whitespace-nowrap shrink-0 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-colors overflow-hidden group/badge",
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-4xl border border-transparent px-2 py-0.5 font-medium text-xs transition-all transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
@@ -13,7 +13,7 @@ const badgeVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
         destructive:
-          "bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20",
+          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
         outline:
           "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
         ghost:
@@ -21,42 +21,42 @@ const badgeVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         // Status variants for property table
         "status-active":
-          "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+          "border-emerald-500/20 bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
         "status-pending":
-          "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20",
+          "border-amber-500/20 bg-amber-500/15 text-amber-700 dark:text-amber-400",
         "status-completed":
-          "bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/20",
+          "border-blue-500/20 bg-blue-500/15 text-blue-700 dark:text-blue-400",
         "status-archived":
-          "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border-zinc-500/20",
+          "border-zinc-500/20 bg-zinc-500/15 text-zinc-600 dark:text-zinc-400",
         // Admin status variants
         "status-suspended":
-          "bg-red-500/15 text-red-700 dark:text-red-400 border-red-500/20",
+          "border-red-500/20 bg-red-500/15 text-red-700 dark:text-red-400",
         "status-trial":
-          "bg-violet-500/15 text-violet-700 dark:text-violet-400 border-violet-500/20",
+          "border-violet-500/20 bg-violet-500/15 text-violet-700 dark:text-violet-400",
         "status-inactive":
-          "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border-zinc-500/20",
+          "border-zinc-500/20 bg-zinc-500/15 text-zinc-600 dark:text-zinc-400",
         // Plan variants
         "plan-free":
-          "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border-zinc-500/20",
+          "border-zinc-500/20 bg-zinc-500/15 text-zinc-600 dark:text-zinc-400",
         "plan-pro":
-          "bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/20",
+          "border-blue-500/20 bg-blue-500/15 text-blue-700 dark:text-blue-400",
         "plan-enterprise":
-          "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20",
+          "border-amber-500/20 bg-amber-500/15 text-amber-700 dark:text-amber-400",
         // Role variants
         "role-owner":
-          "bg-violet-500/15 text-violet-700 dark:text-violet-400 border-violet-500/20",
+          "border-violet-500/20 bg-violet-500/15 text-violet-700 dark:text-violet-400",
         "role-admin":
-          "bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/20",
+          "border-blue-500/20 bg-blue-500/15 text-blue-700 dark:text-blue-400",
         "role-member":
-          "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border-zinc-500/20",
+          "border-zinc-500/20 bg-zinc-500/15 text-zinc-600 dark:text-zinc-400",
         // Tag variant for property tags
-        tag: "bg-muted text-muted-foreground rounded-md px-2.5 py-0.5 text-[11px]",
+        tag: "rounded-md bg-muted px-2.5 py-0.5 text-[11px] text-muted-foreground",
       },
     },
     defaultVariants: {
       variant: "default",
     },
-  },
+  }
 );
 
 function Badge({
@@ -70,9 +70,9 @@ function Badge({
 
   return (
     <Comp
+      className={cn(badgeVariants({ variant }), className)}
       data-slot="badge"
       data-variant={variant}
-      className={cn(badgeVariants({ variant }), className)}
       {...props}
     />
   );

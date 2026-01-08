@@ -1,11 +1,9 @@
 "use client";
 
+import { IconLoader } from "@tabler/icons-react";
 import { useActionState } from "react";
 import { toast } from "sonner";
-import { IconLoader } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -13,6 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { completeOnboarding } from "@/lib/actions";
 
 interface OnboardingFormProps {
@@ -61,7 +61,7 @@ export function OnboardingForm({
         };
       }
     },
-    null,
+    null
   );
 
   // Show toast on error
@@ -82,24 +82,24 @@ export function OnboardingForm({
           <div className="space-y-2">
             <Label htmlFor="name">Your name</Label>
             <Input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="John Doe"
               defaultValue={initialName}
               disabled={isPending}
+              id="name"
+              name="name"
+              placeholder="John Doe"
+              type="text"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="workspaceName">Company / Workspace name</Label>
             <Input
-              id="workspaceName"
-              name="workspaceName"
-              type="text"
-              placeholder="Acme Real Estate"
               defaultValue={initialWorkspaceName}
               disabled={isPending}
+              id="workspaceName"
+              name="workspaceName"
+              placeholder="Acme Real Estate"
+              type="text"
             />
           </div>
 
@@ -109,14 +109,14 @@ export function OnboardingForm({
               <span className="text-muted-foreground">(optional)</span>
             </Label>
             <Input
-              id="organizationNumber"
-              name="organizationNumber"
-              type="text"
-              placeholder="123456789"
-              maxLength={9}
               disabled={isPending}
+              id="organizationNumber"
+              maxLength={9}
+              name="organizationNumber"
+              placeholder="123456789"
+              type="text"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Norwegian organization number (9 digits)
             </p>
           </div>
@@ -127,12 +127,12 @@ export function OnboardingForm({
               <span className="text-muted-foreground">(optional)</span>
             </Label>
             <Input
-              id="contactEmail"
-              name="contactEmail"
-              type="email"
-              placeholder="contact@company.com"
               defaultValue={initialEmail}
               disabled={isPending}
+              id="contactEmail"
+              name="contactEmail"
+              placeholder="contact@company.com"
+              type="email"
             />
           </div>
 
@@ -142,16 +142,16 @@ export function OnboardingForm({
               <span className="text-muted-foreground">(optional)</span>
             </Label>
             <Input
-              id="contactPerson"
-              name="contactPerson"
-              type="text"
-              placeholder="John Doe"
               defaultValue={initialName}
               disabled={isPending}
+              id="contactPerson"
+              name="contactPerson"
+              placeholder="John Doe"
+              type="text"
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isPending}>
+          <Button className="w-full" disabled={isPending} type="submit">
             {isPending ? (
               <>
                 <IconLoader className="mr-2 size-4 animate-spin" />

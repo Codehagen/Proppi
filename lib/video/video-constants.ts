@@ -70,7 +70,7 @@ export const VIDEO_DEFAULTS = {
 export function calculateVideoCost(
   clipCount: number,
   durationPerClip: VideoDuration = 5,
-  withAudio: boolean = true
+  withAudio = true
 ): number {
   const costPerSecond = withAudio
     ? VIDEO_PRICING.COST_PER_SECOND_WITH_AUDIO

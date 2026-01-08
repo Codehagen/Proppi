@@ -1,5 +1,5 @@
-import { getAllWorkspaces } from "./admin-workspaces";
 import { getAllUsers } from "./admin-users";
+import { getAllWorkspaces } from "./admin-workspaces";
 
 export interface AdminStats {
   totalWorkspaces: number;
@@ -40,8 +40,8 @@ export interface RecentActivity {
 
 function seededRandom(seed: number): () => number {
   return () => {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    return seed / 0x7fffffff;
+    seed = (seed * 1_103_515_245 + 12_345) & 0x7f_ff_ff_ff;
+    return seed / 0x7f_ff_ff_ff;
   };
 }
 
@@ -78,7 +78,7 @@ export function getAdminStats(): AdminStats {
   };
 }
 
-export function getRecentActivity(limit: number = 10): RecentActivity[] {
+export function getRecentActivity(limit = 10): RecentActivity[] {
   const workspaces = getAllWorkspaces();
   const users = getAllUsers();
   const random = seededRandom(789);
@@ -119,7 +119,7 @@ export function getRecentActivity(limit: number = 10): RecentActivity[] {
         description = `${workspace.name} workspace was created`;
         metadata = { workspaceId: workspace.id, workspaceName: workspace.name };
         break;
-      case "image_generated":
+      case "image_generated": {
         const imageCount = Math.floor(random() * 10) + 1;
         description = `${user.name} generated ${imageCount} image${imageCount > 1 ? "s" : ""}`;
         metadata = {
@@ -130,7 +130,8 @@ export function getRecentActivity(limit: number = 10): RecentActivity[] {
           imageCount,
         };
         break;
-      case "plan_upgraded":
+      }
+      case "plan_upgraded": {
         const plans = ["free", "pro", "enterprise"];
         const fromIndex = Math.floor(random() * 2);
         const toIndex = fromIndex + 1;
@@ -142,6 +143,7 @@ export function getRecentActivity(limit: number = 10): RecentActivity[] {
           planTo: plans[toIndex],
         };
         break;
+      }
       case "user_invited":
         description = `${user.name} was invited to ${workspace.name}`;
         metadata = {

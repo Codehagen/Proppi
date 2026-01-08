@@ -1,48 +1,59 @@
-import { eq, desc, count, and, sum, gt, max, or, sql, inArray } from "drizzle-orm";
-import { db } from "./index";
 import {
-  user,
-  workspace,
-  project,
-  imageGeneration,
-  videoProject,
-  videoClip,
-  musicTrack,
-  workspacePricing,
-  invoice,
-  invoiceLineItem,
-  affiliateRelationship,
-  affiliateEarning,
-  type User,
-  type Workspace,
-  type Project,
-  type ImageGeneration,
-  type ProjectStatus,
-  type VideoProject,
-  type VideoClip,
-  type MusicTrack,
-  type VideoProjectStatus,
-  type WorkspaceStatus,
-  type WorkspacePlan,
-  type WorkspacePricing,
-  type Invoice,
-  type InvoiceLineItem,
-  type InvoiceStatus,
-  type LineItemStatus,
-  type AffiliateRelationship,
-  type AffiliateEarning,
-  type AffiliateEarningStatus,
-  NewVideoClip,
-} from "./schema";
+  and,
+  count,
+  desc,
+  eq,
+  gt,
+  inArray,
+  max,
+  or,
+  sql,
+  sum,
+} from "drizzle-orm";
 import { BILLING_DEFAULTS } from "@/lib/fiken-client";
 import type {
-  AdminWorkspaceRow,
   AdminWorkspaceFilters,
+  AdminWorkspaceRow,
   AdminWorkspacesMeta,
   SortableWorkspaceColumn,
   SortDirection,
 } from "@/lib/types/admin";
 import { COST_PER_IMAGE } from "@/lib/types/admin";
+import { db } from "./index";
+import {
+  type AffiliateEarning,
+  type AffiliateEarningStatus,
+  type AffiliateRelationship,
+  affiliateEarning,
+  affiliateRelationship,
+  type ImageGeneration,
+  type Invoice,
+  type InvoiceLineItem,
+  type InvoiceStatus,
+  imageGeneration,
+  invoice,
+  invoiceLineItem,
+  type LineItemStatus,
+  type MusicTrack,
+  musicTrack,
+  type NewVideoClip,
+  type Project,
+  type ProjectStatus,
+  project,
+  type User,
+  user,
+  type VideoClip,
+  type VideoProject,
+  type VideoProjectStatus,
+  videoClip,
+  videoProject,
+  type Workspace,
+  type WorkspacePlan,
+  type WorkspacePricing,
+  type WorkspaceStatus,
+  workspace,
+  workspacePricing,
+} from "./schema";
 
 // ============================================================================
 // User Queries
@@ -68,7 +79,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 
 export async function updateUser(
   userId: string,
-  data: Partial<Omit<User, "id" | "createdAt">>,
+  data: Partial<Omit<User, "id" | "createdAt">>
 ): Promise<User | null> {
   const result = await db
     .update(user)
@@ -83,7 +94,7 @@ export async function updateUser(
 // ============================================================================
 
 export async function getWorkspaceById(
-  workspaceId: string,
+  workspaceId: string
 ): Promise<Workspace | null> {
   const result = await db
     .select()
@@ -94,7 +105,7 @@ export async function getWorkspaceById(
 }
 
 export async function getWorkspaceBySlug(
-  slug: string,
+  slug: string
 ): Promise<Workspace | null> {
   const result = await db
     .select()
@@ -106,7 +117,7 @@ export async function getWorkspaceBySlug(
 
 export async function updateWorkspace(
   workspaceId: string,
-  data: Partial<Omit<Workspace, "id" | "createdAt">>,
+  data: Partial<Omit<Workspace, "id" | "createdAt">>
 ): Promise<Workspace | null> {
   const result = await db
     .update(workspace)
@@ -117,7 +128,7 @@ export async function updateWorkspace(
 }
 
 export async function getWorkspaceMembers(
-  workspaceId: string,
+  workspaceId: string
 ): Promise<User[]> {
   return db
     .select()
@@ -132,7 +143,7 @@ export async function getWorkspaceMembers(
 
 export async function getImageGenerations(
   workspaceId: string,
-  options?: { limit?: number; offset?: number },
+  options?: { limit?: number; offset?: number }
 ): Promise<ImageGeneration[]> {
   const query = db
     .select()
@@ -152,7 +163,7 @@ export async function getImageGenerations(
 }
 
 export async function getImageGenerationById(
-  id: string,
+  id: string
 ): Promise<ImageGeneration | null> {
   const result = await db
     .select()
@@ -179,8 +190,8 @@ export async function getImageGenerationStats(workspaceId: string): Promise<{
     .where(
       and(
         eq(imageGeneration.workspaceId, workspaceId),
-        eq(imageGeneration.status, "completed"),
-      ),
+        eq(imageGeneration.status, "completed")
+      )
     );
 
   const [processingResult] = await db
@@ -189,8 +200,8 @@ export async function getImageGenerationStats(workspaceId: string): Promise<{
     .where(
       and(
         eq(imageGeneration.workspaceId, workspaceId),
-        eq(imageGeneration.status, "processing"),
-      ),
+        eq(imageGeneration.status, "processing")
+      )
     );
 
   const [failedResult] = await db
@@ -199,8 +210,8 @@ export async function getImageGenerationStats(workspaceId: string): Promise<{
     .where(
       and(
         eq(imageGeneration.workspaceId, workspaceId),
-        eq(imageGeneration.status, "failed"),
-      ),
+        eq(imageGeneration.status, "failed")
+      )
     );
 
   return {
@@ -212,7 +223,7 @@ export async function getImageGenerationStats(workspaceId: string): Promise<{
 }
 
 export async function createImageGeneration(
-  data: Omit<ImageGeneration, "id" | "createdAt" | "updatedAt">,
+  data: Omit<ImageGeneration, "id" | "createdAt" | "updatedAt">
 ): Promise<ImageGeneration> {
   const id = crypto.randomUUID();
   const [result] = await db
@@ -227,7 +238,7 @@ export async function createImageGeneration(
 
 export async function updateImageGeneration(
   id: string,
-  data: Partial<Omit<ImageGeneration, "id" | "createdAt">>,
+  data: Partial<Omit<ImageGeneration, "id" | "createdAt">>
 ): Promise<ImageGeneration | null> {
   const result = await db
     .update(imageGeneration)
@@ -246,7 +257,7 @@ export async function getUserWithWorkspace(userId: string): Promise<{
   workspace: Workspace;
 } | null> {
   const userResult = await getUserById(userId);
-  if (!userResult || !userResult.workspaceId) {
+  if (!(userResult && userResult.workspaceId)) {
     return null;
   }
 
@@ -267,7 +278,7 @@ export async function getUserWithWorkspace(userId: string): Promise<{
 
 export async function getProjects(
   workspaceId: string,
-  options?: { limit?: number; offset?: number; status?: ProjectStatus },
+  options?: { limit?: number; offset?: number; status?: ProjectStatus }
 ): Promise<Project[]> {
   let query = db
     .select()
@@ -276,9 +287,9 @@ export async function getProjects(
       options?.status
         ? and(
             eq(project.workspaceId, workspaceId),
-            eq(project.status, options.status),
+            eq(project.status, options.status)
           )
-        : eq(project.workspaceId, workspaceId),
+        : eq(project.workspaceId, workspaceId)
     )
     .orderBy(desc(project.createdAt));
 
@@ -334,10 +345,7 @@ export async function getProjectStats(workspaceId: string): Promise<{
     .select({ count: count() })
     .from(project)
     .where(
-      and(
-        eq(project.workspaceId, workspaceId),
-        eq(project.status, "completed"),
-      ),
+      and(eq(project.workspaceId, workspaceId), eq(project.status, "completed"))
     );
 
   const [processingResult] = await db
@@ -346,8 +354,8 @@ export async function getProjectStats(workspaceId: string): Promise<{
     .where(
       and(
         eq(project.workspaceId, workspaceId),
-        eq(project.status, "processing"),
-      ),
+        eq(project.status, "processing")
+      )
     );
 
   const [imagesResult] = await db
@@ -364,7 +372,7 @@ export async function getProjectStats(workspaceId: string): Promise<{
 }
 
 export async function createProject(
-  data: Omit<Project, "id" | "createdAt" | "updatedAt">,
+  data: Omit<Project, "id" | "createdAt" | "updatedAt">
 ): Promise<Project> {
   const id = crypto.randomUUID();
   const [result] = await db
@@ -379,7 +387,7 @@ export async function createProject(
 
 export async function updateProject(
   id: string,
-  data: Partial<Omit<Project, "id" | "createdAt">>,
+  data: Partial<Omit<Project, "id" | "createdAt">>
 ): Promise<Project | null> {
   const result = await db
     .update(project)
@@ -420,8 +428,8 @@ export async function updateProjectCounts(projectId: string): Promise<void> {
     .where(
       and(
         eq(imageGeneration.projectId, projectId),
-        eq(imageGeneration.status, "completed"),
-      ),
+        eq(imageGeneration.status, "completed")
+      )
     );
 
   const imageCount = totalResult?.count || 0;
@@ -442,8 +450,8 @@ export async function updateProjectCounts(projectId: string): Promise<void> {
       .where(
         and(
           eq(imageGeneration.projectId, projectId),
-          eq(imageGeneration.status, "processing"),
-        ),
+          eq(imageGeneration.status, "processing")
+        )
       );
 
     if ((processingResult?.count || 0) > 0) {
@@ -457,8 +465,8 @@ export async function updateProjectCounts(projectId: string): Promise<void> {
       .where(
         and(
           eq(imageGeneration.projectId, projectId),
-          eq(imageGeneration.status, "failed"),
-        ),
+          eq(imageGeneration.status, "failed")
+        )
       );
 
     if ((failedResult?.count || 0) > 0 && completedCount === 0) {
@@ -499,14 +507,17 @@ export async function updateProjectCounts(projectId: string): Promise<void> {
       }
     } catch (error) {
       // Log but don't fail the project update if billing fails
-      console.error("[updateProjectCounts] Failed to create invoice line item:", error);
+      console.error(
+        "[updateProjectCounts] Failed to create invoice line item:",
+        error
+      );
     }
   }
 }
 
 // Get images for a project
 export async function getProjectImages(
-  projectId: string,
+  projectId: string
 ): Promise<ImageGeneration[]> {
   return db
     .select()
@@ -517,7 +528,7 @@ export async function getProjectImages(
 
 // Get all versions of an image (including the original)
 export async function getImageVersions(
-  imageId: string,
+  imageId: string
 ): Promise<ImageGeneration[]> {
   // First get the image to find its root
   const image = await getImageGenerationById(imageId);
@@ -529,7 +540,7 @@ export async function getImageVersions(
   // Get all versions: the root + all images with parentId = rootId
   const versions = await db.select().from(imageGeneration).where(
     // Either the root image itself OR any image with this parentId
-    eq(imageGeneration.id, rootId),
+    eq(imageGeneration.id, rootId)
   );
 
   const children = await db
@@ -539,7 +550,7 @@ export async function getImageVersions(
 
   // Combine and sort by version
   const allVersions = [...versions, ...children].sort(
-    (a, b) => (a.version || 1) - (b.version || 1),
+    (a, b) => (a.version || 1) - (b.version || 1)
   );
 
   return allVersions;
@@ -547,7 +558,7 @@ export async function getImageVersions(
 
 // Get the latest version of an image
 export async function getLatestImageVersion(
-  imageId: string,
+  imageId: string
 ): Promise<ImageGeneration | null> {
   const versions = await getImageVersions(imageId);
   if (versions.length === 0) return null;
@@ -556,7 +567,7 @@ export async function getLatestImageVersion(
 
 // Get the highest version number for a root image
 export async function getLatestVersionNumber(
-  rootImageId: string,
+  rootImageId: string
 ): Promise<number> {
   // Get max version from: the root image itself OR any image with this parentId
   const [rootResult] = await db
@@ -579,7 +590,7 @@ export async function getLatestVersionNumber(
 // Delete all versions after a specific version number
 export async function deleteVersionsAfter(
   rootImageId: string,
-  afterVersion: number,
+  afterVersion: number
 ): Promise<number> {
   // Delete images where:
   // - parentId = rootImageId AND version > afterVersion
@@ -590,10 +601,10 @@ export async function deleteVersionsAfter(
       and(
         or(
           eq(imageGeneration.parentId, rootImageId),
-          eq(imageGeneration.id, rootImageId),
+          eq(imageGeneration.id, rootImageId)
         ),
-        gt(imageGeneration.version, afterVersion),
-      ),
+        gt(imageGeneration.version, afterVersion)
+      )
     )
     .returning();
 
@@ -602,7 +613,7 @@ export async function deleteVersionsAfter(
 
 // Get project images grouped by root (for version display)
 export async function getProjectImagesGrouped(
-  projectId: string,
+  projectId: string
 ): Promise<Map<string, ImageGeneration[]>> {
   const images = await getProjectImages(projectId);
 
@@ -627,7 +638,7 @@ export async function getProjectImagesGrouped(
 
 // Get only the latest version of each image in a project (for bulk download)
 export async function getLatestVersionImages(
-  projectId: string,
+  projectId: string
 ): Promise<ImageGeneration[]> {
   const grouped = await getProjectImagesGrouped(projectId);
   const latestVersions: ImageGeneration[] = [];
@@ -642,7 +653,7 @@ export async function getLatestVersionImages(
 
   // Sort by creation date (oldest first for consistent ordering)
   return latestVersions.sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
 }
 
@@ -652,7 +663,7 @@ export async function getLatestVersionImages(
 
 export async function getVideoProjects(
   workspaceId: string,
-  options?: { limit?: number; offset?: number; status?: VideoProjectStatus },
+  options?: { limit?: number; offset?: number; status?: VideoProjectStatus }
 ): Promise<VideoProject[]> {
   let query = db
     .select()
@@ -661,9 +672,9 @@ export async function getVideoProjects(
       options?.status
         ? and(
             eq(videoProject.workspaceId, workspaceId),
-            eq(videoProject.status, options.status),
+            eq(videoProject.status, options.status)
           )
-        : eq(videoProject.workspaceId, workspaceId),
+        : eq(videoProject.workspaceId, workspaceId)
     )
     .orderBy(desc(videoProject.createdAt));
 
@@ -697,7 +708,7 @@ export async function getVideoProjectById(id: string): Promise<{
     if (!result[0]) {
       if (process.env.DEBUG_VIDEO === "1") {
         console.warn(
-          `[db:queries] getVideoProjectById: No project found with ID: ${id}`,
+          `[db:queries] getVideoProjectById: No project found with ID: ${id}`
         );
       }
       return null;
@@ -705,7 +716,7 @@ export async function getVideoProjectById(id: string): Promise<{
 
     if (process.env.DEBUG_VIDEO === "1") {
       console.log(
-        `[db:queries] getVideoProjectById: Found project "${result[0].name}"`,
+        `[db:queries] getVideoProjectById: Found project "${result[0].name}"`
       );
     }
 
@@ -717,7 +728,7 @@ export async function getVideoProjectById(id: string): Promise<{
 
     if (process.env.DEBUG_VIDEO === "1") {
       console.log(
-        `[db:queries] getVideoProjectById: Found ${clips.length} clips for project ${id}`,
+        `[db:queries] getVideoProjectById: Found ${clips.length} clips for project ${id}`
       );
     }
 
@@ -731,7 +742,7 @@ export async function getVideoProjectById(id: string): Promise<{
       music = musicResult[0] || null;
       if (process.env.DEBUG_VIDEO === "1") {
         console.log(
-          `[db:queries] getVideoProjectById: Music track ${result[0].musicTrackId} found: ${!!music}`,
+          `[db:queries] getVideoProjectById: Music track ${result[0].musicTrackId} found: ${!!music}`
         );
       }
     }
@@ -744,14 +755,14 @@ export async function getVideoProjectById(id: string): Promise<{
   } catch (error) {
     console.error(
       `[db:queries] getVideoProjectById error for ID ${id}:`,
-      error,
+      error
     );
     throw error;
   }
 }
 
 export async function createVideoProject(
-  data: Omit<VideoProject, "id" | "createdAt" | "updatedAt">,
+  data: Omit<VideoProject, "id" | "createdAt" | "updatedAt">
 ): Promise<VideoProject> {
   const id = crypto.randomUUID();
   const [result] = await db
@@ -766,7 +777,7 @@ export async function createVideoProject(
 
 export async function updateVideoProject(
   id: string,
-  data: Partial<Omit<VideoProject, "id" | "createdAt">>,
+  data: Partial<Omit<VideoProject, "id" | "createdAt">>
 ): Promise<VideoProject | null> {
   if (process.env.DEBUG_VIDEO === "1") {
     console.log(`[db:queries] updateVideoProject starting for ID: ${id}`, {
@@ -784,7 +795,7 @@ export async function updateVideoProject(
     if (!result[0]) {
       if (process.env.DEBUG_VIDEO === "1") {
         console.warn(
-          `[db:queries] updateVideoProject: No project found to update with ID: ${id}`,
+          `[db:queries] updateVideoProject: No project found to update with ID: ${id}`
         );
       }
       return null;
@@ -805,7 +816,7 @@ export async function deleteVideoProject(id: string): Promise<void> {
 }
 
 export async function updateVideoProjectCounts(
-  videoProjectId: string,
+  videoProjectId: string
 ): Promise<void> {
   // Count total clips
   const [totalResult] = await db
@@ -820,8 +831,8 @@ export async function updateVideoProjectCounts(
     .where(
       and(
         eq(videoClip.videoProjectId, videoProjectId),
-        eq(videoClip.status, "completed"),
-      ),
+        eq(videoClip.status, "completed")
+      )
     );
 
   const clipCount = totalResult?.count || 0;
@@ -852,7 +863,7 @@ export async function getVideoClipById(id: string): Promise<VideoClip | null> {
 }
 
 export async function getVideoClips(
-  videoProjectId: string,
+  videoProjectId: string
 ): Promise<VideoClip[]> {
   return db
     .select()
@@ -862,7 +873,7 @@ export async function getVideoClips(
 }
 
 export async function createVideoClip(
-  data: Omit<VideoClip, "id" | "createdAt" | "updatedAt">,
+  data: Omit<VideoClip, "id" | "createdAt" | "updatedAt">
 ): Promise<VideoClip> {
   const id = crypto.randomUUID();
   const [result] = await db
@@ -876,7 +887,7 @@ export async function createVideoClip(
 }
 
 export async function createVideoClips(
-  clips: Array<Omit<NewVideoClip, "id" | "createdAt" | "updatedAt">>,
+  clips: Array<Omit<NewVideoClip, "id" | "createdAt" | "updatedAt">>
 ): Promise<VideoClip[]> {
   const clipsWithIds = clips.map((clip) => ({
     ...clip,
@@ -891,7 +902,7 @@ export async function createVideoClips(
 
 export async function updateVideoClip(
   id: string,
-  data: Partial<Omit<VideoClip, "id" | "createdAt">>,
+  data: Partial<Omit<VideoClip, "id" | "createdAt">>
 ): Promise<VideoClip | null> {
   const result = await db
     .update(videoClip)
@@ -906,7 +917,7 @@ export async function deleteVideoClip(id: string): Promise<void> {
 }
 
 export async function updateClipSequenceOrders(
-  clips: Array<{ id: string; sequenceOrder: number }>,
+  clips: Array<{ id: string; sequenceOrder: number }>
 ): Promise<void> {
   for (const clip of clips) {
     await db
@@ -928,7 +939,7 @@ export async function getMusicTracks(options?: {
 
   if (options?.category) {
     query = query.where(
-      eq(musicTrack.category, options.category),
+      eq(musicTrack.category, options.category)
     ) as typeof query;
   }
 
@@ -940,7 +951,7 @@ export async function getMusicTracks(options?: {
 }
 
 export async function getMusicTrackById(
-  id: string,
+  id: string
 ): Promise<MusicTrack | null> {
   const result = await db
     .select()
@@ -951,7 +962,7 @@ export async function getMusicTrackById(
 }
 
 export async function createMusicTrack(
-  data: Omit<MusicTrack, "id" | "createdAt">,
+  data: Omit<MusicTrack, "id" | "createdAt">
 ): Promise<MusicTrack> {
   const id = crypto.randomUUID();
   const [result] = await db
@@ -985,8 +996,8 @@ export async function getVideoProjectStats(workspaceId: string): Promise<{
     .where(
       and(
         eq(videoProject.workspaceId, workspaceId),
-        eq(videoProject.status, "completed"),
-      ),
+        eq(videoProject.status, "completed")
+      )
     );
 
   const [processingResult] = await db
@@ -997,9 +1008,9 @@ export async function getVideoProjectStats(workspaceId: string): Promise<{
         eq(videoProject.workspaceId, workspaceId),
         or(
           eq(videoProject.status, "generating"),
-          eq(videoProject.status, "compiling"),
-        ),
-      ),
+          eq(videoProject.status, "compiling")
+        )
+      )
     );
 
   const [costResult] = await db
@@ -1123,21 +1134,41 @@ export async function getAdminWorkspaces(options: {
     WHERE 1=1
     ${filters?.status ? sql`AND w.status = ${filters.status}` : sql``}
     ${filters?.plan ? sql`AND w.plan = ${filters.plan}` : sql``}
-    ${filters?.search ? sql`AND (
-      w.name ILIKE ${'%' + filters.search + '%'} OR
-      w.slug ILIKE ${'%' + filters.search + '%'} OR
-      owner.email ILIKE ${'%' + filters.search + '%'} OR
-      owner.name ILIKE ${'%' + filters.search + '%'}
-    )` : sql``}
+    ${
+      filters?.search
+        ? sql`AND (
+      w.name ILIKE ${"%" + filters.search + "%"} OR
+      w.slug ILIKE ${"%" + filters.search + "%"} OR
+      owner.email ILIKE ${"%" + filters.search + "%"} OR
+      owner.name ILIKE ${"%" + filters.search + "%"}
+    )`
+        : sql``
+    }
     ${cursor ? sql`AND w.id > ${cursor}` : sql``}
     ORDER BY ${
-      sort?.[0] === "name" ? (sort[1] === "asc" ? sql`w.name ASC` : sql`w.name DESC`) :
-      sort?.[0] === "memberCount" ? (sort[1] === "asc" ? sql`member_count ASC` : sql`member_count DESC`) :
-      sort?.[0] === "imagesGenerated" ? (sort[1] === "asc" ? sql`images_generated ASC` : sql`images_generated DESC`) :
-      sort?.[0] === "totalSpend" ? (sort[1] === "asc" ? sql`images_generated ASC` : sql`images_generated DESC`) :
-      sort?.[0] === "lastActivityAt" ? (sort[1] === "asc" ? sql`last_activity_at ASC` : sql`last_activity_at DESC`) :
-      sort?.[0] === "createdAt" ? (sort[1] === "asc" ? sql`w.created_at ASC` : sql`w.created_at DESC`) :
-      sql`w.created_at DESC`
+      sort?.[0] === "name"
+        ? sort[1] === "asc"
+          ? sql`w.name ASC`
+          : sql`w.name DESC`
+        : sort?.[0] === "memberCount"
+          ? (sort[1] === "asc" ? sql`member_count ASC` : sql`member_count DESC`)
+          : sort?.[0] === "imagesGenerated"
+            ? sort[1] === "asc"
+              ? sql`images_generated ASC`
+              : sql`images_generated DESC`
+            : sort?.[0] === "totalSpend"
+              ? sort[1] === "asc"
+                ? sql`images_generated ASC`
+                : sql`images_generated DESC`
+              : sort?.[0] === "lastActivityAt"
+                ? sort[1] === "asc"
+                  ? sql`last_activity_at ASC`
+                  : sql`last_activity_at DESC`
+                : sort?.[0] === "createdAt"
+                  ? sort[1] === "asc"
+                    ? sql`w.created_at ASC`
+                    : sql`w.created_at DESC`
+                  : sql`w.created_at DESC`
     }
     LIMIT ${limit + 1}
   `);
@@ -1157,7 +1188,8 @@ export async function getAdminWorkspaces(options: {
     imagesGenerated: Number(row.images_generated) || 0,
     videosGenerated: Number(row.videos_generated) || 0,
     videosCompleted: Number(row.videos_completed) || 0,
-    totalSpend: Math.round(Number(row.images_generated) * COST_PER_IMAGE * 100) / 100,
+    totalSpend:
+      Math.round(Number(row.images_generated) * COST_PER_IMAGE * 100) / 100,
     totalVideoSpend: (Number(row.video_cost_cents) || 0) / 100,
     ownerId: row.owner_id,
     ownerName: row.owner_name,
@@ -1540,27 +1572,51 @@ export async function getAdminUsers(options: {
       GROUP BY user_id
     ) image_counts ON image_counts.user_id = u.id
     WHERE 1=1
-    ${filters?.search ? sql`AND (
-      u.name ILIKE ${'%' + filters.search + '%'} OR
-      u.email ILIKE ${'%' + filters.search + '%'} OR
-      w.name ILIKE ${'%' + filters.search + '%'}
-    )` : sql``}
+    ${
+      filters?.search
+        ? sql`AND (
+      u.name ILIKE ${"%" + filters.search + "%"} OR
+      u.email ILIKE ${"%" + filters.search + "%"} OR
+      w.name ILIKE ${"%" + filters.search + "%"}
+    )`
+        : sql``
+    }
     ${filters?.role ? sql`AND u.role = ${filters.role}` : sql``}
     ${filters?.workspaceId ? sql`AND u.workspace_id = ${filters.workspaceId}` : sql``}
-    ${filters?.status ? sql`AND CASE
+    ${
+      filters?.status
+        ? sql`AND CASE
       WHEN u.email_verified = false THEN 'pending'
       WHEN u.updated_at < NOW() - INTERVAL '30 days' THEN 'inactive'
       ELSE 'active'
-    END = ${filters.status}` : sql``}
+    END = ${filters.status}`
+        : sql``
+    }
     ${cursor ? sql`AND u.id > ${cursor}` : sql``}
     ORDER BY ${
-      sort?.[0] === "name" ? (sort[1] === "asc" ? sql`u.name ASC` : sql`u.name DESC`) :
-      sort?.[0] === "email" ? (sort[1] === "asc" ? sql`u.email ASC` : sql`u.email DESC`) :
-      sort?.[0] === "role" ? (sort[1] === "asc" ? sql`u.role ASC` : sql`u.role DESC`) :
-      sort?.[0] === "imagesGenerated" ? (sort[1] === "asc" ? sql`images_generated ASC` : sql`images_generated DESC`) :
-      sort?.[0] === "lastActiveAt" ? (sort[1] === "asc" ? sql`u.updated_at ASC` : sql`u.updated_at DESC`) :
-      sort?.[0] === "createdAt" ? (sort[1] === "asc" ? sql`u.created_at ASC` : sql`u.created_at DESC`) :
-      sql`u.created_at DESC`
+      sort?.[0] === "name"
+        ? sort[1] === "asc"
+          ? sql`u.name ASC`
+          : sql`u.name DESC`
+        : sort?.[0] === "email"
+          ? (sort[1] === "asc" ? sql`u.email ASC` : sql`u.email DESC`)
+          : sort?.[0] === "role"
+            ? sort[1] === "asc"
+              ? sql`u.role ASC`
+              : sql`u.role DESC`
+            : sort?.[0] === "imagesGenerated"
+              ? sort[1] === "asc"
+                ? sql`images_generated ASC`
+                : sql`images_generated DESC`
+              : sort?.[0] === "lastActiveAt"
+                ? sort[1] === "asc"
+                  ? sql`u.updated_at ASC`
+                  : sql`u.updated_at DESC`
+                : sort?.[0] === "createdAt"
+                  ? sort[1] === "asc"
+                    ? sql`u.created_at ASC`
+                    : sql`u.created_at DESC`
+                  : sql`u.created_at DESC`
     }
     LIMIT ${limit + 1}
   `);
@@ -1692,7 +1748,8 @@ export async function getAdminUserDetail(
 
   // Calculate stats
   const imagesGenerated = Number(imageStats?.total) || 0;
-  const totalImageSpend = Math.round(imagesGenerated * COST_PER_IMAGE * 100) / 100;
+  const totalImageSpend =
+    Math.round(imagesGenerated * COST_PER_IMAGE * 100) / 100;
   const totalVideoSpend = (Number(videoStats?.totalCost) || 0) / 100;
 
   // Derive status
@@ -1723,7 +1780,8 @@ export async function getAdminUserDetail(
           id: workspaceData.id,
           name: workspaceData.name,
           slug: workspaceData.slug,
-          status: workspaceData.status as import("@/lib/db/schema").WorkspaceStatus,
+          status:
+            workspaceData.status as import("@/lib/db/schema").WorkspaceStatus,
           plan: workspaceData.plan as import("@/lib/db/schema").WorkspacePlan,
         }
       : null,
@@ -1742,9 +1800,11 @@ export async function getAdminUserDetail(
 // Billing Queries - Workspace Pricing
 // ============================================================================
 
-export async function getWorkspacePricing(
-  workspaceId: string
-): Promise<{ imageProjectPriceOre: number; videoProjectPriceOre: number; fikenContactId: number | null }> {
+export async function getWorkspacePricing(workspaceId: string): Promise<{
+  imageProjectPriceOre: number;
+  videoProjectPriceOre: number;
+  fikenContactId: number | null;
+}> {
   const result = await db
     .select()
     .from(workspacePricing)
@@ -1753,8 +1813,10 @@ export async function getWorkspacePricing(
 
   const pricing = result[0];
   return {
-    imageProjectPriceOre: pricing?.imageProjectPriceOre ?? BILLING_DEFAULTS.IMAGE_PROJECT_PRICE_ORE,
-    videoProjectPriceOre: pricing?.videoProjectPriceOre ?? BILLING_DEFAULTS.VIDEO_PROJECT_PRICE_ORE,
+    imageProjectPriceOre:
+      pricing?.imageProjectPriceOre ?? BILLING_DEFAULTS.IMAGE_PROJECT_PRICE_ORE,
+    videoProjectPriceOre:
+      pricing?.videoProjectPriceOre ?? BILLING_DEFAULTS.VIDEO_PROJECT_PRICE_ORE,
     fikenContactId: pricing?.fikenContactId ?? null,
   };
 }
@@ -1972,12 +2034,16 @@ export async function getInvoiceHistory(filters?: {
     ...inv,
     workspaceName: inv.workspaceName ?? "Unknown",
     status: inv.status as InvoiceStatus,
-    totalAmountWithVatOre: Math.round(inv.totalAmountOre * (1 + BILLING_DEFAULTS.VAT_RATE)),
+    totalAmountWithVatOre: Math.round(
+      inv.totalAmountOre * (1 + BILLING_DEFAULTS.VAT_RATE)
+    ),
     lineItemCount: countMap.get(inv.id) ?? 0,
   }));
 }
 
-export async function getInvoiceById(invoiceId: string): Promise<Invoice | null> {
+export async function getInvoiceById(
+  invoiceId: string
+): Promise<Invoice | null> {
   const result = await db
     .select()
     .from(invoice)
@@ -2206,7 +2272,9 @@ export interface AffiliateRelationshipRow {
   createdAt: Date;
 }
 
-export async function getAffiliateRelationships(): Promise<AffiliateRelationshipRow[]> {
+export async function getAffiliateRelationships(): Promise<
+  AffiliateRelationshipRow[]
+> {
   const results = await db
     .select({
       id: affiliateRelationship.id,
@@ -2316,7 +2384,9 @@ export async function getAffiliateEarnings(filters?: {
   const conditions: ReturnType<typeof eq>[] = [];
 
   if (filters?.affiliateWorkspaceId) {
-    conditions.push(eq(affiliateEarning.affiliateWorkspaceId, filters.affiliateWorkspaceId));
+    conditions.push(
+      eq(affiliateEarning.affiliateWorkspaceId, filters.affiliateWorkspaceId)
+    );
   }
   if (filters?.status) {
     conditions.push(eq(affiliateEarning.status, filters.status));

@@ -1,29 +1,29 @@
 "use server";
 
-import { headers } from "next/headers";
+import { eq, inArray, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { eq, or, inArray } from "drizzle-orm";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { user, imageGeneration, type ImageGeneration } from "@/lib/db/schema";
 import {
   createImageGeneration,
-  updateImageGeneration,
   getImageGenerationById,
   getProjectById,
-  updateProjectCounts,
+  updateImageGeneration,
   updateProject,
+  updateProjectCounts,
 } from "@/lib/db/queries";
+import { type ImageGeneration, imageGeneration, user } from "@/lib/db/schema";
+import { generatePrompt, getTemplateById } from "@/lib/style-templates";
 import {
-  deleteImage,
-  getImagePath,
-  getExtensionFromContentType,
   createSignedUploadUrl,
+  deleteImage,
+  getExtensionFromContentType,
+  getImagePath,
   getPublicUrl,
 } from "@/lib/supabase";
-import { getTemplateById, generatePrompt } from "@/lib/style-templates";
+import { type EditMode, inpaintImageTask } from "@/trigger/inpaint-image";
 import { processImageTask } from "@/trigger/process-image";
-import { inpaintImageTask, type EditMode } from "@/trigger/inpaint-image";
 
 export type ActionResult<T> =
   | {
@@ -38,7 +38,7 @@ export type ActionResult<T> =
 // Generate signed upload URLs for client-side direct upload
 export async function createSignedUploadUrls(
   projectId: string,
-  files: { name: string; type: string }[],
+  files: { name: string; type: string }[]
 ): Promise<
   ActionResult<
     { imageId: string; signedUrl: string; token: string; path: string }[]
@@ -87,7 +87,7 @@ export async function createSignedUploadUrls(
           workspaceId,
           projectId,
           `${imageId}.${extension}`,
-          "original",
+          "original"
         );
 
         const { signedUrl, token } = await createSignedUploadUrl(path);
@@ -98,7 +98,7 @@ export async function createSignedUploadUrls(
           token,
           path,
         };
-      }),
+      })
     );
 
     return { success: true, data: signedUrls };
@@ -121,7 +121,7 @@ export async function recordUploadedImages(
     fileSize: number;
     contentType: string;
     roomType?: string | null;
-  }[],
+  }[]
 ): Promise<ActionResult<ImageWithRunId[]>> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -229,7 +229,7 @@ export async function recordUploadedImages(
 
 // Delete a single image from a project
 export async function deleteProjectImage(
-  imageId: string,
+  imageId: string
 ): Promise<ActionResult<void>> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -295,7 +295,7 @@ export async function deleteProjectImage(
 
 // Delete multiple selected images and their versions
 export async function deleteSelectedImages(
-  imageIds: string[],
+  imageIds: string[]
 ): Promise<ActionResult<{ deletedCount: number }>> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -349,8 +349,8 @@ export async function deleteSelectedImages(
       .where(
         or(
           inArray(imageGeneration.id, Array.from(rootIds)),
-          inArray(imageGeneration.parentId, Array.from(rootIds)),
-        ),
+          inArray(imageGeneration.parentId, Array.from(rootIds))
+        )
       );
 
     // Track project IDs for updating counts later
@@ -402,7 +402,7 @@ export async function deleteSelectedImages(
 
 // Retry failed image processing
 export async function retryImageProcessing(
-  imageId: string,
+  imageId: string
 ): Promise<ActionResult<ImageWithRunId>> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -469,7 +469,7 @@ export async function updateImageStatus(
   imageId: string,
   status: "pending" | "processing" | "completed" | "failed",
   resultUrl?: string,
-  errorMessage?: string,
+  errorMessage?: string
 ): Promise<ActionResult<ImageGeneration>> {
   const image = await getImageGenerationById(imageId);
   if (!image) {
@@ -503,7 +503,7 @@ export async function updateImageStatus(
 // Regenerate an image with the same or different style
 export async function regenerateImage(
   imageId: string,
-  newTemplateId?: string,
+  newTemplateId?: string
 ): Promise<ActionResult<ImageWithRunId>> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -591,7 +591,7 @@ export async function triggerInpaintTask(
   prompt: string,
   mode: EditMode,
   maskDataUrl?: string,
-  replaceNewerVersions?: boolean,
+  replaceNewerVersions?: boolean
 ): Promise<ActionResult<{ runId: string }>> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -648,7 +648,7 @@ function extractPathFromUrl(url: string): string | null {
   try {
     const urlObj = new URL(url);
     const pathMatch = urlObj.pathname.match(
-      /\/storage\/v1\/object\/public\/[^/]+\/(.+)/,
+      /\/storage\/v1\/object\/public\/[^/]+\/(.+)/
     );
     return pathMatch ? pathMatch[1] : null;
   } catch {

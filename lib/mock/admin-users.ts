@@ -1,4 +1,4 @@
-import { getAllWorkspaces, type AdminWorkspace } from "./admin-workspaces";
+import { getAllWorkspaces } from "./admin-workspaces";
 
 export type UserRole = "owner" | "admin" | "member";
 export type UserStatus = "active" | "pending" | "inactive";
@@ -130,8 +130,8 @@ const lastNames = [
 
 function seededRandom(seed: number): () => number {
   return () => {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    return seed / 0x7fffffff;
+    seed = (seed * 1_103_515_245 + 12_345) & 0x7f_ff_ff_ff;
+    return seed / 0x7f_ff_ff_ff;
   };
 }
 
@@ -155,7 +155,7 @@ function generateMockUsers(): AdminUser[] {
       role: "owner",
       status: "active",
       imagesGenerated: Math.floor(
-        workspace.imagesGenerated * (0.3 + random() * 0.3),
+        workspace.imagesGenerated * (0.3 + random() * 0.3)
       ),
       lastActiveAt: workspace.lastActivityAt,
       joinedAt: workspace.createdAt,
@@ -182,7 +182,7 @@ function generateMockUsers(): AdminUser[] {
           ? Math.floor(
               random() *
                 (workspace.imagesGenerated / workspace.memberCount) *
-                1.5,
+                1.5
             )
           : 0;
 
@@ -289,7 +289,7 @@ function filterUsers(users: AdminUser[], filters: UserFilters): AdminUser[] {
 
 function sortUsers(
   users: AdminUser[],
-  sort?: [SortableUserColumn, SortDirection],
+  sort?: [SortableUserColumn, SortDirection]
 ): AdminUser[] {
   if (!sort) return users;
 
@@ -306,10 +306,11 @@ function sortUsers(
       case "email":
         comparison = a.email.localeCompare(b.email);
         break;
-      case "role":
+      case "role": {
         const roleOrder = { owner: 0, admin: 1, member: 2 };
         comparison = roleOrder[a.role] - roleOrder[b.role];
         break;
+      }
       case "status":
         comparison = a.status.localeCompare(b.status);
         break;
@@ -330,13 +331,13 @@ function sortUsers(
 
 export function getUsersPage(
   cursor: string | null = null,
-  limit: number = 20,
-  filters: UserFilters = {},
+  limit = 20,
+  filters: UserFilters = {}
 ): GetUsersResponse {
   const filteredUsers = filterUsers(mockUsers, filters);
   const sortedUsers = sortUsers(filteredUsers, filters.sort);
 
-  const startIndex = cursor ? parseInt(cursor, 10) : 0;
+  const startIndex = cursor ? Number.parseInt(cursor, 10) : 0;
   const endIndex = Math.min(startIndex + limit, sortedUsers.length);
   const data = sortedUsers.slice(startIndex, endIndex);
   const hasMore = endIndex < sortedUsers.length;

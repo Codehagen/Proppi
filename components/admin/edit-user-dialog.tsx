@@ -1,35 +1,16 @@
 "use client";
 
-import * as React from "react";
-import { useState, useTransition } from "react";
 import {
+  IconCheck,
   IconEdit,
   IconLoader2,
-  IconCheck,
   IconShieldCheck,
   IconTrash,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import * as React from "react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,13 +21,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { UserRole, AdminUserDetail } from "@/lib/types/admin";
+import { Button } from "@/components/ui/button";
 import {
-  updateUserRoleAction,
-  updateUserNameAction,
-  toggleSystemAdminAction,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import {
   deleteUserAction,
+  toggleSystemAdminAction,
+  updateUserNameAction,
+  updateUserRoleAction,
 } from "@/lib/actions/admin";
+import type { AdminUserDetail, UserRole } from "@/lib/types/admin";
 
 interface EditUserDialogProps {
   open: boolean;
@@ -166,12 +165,15 @@ export function EditUserDialog({
     }
   };
 
-  const hasChanges = name !== user.name || role !== user.role || isSystemAdmin !== user.isSystemAdmin;
+  const hasChanges =
+    name !== user.name ||
+    role !== user.role ||
+    isSystemAdmin !== user.isSystemAdmin;
 
   return (
     <>
-      <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent size="default" className="overflow-hidden p-0">
+      <Dialog onOpenChange={handleClose} open={open}>
+        <DialogContent className="overflow-hidden p-0" size="default">
           {/* Header */}
           <div className="border-b px-6 py-4">
             <DialogHeader>
@@ -197,10 +199,10 @@ export function EditUserDialog({
           </div>
 
           {/* Content */}
-          <form onSubmit={handleSubmit} className="space-y-6 p-6">
+          <form className="space-y-6 p-6" onSubmit={handleSubmit}>
             {/* Success state */}
             {saved ? (
-              <div className="animate-fade-in-up flex flex-col items-center gap-4 py-8 text-center">
+              <div className="flex animate-fade-in-up flex-col items-center gap-4 py-8 text-center">
                 <div
                   className="flex h-16 w-16 items-center justify-center rounded-full"
                   style={{
@@ -214,8 +216,8 @@ export function EditUserDialog({
                   />
                 </div>
                 <div>
-                  <p className="text-lg font-semibold">User Updated!</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-semibold text-lg">User Updated!</p>
+                  <p className="text-muted-foreground text-sm">
                     Changes have been saved successfully
                   </p>
                 </div>
@@ -224,34 +226,34 @@ export function EditUserDialog({
               <>
                 {/* Profile Section */}
                 <div className="space-y-4">
-                  <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  <h4 className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                     Profile
                   </h4>
 
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Name</Label>
+                    <Label className="font-medium text-sm">Name</Label>
                     <Input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
                       disabled={isPending}
+                      onChange={(e) => setName(e.target.value)}
                       placeholder="User name"
+                      value={name}
                     />
                   </div>
                 </div>
 
                 {/* Role Section */}
                 <div className="space-y-4">
-                  <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  <h4 className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                     Workspace Role
                   </h4>
 
                   {/* Role */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Role</Label>
+                    <Label className="font-medium text-sm">Role</Label>
                     <Select
-                      value={role}
-                      onValueChange={(value) => setRole(value as UserRole)}
                       disabled={isPending}
+                      onValueChange={(value) => setRole(value as UserRole)}
+                      value={role}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -270,15 +272,16 @@ export function EditUserDialog({
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-muted-foreground">
-                      The user&apos;s role within their workspace. Owner has full access.
+                    <p className="text-muted-foreground text-xs">
+                      The user&apos;s role within their workspace. Owner has
+                      full access.
                     </p>
                   </div>
                 </div>
 
                 {/* System Admin Section */}
                 <div className="space-y-4">
-                  <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  <h4 className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                     System Permissions
                   </h4>
 
@@ -303,38 +306,40 @@ export function EditUserDialog({
                       </div>
                       <div>
                         <p className="font-medium">System Administrator</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                           Grant access to the admin panel
                         </p>
                       </div>
                     </div>
                     <Switch
                       checked={isSystemAdmin}
-                      onCheckedChange={setIsSystemAdmin}
                       disabled={isPending}
+                      onCheckedChange={setIsSystemAdmin}
                     />
                   </div>
                 </div>
 
                 {/* Danger Zone */}
                 <div className="space-y-4">
-                  <h4 className="text-[11px] font-medium uppercase tracking-wider text-destructive">
+                  <h4 className="font-medium text-[11px] text-destructive uppercase tracking-wider">
                     Danger Zone
                   </h4>
 
                   <div className="flex items-center justify-between rounded-lg border border-destructive/20 bg-destructive/5 p-4">
                     <div>
-                      <p className="font-medium text-destructive">Delete User</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-medium text-destructive">
+                        Delete User
+                      </p>
+                      <p className="text-muted-foreground text-sm">
                         Permanently remove this user and all their data
                       </p>
                     </div>
                     <Button
+                      disabled={isPending}
+                      onClick={() => setShowDeleteConfirm(true)}
+                      size="sm"
                       type="button"
                       variant="destructive"
-                      size="sm"
-                      onClick={() => setShowDeleteConfirm(true)}
-                      disabled={isPending}
                     >
                       <IconTrash className="mr-2 h-4 w-4" />
                       Delete
@@ -349,17 +354,17 @@ export function EditUserDialog({
           {!saved && (
             <div className="flex items-center justify-end gap-3 border-t bg-muted/30 px-6 py-4">
               <Button
+                disabled={isPending}
+                onClick={handleClose}
                 type="button"
                 variant="outline"
-                onClick={handleClose}
-                disabled={isPending}
               >
                 Cancel
               </Button>
               <Button
-                onClick={handleSubmit}
-                disabled={!hasChanges || isPending}
                 className="min-w-[120px] gap-2"
+                disabled={!hasChanges || isPending}
+                onClick={handleSubmit}
                 style={{ backgroundColor: "var(--accent-teal)" }}
               >
                 {isPending ? (
@@ -380,7 +385,7 @@ export function EditUserDialog({
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+      <AlertDialog onOpenChange={setShowDeleteConfirm} open={showDeleteConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete User</AlertDialogTitle>
@@ -393,9 +398,9 @@ export function EditUserDialog({
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDelete}
-              disabled={isPending}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={isPending}
+              onClick={handleDelete}
             >
               {isPending ? (
                 <>

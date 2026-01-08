@@ -1,18 +1,16 @@
 "use client";
 
-import * as React from "react";
 import {
-  IconUser,
-  IconCrown,
-  IconShield,
-  IconDots,
-  IconTrash,
-  IconArrowUp,
   IconArrowDown,
+  IconArrowUp,
+  IconCrown,
+  IconDots,
   IconMail,
+  IconShield,
+  IconTrash,
+  IconUser,
 } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
+import type * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +20,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { TeamMember, UserRole, MemberStatus } from "@/lib/mock/workspace";
+import type { MemberStatus, TeamMember, UserRole } from "@/lib/mock/workspace";
+import { cn } from "@/lib/utils";
 
 interface TeamMembersTableProps {
   members: TeamMember[];
@@ -84,11 +83,11 @@ function MemberAvatar({ member }: { member: TeamMember }) {
 
   return (
     <div
-      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium ring-1 ring-foreground/5"
+      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted font-medium text-sm ring-1 ring-foreground/5"
       style={{
         background: member.image
           ? `url(${member.image}) center/cover`
-          : `linear-gradient(135deg, color-mix(in oklch, var(--accent-teal) 30%, transparent) 0%, color-mix(in oklch, var(--accent-teal) 10%, transparent) 100%)`,
+          : "linear-gradient(135deg, color-mix(in oklch, var(--accent-teal) 30%, transparent) 0%, color-mix(in oklch, var(--accent-teal) 10%, transparent) 100%)",
       }}
     >
       {!member.image && (
@@ -113,8 +112,8 @@ function MemberRow({
   return (
     <tr
       className={cn(
-        "animate-fade-in-up group border-b border-foreground/5 transition-colors hover:bg-muted/30",
-        isCurrentUser && "bg-muted/20",
+        "group animate-fade-in-up border-foreground/5 border-b transition-colors hover:bg-muted/30",
+        isCurrentUser && "bg-muted/20"
       )}
       style={{ animationDelay: `${index * 30}ms` }}
     >
@@ -124,16 +123,16 @@ function MemberRow({
           <MemberAvatar member={member} />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <p className="font-medium text-foreground truncate">
+              <p className="truncate font-medium text-foreground">
                 {member.name}
               </p>
               {isCurrentUser && (
-                <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                <span className="font-medium text-[10px] text-muted-foreground uppercase tracking-wider">
                   You
                 </span>
               )}
             </div>
-            <p className="text-sm text-muted-foreground truncate">
+            <p className="truncate text-muted-foreground text-sm">
               {member.email}
             </p>
           </div>
@@ -143,7 +142,6 @@ function MemberRow({
       {/* Role */}
       <td className="py-3 pr-4">
         <Badge
-          variant={role.variant}
           className="gap-1"
           style={{
             backgroundColor:
@@ -158,6 +156,7 @@ function MemberRow({
                 ? `color-mix(in oklch, ${role.color} 30%, transparent)`
                 : undefined,
           }}
+          variant={role.variant}
         >
           {role.icon}
           {role.label}
@@ -168,8 +167,8 @@ function MemberRow({
       <td className="py-3 pr-4">
         <span
           className={cn(
-            "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-            status.className,
+            "inline-flex items-center rounded-full px-2 py-0.5 font-medium text-xs",
+            status.className
           )}
         >
           {status.label}
@@ -178,7 +177,7 @@ function MemberRow({
 
       {/* Joined */}
       <td className="hidden py-3 pr-4 sm:table-cell">
-        <span className="text-sm text-muted-foreground">
+        <span className="text-muted-foreground text-sm">
           {member.joinedAt.toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
@@ -192,10 +191,10 @@ function MemberRow({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
-              size="icon-sm"
               className="opacity-0 transition-opacity group-hover:opacity-100 data-[state=open]:opacity-100"
               disabled={member.role === "owner"}
+              size="icon-sm"
+              variant="ghost"
             >
               <IconDots className="h-4 w-4" />
             </Button>
@@ -247,20 +246,20 @@ export function TeamMembersTable({
     <div className="overflow-hidden rounded-xl border border-foreground/5">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-foreground/5 bg-muted/30">
-            <th className="py-3 pl-4 pr-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <tr className="border-foreground/5 border-b bg-muted/30">
+            <th className="py-3 pr-4 pl-4 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
               Member
             </th>
-            <th className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <th className="py-3 pr-4 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
               Role
             </th>
-            <th className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <th className="py-3 pr-4 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
               Status
             </th>
-            <th className="hidden py-3 pr-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground sm:table-cell">
+            <th className="hidden py-3 pr-4 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider sm:table-cell">
               Joined
             </th>
-            <th className="py-3 pr-4 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <th className="py-3 pr-4 text-right font-medium text-muted-foreground text-xs uppercase tracking-wider">
               <span className="sr-only">Actions</span>
             </th>
           </tr>
@@ -268,10 +267,10 @@ export function TeamMembersTable({
         <tbody className="divide-y divide-foreground/5">
           {sortedMembers.map((member, index) => (
             <MemberRow
+              index={index}
+              isCurrentUser={member.id === currentUserId}
               key={member.id}
               member={member}
-              isCurrentUser={member.id === currentUserId}
-              index={index}
             />
           ))}
         </tbody>

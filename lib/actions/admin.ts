@@ -1,22 +1,30 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { verifySystemAdmin } from "@/lib/admin-auth";
 import { db } from "@/lib/db";
-import { workspace, session, user, type WorkspaceStatus, type WorkspacePlan, type Workspace, type User } from "@/lib/db/schema";
-import { getAdminWorkspaces, getAdminUsers } from "@/lib/db/queries";
+import { getAdminUsers, getAdminWorkspaces } from "@/lib/db/queries";
+import {
+  session,
+  type User,
+  user,
+  type Workspace,
+  type WorkspacePlan,
+  type WorkspaceStatus,
+  workspace,
+} from "@/lib/db/schema";
 import type {
-  AdminWorkspaceRow,
-  AdminWorkspaceFilters,
-  AdminWorkspacesMeta,
-  AdminUserRow,
   AdminUserFilters,
+  AdminUserRow,
   AdminUsersMeta,
-  SortableWorkspaceColumn,
+  AdminWorkspaceFilters,
+  AdminWorkspaceRow,
+  AdminWorkspacesMeta,
   SortableUserColumn,
+  SortableWorkspaceColumn,
   SortDirection,
 } from "@/lib/types/admin";
 
@@ -249,7 +257,7 @@ export async function impersonateUserAction(
 
     await db.insert(session).values({
       id: nanoid(),
-      userId: userId,
+      userId,
       token: sessionToken,
       expiresAt,
       impersonatedBy: adminCheck.user!.id, // Track who is impersonating
@@ -388,7 +396,10 @@ export async function toggleSystemAdminAction(
   try {
     // Prevent removing own admin status
     if (adminCheck.user?.id === userId && !isSystemAdmin) {
-      return { success: false, error: "Cannot remove your own system admin status" };
+      return {
+        success: false,
+        error: "Cannot remove your own system admin status",
+      };
     }
 
     const [updated] = await db
@@ -548,7 +559,8 @@ export async function deleteUserAction(
     if (targetUser.role === "owner" && targetUser.workspaceId) {
       return {
         success: false,
-        error: "Cannot delete workspace owner. Delete or transfer the workspace first."
+        error:
+          "Cannot delete workspace owner. Delete or transfer the workspace first.",
       };
     }
 

@@ -95,8 +95,8 @@ const allTags: PropertyTag[] = [
 
 function seededRandom(seed: number): () => number {
   return () => {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    return seed / 0x7fffffff;
+    seed = (seed * 1_103_515_245 + 12_345) & 0x7f_ff_ff_ff;
+    return seed / 0x7f_ff_ff_ff;
   };
 }
 
@@ -173,7 +173,7 @@ export interface GetPropertiesResponse {
 
 function filterProperties(
   properties: Property[],
-  filters: PropertyFilters,
+  filters: PropertyFilters
 ): Property[] {
   return properties.filter((property) => {
     // Search filter (address, city, state)
@@ -194,7 +194,7 @@ function filterProperties(
     // Tags filter (match any)
     if (filters.tags && filters.tags.length > 0) {
       const hasMatchingTag = filters.tags.some((tag) =>
-        property.tags.includes(tag),
+        property.tags.includes(tag)
       );
       if (!hasMatchingTag) return false;
     }
@@ -205,7 +205,7 @@ function filterProperties(
 
 function sortProperties(
   properties: Property[],
-  sort?: [SortableColumn, SortDirection],
+  sort?: [SortableColumn, SortDirection]
 ): Property[] {
   if (!sort) return properties;
 
@@ -239,14 +239,14 @@ function sortProperties(
 
 export function getPropertiesPage(
   cursor: string | null = null,
-  limit: number = 20,
-  filters: PropertyFilters = {},
+  limit = 20,
+  filters: PropertyFilters = {}
 ): GetPropertiesResponse {
   // Apply filters first, then sort
   const filteredProperties = filterProperties(mockProperties, filters);
   const sortedProperties = sortProperties(filteredProperties, filters.sort);
 
-  const startIndex = cursor ? parseInt(cursor, 10) : 0;
+  const startIndex = cursor ? Number.parseInt(cursor, 10) : 0;
   const endIndex = Math.min(startIndex + limit, sortedProperties.length);
   const data = sortedProperties.slice(startIndex, endIndex);
   const hasMore = endIndex < sortedProperties.length;

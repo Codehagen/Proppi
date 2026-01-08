@@ -1,12 +1,11 @@
-import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { IconArrowLeft, IconMovie } from "@tabler/icons-react";
-
-import { auth } from "@/lib/auth";
-import { getUserWithWorkspace, getVideoProjectById } from "@/lib/db/queries";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { VideoDetailContent } from "@/components/video/video-detail-content";
+import { auth } from "@/lib/auth";
+import { getUserWithWorkspace, getVideoProjectById } from "@/lib/db/queries";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -43,7 +42,7 @@ export default async function VideoDetailPage({ params }: PageProps) {
       <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 px-4 text-center">
         <IconMovie className="h-16 w-16 text-muted-foreground/50" />
         <div>
-          <h2 className="text-xl font-semibold">Video Not Found</h2>
+          <h2 className="font-semibold text-xl">Video Not Found</h2>
           <p className="mt-1 text-muted-foreground">
             This video doesn&apos;t exist or has been deleted.
           </p>
@@ -60,9 +59,9 @@ export default async function VideoDetailPage({ params }: PageProps) {
 
   return (
     <VideoDetailContent
-      videoProject={videoData.videoProject}
       clips={videoData.clips}
       musicTrack={videoData.musicTrack}
+      videoProject={videoData.videoProject}
     />
   );
 }

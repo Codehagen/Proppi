@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  IconWand,
-  IconPhoto,
-  IconPalette,
   IconClockHour4,
   IconDeviceDesktop,
+  IconPalette,
+  IconPhoto,
   IconShieldCheck,
+  IconWand,
 } from "@tabler/icons-react";
 
 const features = [
@@ -51,21 +51,21 @@ const features = [
 export function LandingFeatures() {
   return (
     <section
-      id="features"
       className="px-6 py-24 md:py-32"
+      id="features"
       style={{ backgroundColor: "var(--landing-bg-alt)" }}
     >
       <div className="mx-auto max-w-6xl">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center">
           <p
-            className="text-sm font-semibold uppercase tracking-wider"
+            className="font-semibold text-sm uppercase tracking-wider"
             style={{ color: "var(--landing-accent)" }}
           >
             Features
           </p>
           <h2
-            className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+            className="mt-3 font-bold text-3xl tracking-tight sm:text-4xl md:text-5xl"
             style={{ color: "var(--landing-text)" }}
           >
             Everything you need to
@@ -76,8 +76,8 @@ export function LandingFeatures() {
             className="mt-4 text-lg leading-relaxed"
             style={{ color: "var(--landing-text-muted)" }}
           >
-            Powerful features designed specifically for real estate professionals
-            who want to save time and impress clients.
+            Powerful features designed specifically for real estate
+            professionals who want to save time and impress clients.
           </p>
         </div>
 
@@ -85,8 +85,8 @@ export function LandingFeatures() {
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
             <div
-              key={feature.title}
               className="group relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 md:p-8"
+              key={feature.title}
               style={{
                 backgroundColor: "var(--landing-card)",
                 boxShadow: "0 4px 24px -4px var(--landing-shadow)",
@@ -108,9 +108,7 @@ export function LandingFeatures() {
               </div>
 
               {/* Actual icon overlay for proper color */}
-              <div
-                className="absolute left-6 top-6 flex size-12 items-center justify-center rounded-xl md:left-8 md:top-8"
-              >
+              <div className="absolute top-6 left-6 flex size-12 items-center justify-center rounded-xl md:top-8 md:left-8">
                 <feature.icon
                   className="size-6"
                   style={{ color: "var(--landing-accent)" }}
@@ -119,7 +117,7 @@ export function LandingFeatures() {
 
               {/* Content */}
               <h3
-                className="text-lg font-semibold"
+                className="font-semibold text-lg"
                 style={{ color: "var(--landing-text)" }}
               >
                 {feature.title}
@@ -133,7 +131,7 @@ export function LandingFeatures() {
 
               {/* Hover accent line */}
               <div
-                className="absolute bottom-0 left-6 right-6 h-0.5 origin-left scale-x-0 rounded-full transition-transform duration-300 group-hover:scale-x-100 md:left-8 md:right-8"
+                className="absolute right-6 bottom-0 left-6 h-0.5 origin-left scale-x-0 rounded-full transition-transform duration-300 group-hover:scale-x-100 md:right-8 md:left-8"
                 style={{ backgroundColor: "var(--landing-accent)" }}
               />
             </div>

@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import {
-  IconBuilding,
-  IconUser,
-  IconLock,
-  IconLoader2,
-  IconCheck,
   IconAlertTriangle,
+  IconBuilding,
+  IconCheck,
   IconClock,
+  IconLoader2,
+  IconLock,
+  IconUser,
 } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -80,7 +80,7 @@ export function InviteAcceptForm({
             style={{ color: "var(--accent-amber)" }}
           />
         </div>
-        <h1 className="mb-2 text-xl font-bold">Invitation Expired</h1>
+        <h1 className="mb-2 font-bold text-xl">Invitation Expired</h1>
         <p className="text-muted-foreground">
           This invitation link has expired. Please contact the workspace
           administrator to request a new invitation.
@@ -105,12 +105,12 @@ export function InviteAcceptForm({
             style={{ color: "var(--accent-green)" }}
           />
         </div>
-        <h1 className="mb-2 text-xl font-bold">Already Accepted</h1>
+        <h1 className="mb-2 font-bold text-xl">Already Accepted</h1>
         <p className="mb-4 text-muted-foreground">
           This invitation has already been accepted. You can sign in to access
           your workspace.
         </p>
-        <Button onClick={() => router.push("/sign-in")} className="gap-2">
+        <Button className="gap-2" onClick={() => router.push("/sign-in")}>
           Go to Sign In
         </Button>
       </div>
@@ -133,83 +133,83 @@ export function InviteAcceptForm({
             style={{ color: "var(--accent-violet)" }}
           />
         </div>
-        <h1 className="text-xl font-bold">Join {workspaceName}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h1 className="font-bold text-xl">Join {workspaceName}</h1>
+        <p className="mt-1 text-muted-foreground text-sm">
           You&apos;ve been invited to join as the workspace owner
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4 p-6">
+      <form className="space-y-4 p-6" onSubmit={handleSubmit}>
         {/* Email (read-only) */}
         <div className="space-y-2">
-          <Label className="text-sm font-medium">Email</Label>
-          <Input value={email} disabled className="bg-muted/50" />
-          <p className="text-xs text-muted-foreground">
+          <Label className="font-medium text-sm">Email</Label>
+          <Input className="bg-muted/50" disabled value={email} />
+          <p className="text-muted-foreground text-xs">
             This is the email address your invitation was sent to
           </p>
         </div>
 
         {/* Name */}
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-sm font-medium">
+          <Label className="font-medium text-sm" htmlFor="name">
             Your Name
           </Label>
           <div className="relative">
-            <IconUser className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <IconUser className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
+              className="pl-10"
+              disabled={isPending}
               id="name"
-              value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="John Doe"
-              className="pl-10"
               required
-              disabled={isPending}
+              value={name}
             />
           </div>
         </div>
 
         {/* Password */}
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-sm font-medium">
+          <Label className="font-medium text-sm" htmlFor="password">
             Create Password
           </Label>
           <div className="relative">
-            <IconLock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <IconLock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
+              className="pl-10"
+              disabled={isPending}
               id="password"
-              type="password"
-              value={password}
+              minLength={8}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 8 characters"
-              className="pl-10"
               required
-              minLength={8}
-              disabled={isPending}
+              type="password"
+              value={password}
             />
           </div>
         </div>
 
         {/* Confirm Password */}
         <div className="space-y-2">
-          <Label htmlFor="confirm-password" className="text-sm font-medium">
+          <Label className="font-medium text-sm" htmlFor="confirm-password">
             Confirm Password
           </Label>
           <div className="relative">
-            <IconLock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <IconLock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
+              className="pl-10"
+              disabled={isPending}
               id="confirm-password"
-              type="password"
-              value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm your password"
-              className="pl-10"
               required
-              disabled={isPending}
+              type="password"
+              value={confirmPassword}
             />
           </div>
           {password && confirmPassword && password !== confirmPassword && (
-            <p className="flex items-center gap-1 text-xs text-destructive">
+            <p className="flex items-center gap-1 text-destructive text-xs">
               <IconAlertTriangle className="h-3 w-3" />
               Passwords do not match
             </p>
@@ -217,15 +217,15 @@ export function InviteAcceptForm({
         </div>
 
         <Button
-          type="submit"
           className="w-full gap-2"
-          style={{ backgroundColor: "var(--accent-violet)" }}
           disabled={
             isPending ||
             !name.trim() ||
             password.length < 8 ||
             password !== confirmPassword
           }
+          style={{ backgroundColor: "var(--accent-violet)" }}
+          type="submit"
         >
           {isPending ? (
             <>
@@ -242,7 +242,7 @@ export function InviteAcceptForm({
       </form>
 
       {/* Footer */}
-      <div className="border-t bg-muted/30 px-6 py-4 text-center text-xs text-muted-foreground">
+      <div className="border-t bg-muted/30 px-6 py-4 text-center text-muted-foreground text-xs">
         By accepting, you agree to our Terms of Service and Privacy Policy
       </div>
     </div>

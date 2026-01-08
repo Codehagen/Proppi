@@ -1,18 +1,24 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import {
-  IconUsers,
+  IconArrowRight,
+  IconBuilding,
   IconCash,
   IconCheck,
   IconLoader2,
   IconPercentage,
-  IconBuilding,
-  IconArrowRight,
-  IconBan,
+  IconUsers,
 } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -23,23 +29,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Alert,
-  AlertTitle,
-  AlertDescription,
-  AlertAction,
-} from "@/components/ui/alert";
 import { markEarningsAsPaidOutAction } from "@/lib/actions/affiliate";
 import type {
-  AffiliateRelationshipRow,
   AffiliateEarningRow,
+  AffiliateRelationshipRow,
   AffiliateStats,
 } from "@/lib/db/queries";
 
@@ -72,7 +71,7 @@ export function AffiliateTab({
 
       {/* Relationships Table */}
       <div className="space-y-3">
-        <h3 className="text-sm font-medium text-muted-foreground">
+        <h3 className="font-medium text-muted-foreground text-sm">
           Affiliate-relasjoner
         </h3>
         <AffiliateRelationshipsTable relationships={relationships} />
@@ -80,7 +79,7 @@ export function AffiliateTab({
 
       {/* Earnings Table */}
       <div className="space-y-3">
-        <h3 className="text-sm font-medium text-muted-foreground">
+        <h3 className="font-medium text-muted-foreground text-sm">
           Provisjoner
         </h3>
         <AffiliateEarningsTable earnings={earnings} />
@@ -108,9 +107,11 @@ function AffiliateStatsBar({ stats }: { stats: AffiliateStats }) {
             />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Venter pa utbetaling</p>
+            <p className="text-muted-foreground text-xs">
+              Venter pa utbetaling
+            </p>
             <p
-              className="text-lg font-semibold tabular-nums"
+              className="font-semibold text-lg tabular-nums"
               style={{ color: "var(--accent-amber)" }}
             >
               {formatNOK(stats.totalPendingEarningsOre)}
@@ -134,9 +135,9 @@ function AffiliateStatsBar({ stats }: { stats: AffiliateStats }) {
             />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Utbetalt totalt</p>
+            <p className="text-muted-foreground text-xs">Utbetalt totalt</p>
             <p
-              className="text-lg font-semibold tabular-nums"
+              className="font-semibold text-lg tabular-nums"
               style={{ color: "var(--accent-green)" }}
             >
               {formatNOK(stats.totalPaidOutEarningsOre)}
@@ -160,9 +161,9 @@ function AffiliateStatsBar({ stats }: { stats: AffiliateStats }) {
             />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Aktive affiliates</p>
+            <p className="text-muted-foreground text-xs">Aktive affiliates</p>
             <p
-              className="text-lg font-semibold tabular-nums"
+              className="font-semibold text-lg tabular-nums"
               style={{ color: "var(--accent-teal)" }}
             >
               {stats.activeAffiliatesCount}
@@ -186,11 +187,11 @@ function AffiliateStatsBar({ stats }: { stats: AffiliateStats }) {
             />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Ventende utbetalinger
             </p>
             <p
-              className="text-lg font-semibold tabular-nums"
+              className="font-semibold text-lg tabular-nums"
               style={{ color: "var(--accent-violet)" }}
             >
               {stats.pendingPayoutsCount}
@@ -223,8 +224,8 @@ function AffiliateRelationshipsTable({
             style={{ color: "var(--accent-teal)" }}
           />
         </div>
-        <h3 className="text-lg font-semibold">Ingen affiliates enna</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h3 className="font-semibold text-lg">Ingen affiliates enna</h3>
+        <p className="mt-1 text-muted-foreground text-sm">
           Affiliate-relasjoner vil vises her nar de opprettes.
         </p>
       </div>
@@ -237,7 +238,7 @@ function AffiliateRelationshipsTable({
         <TableHeader>
           <TableRow>
             <TableHead>Affiliate</TableHead>
-            <TableHead></TableHead>
+            <TableHead />
             <TableHead>Henvist kunde</TableHead>
             <TableHead className="text-center">Provisjon</TableHead>
             <TableHead>Status</TableHead>
@@ -288,7 +289,6 @@ function AffiliateRelationshipsTable({
               </TableCell>
               <TableCell className="text-center">
                 <Badge
-                  variant="outline"
                   className="font-mono"
                   style={{
                     borderColor:
@@ -297,6 +297,7 @@ function AffiliateRelationshipsTable({
                       "color-mix(in oklch, var(--accent-amber) 10%, transparent)",
                     color: "var(--accent-amber)",
                   }}
+                  variant="outline"
                 >
                   {rel.commissionPercent}%
                 </Badge>
@@ -304,22 +305,22 @@ function AffiliateRelationshipsTable({
               <TableCell>
                 {rel.isActive ? (
                   <Badge
-                    variant="outline"
                     className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                    variant="outline"
                   >
                     Aktiv
                   </Badge>
                 ) : (
                   <Badge
-                    variant="outline"
                     className="border-slate-500/30 bg-slate-500/10 text-slate-700 dark:text-slate-400"
+                    variant="outline"
                   >
                     Inaktiv
                   </Badge>
                 )}
               </TableCell>
               <TableCell>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-muted-foreground text-sm">
                   {rel.createdAt.toLocaleDateString("nb-NO", {
                     day: "numeric",
                     month: "short",
@@ -333,7 +334,7 @@ function AffiliateRelationshipsTable({
       </Table>
 
       {/* Footer */}
-      <div className="border-t px-4 py-3 text-sm text-muted-foreground">
+      <div className="border-t px-4 py-3 text-muted-foreground text-sm">
         <span
           className="font-mono font-semibold"
           style={{ color: "var(--accent-teal)" }}
@@ -430,8 +431,8 @@ function AffiliateEarningsTable({
             style={{ color: "var(--accent-amber)" }}
           />
         </div>
-        <h3 className="text-lg font-semibold">Ingen provisjoner enna</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h3 className="font-semibold text-lg">Ingen provisjoner enna</h3>
+        <p className="mt-1 text-muted-foreground text-sm">
           Provisjoner vil vises her nar fakturaer blir betalt.
         </p>
       </div>
@@ -450,7 +451,7 @@ function AffiliateEarningsTable({
                 <AlertTitle className="flex items-center gap-2">
                   {selectedIds.size} provisjon
                   {selectedIds.size !== 1 ? "er" : ""} valgt
-                  <Badge variant="outline" className="font-mono font-normal">
+                  <Badge className="font-mono font-normal" variant="outline">
                     {formatNOK(selectedTotal)}
                   </Badge>
                 </AlertTitle>
@@ -468,9 +469,9 @@ function AffiliateEarningsTable({
             )}
             <AlertAction>
               <Button
+                disabled={selectedIds.size === 0 || isPaying}
                 onClick={handleMarkAsPaid}
                 size="sm"
-                disabled={selectedIds.size === 0 || isPaying}
               >
                 {isPaying ? (
                   <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -493,11 +494,11 @@ function AffiliateEarningsTable({
                 {pendingEarnings.length > 0 && (
                   <TableHead className="w-12">
                     <Checkbox
+                      aria-label="Velg alle ventende"
                       checked={
                         allSelected || (someSelected ? "indeterminate" : false)
                       }
                       onCheckedChange={toggleAll}
-                      aria-label="Velg alle ventende"
                     />
                   </TableHead>
                 )}
@@ -516,17 +517,17 @@ function AffiliateEarningsTable({
 
                 return (
                   <TableRow
+                    className={`${isPending ? "cursor-pointer hover:bg-muted/50" : ""} ${selectedIds.has(earning.id) ? "bg-muted/30" : ""}`}
                     key={earning.id}
                     onClick={() => isPending && toggleItem(earning.id)}
-                    className={`${isPending ? "cursor-pointer hover:bg-muted/50" : ""} ${selectedIds.has(earning.id) ? "bg-muted/30" : ""}`}
                   >
                     {pendingEarnings.length > 0 && (
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         {isPending ? (
                           <Checkbox
+                            aria-label={`Velg provisjon for ${earning.affiliateWorkspaceName}`}
                             checked={selectedIds.has(earning.id)}
                             onCheckedChange={() => toggleItem(earning.id)}
-                            aria-label={`Velg provisjon for ${earning.affiliateWorkspaceName}`}
                           />
                         ) : (
                           <div className="h-4 w-4" />
@@ -539,7 +540,7 @@ function AffiliateEarningsTable({
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-muted-foreground text-sm">
                         {earning.referredWorkspaceName}
                       </span>
                     </TableCell>
@@ -556,7 +557,7 @@ function AffiliateEarningsTable({
                       </span>
                     </TableCell>
                     <TableCell className="text-center">
-                      <span className="font-mono text-sm text-muted-foreground">
+                      <span className="font-mono text-muted-foreground text-sm">
                         {earning.commissionPercent}%
                       </span>
                     </TableCell>
@@ -573,8 +574,8 @@ function AffiliateEarningsTable({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Badge
-                              variant="outline"
                               className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                              variant="outline"
                             >
                               Utbetalt
                             </Badge>
@@ -593,8 +594,8 @@ function AffiliateEarningsTable({
                         </Tooltip>
                       ) : (
                         <Badge
-                          variant="outline"
                           className="border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                          variant="outline"
                         >
                           Venter
                         </Badge>
@@ -607,7 +608,7 @@ function AffiliateEarningsTable({
           </Table>
 
           {/* Footer */}
-          <div className="border-t px-4 py-3 text-sm text-muted-foreground">
+          <div className="border-t px-4 py-3 text-muted-foreground text-sm">
             <span
               className="font-mono font-semibold"
               style={{ color: "var(--accent-amber)" }}

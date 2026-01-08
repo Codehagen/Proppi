@@ -1,14 +1,14 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { type RecentActivity } from "@/lib/mock/admin-stats";
 import {
-  IconUserPlus,
-  IconBuilding,
-  IconPhoto,
   IconArrowUp,
+  IconBuilding,
   IconMail,
+  IconPhoto,
+  IconUserPlus,
 } from "@tabler/icons-react";
+import { Badge } from "@/components/ui/badge";
+import type { RecentActivity } from "@/lib/mock/admin-stats";
 
 const activityIcons = {
   user_joined: IconUserPlus,
@@ -29,7 +29,7 @@ const activityColors = {
 function formatTimeAgo(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
+  const diffMins = Math.floor(diffMs / 60_000);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
 
@@ -52,8 +52,8 @@ export function RecentActivityList({ activities }: RecentActivityListProps) {
 
         return (
           <div
+            className="flex animate-fade-in-up items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-muted/50"
             key={activity.id}
-            className="animate-fade-in-up flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-muted/50"
             style={{ animationDelay: `${index * 30}ms` }}
           >
             <div
@@ -64,19 +64,19 @@ export function RecentActivityList({ activities }: RecentActivityListProps) {
             >
               <Icon className="h-4 w-4" style={{ color }} />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-foreground truncate">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-foreground text-sm">
                 {activity.description}
               </p>
               {activity.metadata.workspaceName && (
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="truncate text-muted-foreground text-xs">
                   {activity.metadata.workspaceName}
                 </p>
               )}
             </div>
             <Badge
+              className="shrink-0 text-muted-foreground text-xs"
               variant="outline"
-              className="shrink-0 text-xs text-muted-foreground"
             >
               {formatTimeAgo(activity.timestamp)}
             </Badge>

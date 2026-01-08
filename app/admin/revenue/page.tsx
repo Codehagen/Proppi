@@ -1,8 +1,8 @@
 import { IconChartLine } from "@tabler/icons-react";
 import { RevenueContent } from "@/components/admin/revenue/revenue-content";
+import { getFalUsageStats } from "@/lib/actions/admin";
 import { requireSystemAdmin } from "@/lib/admin-auth";
 import { getRevenueStats } from "@/lib/db/queries";
-import { getFalUsageStats } from "@/lib/actions/admin";
 
 function getDefaultDateRange() {
   const now = new Date();
@@ -39,8 +39,8 @@ export default async function AdminRevenuePage() {
             <IconChartLine className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Revenue</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="font-bold text-2xl tracking-tight">Revenue</h1>
+            <p className="text-muted-foreground text-sm">
               Track Fal.ai costs, revenue, and profit margins
             </p>
           </div>
@@ -49,9 +49,9 @@ export default async function AdminRevenuePage() {
 
       {/* Revenue Content - Client Component */}
       <RevenueContent
-        initialRevenueStats={revenueStats}
-        initialFalUsage={initialFalUsage}
         initialError={initialError}
+        initialFalUsage={initialFalUsage}
+        initialRevenueStats={revenueStats}
       />
     </div>
   );

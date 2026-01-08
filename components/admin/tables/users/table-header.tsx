@@ -1,12 +1,12 @@
 "use client";
 
+import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import {
-  type SortableUserColumn,
-  type SortDirection,
+import type {
+  SortableUserColumn,
+  SortDirection,
 } from "@/hooks/use-admin-user-filters";
-import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
 
 interface SortButtonProps {
   label: string;
@@ -27,9 +27,9 @@ function SortButton({
 
   return (
     <Button
-      variant="ghost"
-      className="h-auto p-0 hover:bg-transparent gap-1.5 font-medium text-muted-foreground hover:text-foreground"
+      className="h-auto gap-1.5 p-0 font-medium text-muted-foreground hover:bg-transparent hover:text-foreground"
       onClick={() => onSort(sortField)}
+      variant="ghost"
     >
       <span>{label}</span>
       {isActive && currentSortDirection === "asc" && (
@@ -121,8 +121,8 @@ export function UsersTableHeader({
           const isFlexColumn = column.id === "user";
           return (
             <TableHead
-              key={column.id}
               className="flex items-center"
+              key={column.id}
               style={
                 isFlexColumn
                   ? { flex: 1, minWidth: column.minWidth }
@@ -135,11 +135,11 @@ export function UsersTableHeader({
             >
               {column.sortField ? (
                 <SortButton
-                  label={column.label}
-                  sortField={column.sortField}
                   currentSortColumn={sortColumn}
                   currentSortDirection={sortDirection}
+                  label={column.label}
                   onSort={onSort}
+                  sortField={column.sortField}
                 />
               ) : (
                 <span className="font-medium text-muted-foreground">

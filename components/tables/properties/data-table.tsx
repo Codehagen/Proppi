@@ -1,9 +1,6 @@
 "use client";
 
-import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
-import { usePropertyFilters } from "@/hooks/use-property-filters";
-import { getPropertiesPage, type Property } from "@/lib/mock/properties";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { IconLoader2 } from "@tabler/icons-react";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
@@ -14,12 +11,15 @@ import {
   useRef,
   useState,
 } from "react";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import { usePropertyFilters } from "@/hooks/use-property-filters";
+import { getPropertiesPage, type Property } from "@/lib/mock/properties";
 import { columns } from "./columns";
 import { EmptyState, NoResults } from "./empty-states";
-import { VirtualRow } from "./virtual-row";
-import { TableToolbar } from "./table-toolbar";
 import { DataTableHeader } from "./table-header";
-import { IconLoader2 } from "@tabler/icons-react";
+import { TableToolbar } from "./table-toolbar";
+import { VirtualRow } from "./virtual-row";
 
 const ROW_HEIGHT = 56;
 
@@ -123,11 +123,11 @@ export function DataTable() {
           <div className="divide-y">
             {Array.from({ length: 8 }).map((_, i) => (
               <div
-                key={i}
                 className="flex items-center gap-4 px-4 py-4"
+                key={i}
                 style={{ animationDelay: `${i * 50}ms` }}
               >
-                <div className="flex flex-col gap-1.5 flex-1">
+                <div className="flex flex-1 flex-col gap-1.5">
                   <div className="skeleton h-4 w-48" />
                   <div className="skeleton h-3 w-32" />
                 </div>
@@ -179,25 +179,25 @@ export function DataTable() {
 
       <div className="relative overflow-hidden rounded-xl bg-card shadow-xs ring-1 ring-foreground/10">
         {/* Table Header */}
-        <div className="border-b border-border">
+        <div className="border-border border-b">
           <Table>
             <DataTableHeader
+              onSort={toggleSort}
               sortColumn={sortColumn}
               sortDirection={sortDirection}
-              onSort={toggleSort}
             />
           </Table>
         </div>
 
         {/* Scrollable body with virtualization */}
         <div
+          className="scrollbar-thin overflow-auto"
           ref={parentRef}
-          className="overflow-auto scrollbar-thin"
           style={{ height: "calc(100vh - 400px)", minHeight: "300px" }}
         >
           <Table>
             <TableBody
-              className="block relative"
+              className="relative block"
               style={{ height: rowVirtualizer.getTotalSize() }}
             >
               {virtualItems.length > 0 ? (
@@ -209,16 +209,16 @@ export function DataTable() {
                     <VirtualRow
                       key={row.id}
                       row={row}
-                      virtualStart={virtualRow.start}
                       rowHeight={ROW_HEIGHT}
+                      virtualStart={virtualRow.start}
                     />
                   );
                 })
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
                     className="h-24 text-center"
+                    colSpan={columns.length}
                   >
                     No results.
                   </TableCell>
@@ -231,7 +231,7 @@ export function DataTable() {
           {isFetchingNextPage && (
             <div className="flex items-center justify-center py-4">
               <IconLoader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-              <span className="ml-2 text-sm text-muted-foreground">
+              <span className="ml-2 text-muted-foreground text-sm">
                 Loading more...
               </span>
             </div>
@@ -239,7 +239,7 @@ export function DataTable() {
         </div>
 
         {/* Footer with count */}
-        <div className="border-t px-4 py-3 text-sm text-muted-foreground">
+        <div className="border-t px-4 py-3 text-muted-foreground text-sm">
           <span
             className="font-mono font-semibold"
             style={{ color: "var(--accent-teal)" }}

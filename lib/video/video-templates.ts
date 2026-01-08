@@ -1,31 +1,34 @@
-import type { VideoRoomType } from "@/lib/db/schema"
+import type { VideoRoomType } from "@/lib/db/schema";
 
 export interface VideoTemplateSlot {
-  roomType: VideoRoomType
-  label: string
-  description?: string
-  icon?: string // Optional icon override
-  placeholderImage?: string // URL to example image for this slot
+  roomType: VideoRoomType;
+  label: string;
+  description?: string;
+  icon?: string; // Optional icon override
+  placeholderImage?: string; // URL to example image for this slot
 }
 
 export interface VideoTemplate {
-  id: string
-  name: string
-  description: string
-  thumbnailUrl: string
-  previewVideoUrl?: string // For hover autoplay
-  slots: VideoTemplateSlot[]
-  defaultMusicTrackId?: string
-  estimatedDuration: number // in seconds
+  id: string;
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  previewVideoUrl?: string; // For hover autoplay
+  slots: VideoTemplateSlot[];
+  defaultMusicTrackId?: string;
+  estimatedDuration: number; // in seconds
 }
 
 export const VIDEO_TEMPLATES = [
   {
     id: "classic-tour",
     name: "Classic Home Tour",
-    description: "A comprehensive walkthrough perfect for most residential properties.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
-    previewVideoUrl: "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4", // Placeholder
+    description:
+      "A comprehensive walkthrough perfect for most residential properties.",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+    previewVideoUrl:
+      "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4", // Placeholder
     estimatedDuration: 35,
     slots: [
       {
@@ -74,8 +77,10 @@ export const VIDEO_TEMPLATES = [
     id: "highlight-reel",
     name: "Quick Highlights",
     description: "Fast-paced teaser focusing on the property's best features.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80", // Placeholder
-    previewVideoUrl: "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4", // Placeholder (using same for now)
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80", // Placeholder
+    previewVideoUrl:
+      "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4", // Placeholder (using same for now)
     estimatedDuration: 20,
     slots: [
       {
@@ -104,8 +109,10 @@ export const VIDEO_TEMPLATES = [
     id: "room-tour",
     name: "Detailed Room Tour",
     description: "A focused look at a single room from multiple angles.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",
-    previewVideoUrl: "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",
+    previewVideoUrl:
+      "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4",
     estimatedDuration: 15,
     slots: [
       {
@@ -129,8 +136,10 @@ export const VIDEO_TEMPLATES = [
     id: "exterior-special",
     name: "Exterior Showcase",
     description: "Highlighting the property's curb appeal and outdoor living.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80",
-    previewVideoUrl: "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80",
+    previewVideoUrl:
+      "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4",
     estimatedDuration: 15,
     slots: [
       {
@@ -153,9 +162,12 @@ export const VIDEO_TEMPLATES = [
   {
     id: "social-teaser",
     name: "Social Media Teaser",
-    description: "Fast-paced, high-impact edit perfect for Instagram or TikTok.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80",
-    previewVideoUrl: "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4",
+    description:
+      "Fast-paced, high-impact edit perfect for Instagram or TikTok.",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80",
+    previewVideoUrl:
+      "https://cdn.coverr.co/videos/coverr-interior-design-living-room-2646/1080p.mp4",
     estimatedDuration: 10,
     slots: [
       {
@@ -170,8 +182,8 @@ export const VIDEO_TEMPLATES = [
       },
     ],
   },
-] satisfies VideoTemplate[]
+] satisfies VideoTemplate[];
 
 export function getVideoTemplateById(id: string): VideoTemplate | undefined {
-  return VIDEO_TEMPLATES.find((t) => t.id === id)
+  return VIDEO_TEMPLATES.find((t) => t.id === id);
 }

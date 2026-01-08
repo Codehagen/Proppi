@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  IconDotsVertical,
+  IconEye,
+  IconPencil,
+  IconTrash,
+} from "@tabler/icons-react";
+import type { ColumnDef } from "@tanstack/react-table";
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,14 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Property, PropertyStatus } from "@/lib/mock/properties";
-import {
-  IconDotsVertical,
-  IconEye,
-  IconPencil,
-  IconTrash,
-} from "@tabler/icons-react";
-import type { ColumnDef } from "@tanstack/react-table";
-import { memo } from "react";
 
 // Status color mapping using CSS custom properties
 const statusColorMap: Record<PropertyStatus, string> = {
@@ -45,24 +45,24 @@ const AddressCell = memo(
     city: string;
     state: string;
   }) => (
-    <div className="flex flex-col min-w-0">
-      <span className="font-medium truncate">{address}</span>
-      <span className="text-xs text-muted-foreground truncate">
+    <div className="flex min-w-0 flex-col">
+      <span className="truncate font-medium">{address}</span>
+      <span className="truncate text-muted-foreground text-xs">
         {city}, {state}
       </span>
     </div>
-  ),
+  )
 );
 AddressCell.displayName = "AddressCell";
 
 const StatusCell = memo(({ status }: { status: PropertyStatus }) => (
   <Badge
-    variant="outline"
     className="border-transparent"
     style={{
       backgroundColor: `color-mix(in oklch, ${statusColorMap[status]} 15%, transparent)`,
       color: statusColorMap[status],
     }}
+    variant="outline"
   >
     {statusLabelMap[status]}
   </Badge>
@@ -70,9 +70,9 @@ const StatusCell = memo(({ status }: { status: PropertyStatus }) => (
 StatusCell.displayName = "StatusCell";
 
 const TagsCell = memo(({ tags }: { tags: string[] }) => (
-  <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+  <div className="scrollbar-hide flex items-center gap-1 overflow-x-auto">
     {tags.map((tag) => (
-      <Badge key={tag} variant="tag" className="capitalize shrink-0">
+      <Badge className="shrink-0 capitalize" key={tag} variant="tag">
         {tag}
       </Badge>
     ))}
@@ -84,7 +84,7 @@ const ActionsCell = memo(({ propertyId }: { propertyId: string }) => (
   <div className="flex items-center justify-center">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button className="h-8 w-8 p-0" variant="ghost">
           <IconDotsVertical className="h-4 w-4" />
           <span className="sr-only">Open menu</span>
         </Button>
@@ -100,8 +100,8 @@ const ActionsCell = memo(({ propertyId }: { propertyId: string }) => (
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => console.log("Delete", propertyId)}
           className="text-destructive focus:text-destructive"
+          onClick={() => console.log("Delete", propertyId)}
         >
           <IconTrash className="mr-2 h-4 w-4" />
           Delete

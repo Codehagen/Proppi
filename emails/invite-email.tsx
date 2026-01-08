@@ -1,7 +1,6 @@
 import { Button, Heading, Section, Text } from "@react-email/components";
-import * as React from "react";
-import { EmailLayout } from "./components/email-layout";
 import { siteConfig } from "../lib/siteconfig";
+import { EmailLayout } from "./components/email-layout";
 
 interface InviteEmailProps {
   inviterName: string;
@@ -38,7 +37,7 @@ export function InviteEmail({
       </Text>
 
       <Section style={buttonContainer}>
-        <Button style={button} href={inviteLink}>
+        <Button href={inviteLink} style={button}>
           Accept Invitation
         </Button>
       </Section>

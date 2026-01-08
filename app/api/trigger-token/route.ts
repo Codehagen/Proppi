@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth as triggerAuth } from "@trigger.dev/sdk/v3";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,10 +16,10 @@ export async function POST(request: NextRequest) {
 
     const { runIds } = await request.json();
 
-    if (!runIds || !Array.isArray(runIds) || runIds.length === 0) {
+    if (!(runIds && Array.isArray(runIds)) || runIds.length === 0) {
       return NextResponse.json(
         { error: "runIds array is required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     console.error("Failed to create trigger token:", error);
     return NextResponse.json(
       { error: "Failed to create token" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

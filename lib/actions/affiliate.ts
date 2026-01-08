@@ -3,18 +3,21 @@
 import { revalidatePath } from "next/cache";
 import { verifySystemAdmin } from "@/lib/admin-auth";
 import {
-  getAffiliateRelationships,
+  type AffiliateEarningRow,
+  type AffiliateRelationshipRow,
+  type AffiliateStats,
   createAffiliateRelationship,
-  updateAffiliateRelationship,
   deleteAffiliateRelationship,
   getAffiliateEarnings,
-  markEarningsAsPaidOut,
+  getAffiliateRelationships,
   getAffiliateStats,
-  type AffiliateRelationshipRow,
-  type AffiliateEarningRow,
-  type AffiliateStats,
+  markEarningsAsPaidOut,
+  updateAffiliateRelationship,
 } from "@/lib/db/queries";
-import type { AffiliateRelationship, AffiliateEarningStatus } from "@/lib/db/schema";
+import type {
+  AffiliateEarningStatus,
+  AffiliateRelationship,
+} from "@/lib/db/schema";
 
 // ============================================================================
 // Types
@@ -213,7 +216,9 @@ export async function markEarningsAsPaidOutAction(params: {
 /**
  * Get affiliate stats (admin only)
  */
-export async function getAffiliateStatsAction(): Promise<ActionResult<AffiliateStats>> {
+export async function getAffiliateStatsAction(): Promise<
+  ActionResult<AffiliateStats>
+> {
   const adminCheck = await verifySystemAdmin();
   if (adminCheck.error) {
     return { success: false, error: adminCheck.error };

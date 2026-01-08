@@ -1,22 +1,21 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import Link from "next/link";
 import {
-  IconMovie,
-  IconPlus,
-  IconPlayerPlay,
   IconClock,
+  IconMovie,
   IconPhoto,
+  IconPlayerPlay,
+  IconPlus,
 } from "@tabler/icons-react";
-
+import { headers } from "next/headers";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import {
   getUserWithWorkspace,
-  getVideoProjects,
   getVideoProjectStats,
+  getVideoProjects,
 } from "@/lib/db/queries";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatVideoCost } from "@/lib/video/video-constants";
 
@@ -55,7 +54,7 @@ export default async function VideoPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Videos</h1>
+            <h1 className="font-bold text-2xl tracking-tight">Videos</h1>
             <p className="mt-1 text-muted-foreground">
               Create cinematic property tour videos from your images
             </p>
@@ -75,37 +74,37 @@ export default async function VideoPage() {
         {/* Stats */}
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
           <div className="rounded-xl border bg-card p-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
               <IconMovie className="h-4 w-4" />
               <span>Total Videos</span>
             </div>
-            <div className="mt-2 text-2xl font-bold">{stats.totalVideos}</div>
+            <div className="mt-2 font-bold text-2xl">{stats.totalVideos}</div>
           </div>
           <div className="rounded-xl border bg-card p-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
               <IconPlayerPlay className="h-4 w-4" />
               <span>Completed</span>
             </div>
-            <div className="mt-2 text-2xl font-bold text-[var(--accent-green)]">
+            <div className="mt-2 font-bold text-2xl text-[var(--accent-green)]">
               {stats.completedVideos}
             </div>
           </div>
           <div className="rounded-xl border bg-card p-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
               <IconClock className="h-4 w-4" />
               <span>Processing</span>
             </div>
-            <div className="mt-2 text-2xl font-bold text-[var(--accent-teal)]">
+            <div className="mt-2 font-bold text-2xl text-[var(--accent-teal)]">
               {stats.processingVideos}
             </div>
           </div>
           <div className="rounded-xl border bg-card p-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
               <span className="text-[var(--accent-amber)]">$</span>
               <span>Total Spent</span>
             </div>
             <div
-              className="mt-2 text-2xl font-bold"
+              className="mt-2 font-bold text-2xl"
               style={{ color: "var(--accent-amber)" }}
             >
               {formatVideoCost(stats.totalCostCents / 100)}
@@ -119,7 +118,7 @@ export default async function VideoPage() {
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
               <IconMovie className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="mt-4 text-lg font-semibold">No videos yet</h3>
+            <h3 className="mt-4 font-semibold text-lg">No videos yet</h3>
             <p className="mt-1 max-w-sm text-muted-foreground">
               Create your first property tour video by combining your enhanced
               images into a cinematic presentation.
@@ -141,22 +140,22 @@ export default async function VideoPage() {
               const status = statusConfig[video.status];
               return (
                 <Link
-                  key={video.id}
-                  href={`/video/${video.id}`}
                   className={cn(
                     "group relative overflow-hidden rounded-2xl border bg-card transition-all duration-200",
-                    "hover:border-[var(--accent-teal)]/50 hover:shadow-lg hover:-translate-y-0.5",
-                    "animate-fade-in-up",
+                    "hover:-translate-y-0.5 hover:border-[var(--accent-teal)]/50 hover:shadow-lg",
+                    "animate-fade-in-up"
                   )}
+                  href={`/video/${video.id}`}
+                  key={video.id}
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   {/* Thumbnail */}
                   <div className="relative aspect-video bg-muted">
                     {video.thumbnailUrl ? (
                       <img
-                        src={video.thumbnailUrl}
                         alt={video.name}
                         className="h-full w-full object-cover"
+                        src={video.thumbnailUrl}
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
@@ -168,7 +167,7 @@ export default async function VideoPage() {
                     {video.status === "completed" && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
                         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                          <IconPlayerPlay className="h-6 w-6 text-black ml-1" />
+                          <IconPlayerPlay className="ml-1 h-6 w-6 text-black" />
                         </div>
                       </div>
                     )}
@@ -180,7 +179,7 @@ export default async function VideoPage() {
 
                     {/* Duration */}
                     {video.durationSeconds && (
-                      <div className="absolute bottom-3 right-3 rounded bg-black/70 px-2 py-0.5 text-xs font-medium text-white">
+                      <div className="absolute right-3 bottom-3 rounded bg-black/70 px-2 py-0.5 font-medium text-white text-xs">
                         {Math.floor(video.durationSeconds / 60)}:
                         {(video.durationSeconds % 60)
                           .toString()
@@ -191,8 +190,8 @@ export default async function VideoPage() {
 
                   {/* Info */}
                   <div className="p-4">
-                    <h3 className="font-semibold truncate">{video.name}</h3>
-                    <div className="mt-2 flex items-center justify-between text-sm text-muted-foreground">
+                    <h3 className="truncate font-semibold">{video.name}</h3>
+                    <div className="mt-2 flex items-center justify-between text-muted-foreground text-sm">
                       <div className="flex items-center gap-1">
                         <IconPhoto className="h-3.5 w-3.5" />
                         <span>{video.clipCount} clips</span>

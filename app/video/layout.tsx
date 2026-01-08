@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { auth } from "@/lib/auth";
 import { getUserWithWorkspace } from "@/lib/db/queries";
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 
 export const metadata: Metadata = {
   title: "Videos | AI Studio",
@@ -28,7 +28,7 @@ export default async function VideoLayout({
   const data = await getUserWithWorkspace(session.user.id);
 
   // If no workspace or onboarding not completed, redirect to onboarding
-  if (!data || !data.workspace.onboardingCompleted) {
+  if (!(data && data.workspace.onboardingCompleted)) {
     redirect("/onboarding");
   }
 

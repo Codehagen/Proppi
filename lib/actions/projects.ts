@@ -1,17 +1,17 @@
 "use server";
 
-import { headers } from "next/headers";
-import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { user, type Project, type ProjectStatus } from "@/lib/db/schema";
 import {
   createProject as createProjectQuery,
-  updateProject as updateProjectQuery,
   deleteProject as deleteProjectQuery,
   getProjectById,
+  updateProject as updateProjectQuery,
 } from "@/lib/db/queries";
+import { type Project, type ProjectStatus, user } from "@/lib/db/schema";
 import { deleteProjectImages } from "@/lib/supabase";
 
 export type ActionResult<T> =
@@ -26,7 +26,7 @@ export type ActionResult<T> =
 
 // CREATE - Create new project
 export async function createProjectAction(
-  formData: FormData,
+  formData: FormData
 ): Promise<ActionResult<Project>> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -51,7 +51,7 @@ export async function createProjectAction(
   const styleTemplateId = formData.get("styleTemplateId") as string;
   const roomType = formData.get("roomType") as string | null;
 
-  if (!name || !styleTemplateId) {
+  if (!(name && styleTemplateId)) {
     return { success: false, error: "Name and style template are required" };
   }
 
@@ -79,7 +79,7 @@ export async function createProjectAction(
 // UPDATE - Update project name
 export async function updateProjectAction(
   projectId: string,
-  formData: FormData,
+  formData: FormData
 ): Promise<ActionResult<Project>> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -133,7 +133,7 @@ export async function updateProjectAction(
 
 // DELETE - Delete project and all associated images
 export async function deleteProjectAction(
-  projectId: string,
+  projectId: string
 ): Promise<ActionResult<void>> {
   const session = await auth.api.getSession({
     headers: await headers(),

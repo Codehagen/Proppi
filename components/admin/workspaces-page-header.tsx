@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { IconBuilding, IconPlus } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { CreateWorkspaceDialog } from "@/components/admin/create-workspace-dialog";
+import { Button } from "@/components/ui/button";
 
 export function WorkspacesPageHeader() {
   const router = useRouter();
@@ -21,15 +21,15 @@ export function WorkspacesPageHeader() {
             <IconBuilding className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Workspaces</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="font-bold text-2xl tracking-tight">Workspaces</h1>
+            <p className="text-muted-foreground text-sm">
               Manage and monitor all workspaces on the platform
             </p>
           </div>
         </div>
         <Button
-          onClick={() => setCreateDialogOpen(true)}
           className="gap-2"
+          onClick={() => setCreateDialogOpen(true)}
           style={{ backgroundColor: "var(--accent-green)" }}
         >
           <IconPlus className="h-4 w-4" />
@@ -38,9 +38,9 @@ export function WorkspacesPageHeader() {
       </div>
 
       <CreateWorkspaceDialog
-        open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
         onSuccess={() => router.refresh()}
+        open={createDialogOpen}
       />
     </>
   );

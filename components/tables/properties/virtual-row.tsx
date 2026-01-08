@@ -1,11 +1,11 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { TableCell, TableRow } from "@/components/ui/table";
 import type { Row } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
 import type { CSSProperties } from "react";
 import { memo } from "react";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 interface VirtualRowProps<TData> {
   row: Row<TData>;
@@ -22,13 +22,13 @@ function VirtualRowInner<TData>({
 
   return (
     <TableRow
-      data-index={row.index}
       className={cn(
         "group cursor-pointer select-text",
         "hover:bg-muted/50",
         "flex items-center border-0",
-        "absolute top-0 left-0 w-full",
+        "absolute top-0 left-0 w-full"
       )}
+      data-index={row.index}
       style={
         {
           height: rowHeight,
@@ -52,11 +52,11 @@ function VirtualRowInner<TData>({
 
         return (
           <TableCell
-            key={cell.id}
             className={cn(
-              "h-full flex items-center border-b border-border px-4",
-              cell.column.id === "actions" && "justify-center",
+              "flex h-full items-center border-border border-b px-4",
+              cell.column.id === "actions" && "justify-center"
             )}
+            key={cell.id}
             style={cellStyle}
           >
             <div className="w-full overflow-hidden">
@@ -72,7 +72,7 @@ function VirtualRowInner<TData>({
 // Custom comparison for memo - re-render when row data or position changes
 function arePropsEqual<TData>(
   prevProps: VirtualRowProps<TData>,
-  nextProps: VirtualRowProps<TData>,
+  nextProps: VirtualRowProps<TData>
 ): boolean {
   return (
     prevProps.row.id === nextProps.row.id &&
@@ -84,5 +84,5 @@ function arePropsEqual<TData>(
 
 // Export memoized component with generics
 export const VirtualRow = memo(VirtualRowInner, arePropsEqual) as <TData>(
-  props: VirtualRowProps<TData>,
+  props: VirtualRowProps<TData>
 ) => React.ReactNode;

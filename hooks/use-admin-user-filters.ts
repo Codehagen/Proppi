@@ -1,18 +1,18 @@
 "use client";
 
 import {
+  parseAsArrayOf,
   parseAsString,
   parseAsStringLiteral,
-  parseAsArrayOf,
   useQueryStates,
 } from "nuqs";
 import {
   ALL_USER_ROLES,
   ALL_USER_STATUSES,
-  type UserRole,
-  type UserStatus,
   type SortableUserColumn,
   type SortDirection,
+  type UserRole,
+  type UserStatus,
 } from "@/lib/types/admin";
 
 // Parsers for URL state

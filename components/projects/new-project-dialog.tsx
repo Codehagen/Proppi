@@ -1,37 +1,36 @@
 "use client";
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
 import {
-  IconUpload,
-  IconHome,
-  IconPalette,
-  IconCheck,
-  IconArrowRight,
   IconArrowLeft,
-  IconSparkles,
+  IconArrowRight,
+  IconCheck,
+  IconHome,
   IconLoader2,
+  IconPalette,
+  IconSparkles,
+  IconUpload,
 } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import * as React from "react";
+import { ConfirmStep } from "@/components/projects/steps/confirm-step";
+import { RoomTypeStep } from "@/components/projects/steps/room-type-step";
+import { StyleStep } from "@/components/projects/steps/style-step";
+import { UploadStep } from "@/components/projects/steps/upload-step";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  useProjectCreation,
-  type CreationStep,
-} from "@/hooks/use-project-creation";
 import { useImageUpload } from "@/hooks/use-image-upload";
-import { UploadStep } from "@/components/projects/steps/upload-step";
-import { RoomTypeStep } from "@/components/projects/steps/room-type-step";
-import { StyleStep } from "@/components/projects/steps/style-step";
-import { ConfirmStep } from "@/components/projects/steps/confirm-step";
+import {
+  type CreationStep,
+  useProjectCreation,
+} from "@/hooks/use-project-creation";
 import { createProjectAction } from "@/lib/actions";
+import { cn } from "@/lib/utils";
 
 interface NewProjectDialogProps {
   open: boolean;
@@ -64,11 +63,11 @@ function StepIndicator({
           <React.Fragment key={step.id}>
             <div
               className={cn(
-                "flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200",
+                "flex items-center gap-2 rounded-full px-3 py-1.5 font-medium text-sm transition-all duration-200",
                 isActive &&
                   "bg-[var(--accent-teal)]/10 text-[var(--accent-teal)]",
                 isCompleted && "text-[var(--accent-teal)]",
-                !isActive && !isCompleted && "text-muted-foreground",
+                !(isActive || isCompleted) && "text-muted-foreground"
               )}
             >
               <span
@@ -76,7 +75,7 @@ function StepIndicator({
                   "flex h-6 w-6 items-center justify-center rounded-full text-xs transition-all duration-200",
                   isActive && "bg-[var(--accent-teal)] text-white",
                   isCompleted && "bg-[var(--accent-teal)] text-white",
-                  !isActive && !isCompleted && "bg-muted text-muted-foreground",
+                  !(isActive || isCompleted) && "bg-muted text-muted-foreground"
                 )}
               >
                 {isCompleted ? (
@@ -92,9 +91,7 @@ function StepIndicator({
               <div
                 className={cn(
                   "h-px w-8 transition-colors duration-200",
-                  index < currentIndex
-                    ? "bg-[var(--accent-teal)]"
-                    : "bg-border",
+                  index < currentIndex ? "bg-[var(--accent-teal)]" : "bg-border"
                 )}
               />
             )}
@@ -120,7 +117,7 @@ export function NewProjectDialog({
   }, [creation, imageUpload, onOpenChange]);
 
   const handleSubmit = React.useCallback(async () => {
-    if (!creation.canProceed() || !creation.selectedTemplate) return;
+    if (!(creation.canProceed() && creation.selectedTemplate)) return;
 
     creation.setIsSubmitting(true);
 
@@ -188,15 +185,15 @@ export function NewProjectDialog({
   const currentStepInfo = stepTitles[creation.step];
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog onOpenChange={handleClose} open={open}>
       <DialogContent
-        size="lg"
         className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0"
+        size="lg"
       >
         {/* Header */}
         <div className="border-b px-6 py-4">
           <DialogHeader className="space-y-3">
-            <StepIndicator steps={STEPS} currentStep={creation.step} />
+            <StepIndicator currentStep={creation.step} steps={STEPS} />
             <div className="pt-2 text-center">
               <DialogTitle className="text-xl">
                 {currentStepInfo.title}
@@ -219,22 +216,22 @@ export function NewProjectDialog({
           )}
           {creation.step === "room-type" && (
             <RoomTypeStep
-              selectedRoomType={creation.roomType}
               onSelectRoomType={creation.setRoomType}
+              selectedRoomType={creation.roomType}
             />
           )}
           {creation.step === "style" && (
             <StyleStep
-              selectedTemplate={creation.selectedTemplate}
               onSelectTemplate={creation.setSelectedTemplate}
+              selectedTemplate={creation.selectedTemplate}
             />
           )}
           {creation.step === "confirm" && (
             <ConfirmStep
               images={creation.images}
-              selectedTemplate={creation.selectedTemplate}
-              projectName={creation.projectName}
               onProjectNameChange={creation.setProjectName}
+              projectName={creation.projectName}
+              selectedTemplate={creation.selectedTemplate}
             />
           )}
         </div>
@@ -244,10 +241,10 @@ export function NewProjectDialog({
           <div>
             {creation.step !== "upload" && (
               <Button
-                variant="ghost"
-                onClick={creation.goToPreviousStep}
                 className="gap-2"
                 disabled={creation.isSubmitting}
+                onClick={creation.goToPreviousStep}
+                variant="ghost"
               >
                 <IconArrowLeft className="h-4 w-4" />
                 Back
@@ -257,18 +254,18 @@ export function NewProjectDialog({
 
           <div className="flex items-center gap-3">
             <Button
-              variant="outline"
-              onClick={handleClose}
               disabled={creation.isSubmitting}
+              onClick={handleClose}
+              variant="outline"
             >
               Cancel
             </Button>
 
             {creation.step === "confirm" ? (
               <Button
-                onClick={handleSubmit}
+                className="min-w-[140px] gap-2"
                 disabled={!creation.canProceed() || creation.isSubmitting}
-                className="gap-2 min-w-[140px]"
+                onClick={handleSubmit}
                 style={{ backgroundColor: "var(--accent-teal)" }}
               >
                 {creation.isSubmitting ? (
@@ -285,9 +282,9 @@ export function NewProjectDialog({
               </Button>
             ) : (
               <Button
-                onClick={creation.goToNextStep}
-                disabled={!creation.canProceed()}
                 className="gap-2"
+                disabled={!creation.canProceed()}
+                onClick={creation.goToNextStep}
                 style={{ backgroundColor: "var(--accent-teal)" }}
               >
                 Continue

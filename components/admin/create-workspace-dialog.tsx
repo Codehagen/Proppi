@@ -1,31 +1,30 @@
 "use client";
 
-import * as React from "react";
-import { useState, useTransition } from "react";
 import {
-  IconPlus,
-  IconLoader2,
-  IconCheck,
   IconBuilding,
-  IconMail,
+  IconCheck,
   IconCopy,
   IconLink,
+  IconLoader2,
+  IconMail,
+  IconPlus,
 } from "@tabler/icons-react";
+import type * as React from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import type { WorkspacePlan } from "@/lib/db/schema";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createWorkspaceWithInviteAction } from "@/lib/actions/invitations";
+import type { WorkspacePlan } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 
 interface CreateWorkspaceDialogProps {
   open: boolean;
@@ -84,7 +83,7 @@ export function CreateWorkspaceDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
+    if (!(name.trim() && email.trim())) return;
 
     startTransition(async () => {
       const result = await createWorkspaceWithInviteAction(
@@ -117,7 +116,7 @@ export function CreateWorkspaceDialog({
   };
 
   const handleClose = () => {
-    if (!isPending && !sent) {
+    if (!(isPending || sent)) {
       setName("");
       setEmail("");
       setPlan("free");
@@ -130,8 +129,8 @@ export function CreateWorkspaceDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent size="default" className="overflow-hidden p-0">
+    <Dialog onOpenChange={handleClose} open={open}>
+      <DialogContent className="overflow-hidden p-0" size="default">
         {/* Header */}
         <div className="border-b px-6 py-4">
           <DialogHeader>
@@ -157,10 +156,10 @@ export function CreateWorkspaceDialog({
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="space-y-6 p-6">
+        <form className="space-y-6 p-6" onSubmit={handleSubmit}>
           {/* Success state */}
           {sent ? (
-            <div className="animate-fade-in-up flex flex-col items-center gap-4 py-6 text-center">
+            <div className="flex animate-fade-in-up flex-col items-center gap-4 py-6 text-center">
               <div
                 className="flex h-16 w-16 items-center justify-center rounded-full"
                 style={{
@@ -174,15 +173,15 @@ export function CreateWorkspaceDialog({
                 />
               </div>
               <div>
-                <p className="text-lg font-semibold">Workspace Created!</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-semibold text-lg">Workspace Created!</p>
+                <p className="text-muted-foreground text-sm">
                   Invitation sent to {createdEmail}
                 </p>
               </div>
 
               {/* Invite Link Copy Section */}
               <div className="w-full space-y-2 rounded-lg bg-muted/50 p-4">
-                <div className="flex items-center gap-2 text-sm font-medium">
+                <div className="flex items-center gap-2 font-medium text-sm">
                   <IconLink className="h-4 w-4 text-muted-foreground" />
                   Invite Link
                 </div>
@@ -191,10 +190,10 @@ export function CreateWorkspaceDialog({
                     {inviteLink}
                   </code>
                   <Button
+                    className="shrink-0 gap-1.5"
+                    onClick={handleCopyLink}
                     size="sm"
                     variant="outline"
-                    onClick={handleCopyLink}
-                    className="shrink-0 gap-1.5"
                   >
                     {copied ? (
                       <>
@@ -209,7 +208,7 @@ export function CreateWorkspaceDialog({
                     )}
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   Share this link if the email doesn&apos;t arrive
                 </p>
               </div>
@@ -218,62 +217,62 @@ export function CreateWorkspaceDialog({
             <>
               {/* Workspace Name */}
               <div className="space-y-2">
-                <Label htmlFor="workspace-name" className="text-sm font-medium">
+                <Label className="font-medium text-sm" htmlFor="workspace-name">
                   Workspace Name
                 </Label>
                 <div className="relative">
-                  <IconBuilding className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <IconBuilding className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
+                    className="pl-10"
+                    disabled={isPending}
                     id="workspace-name"
-                    value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Acme Real Estate"
-                    className="pl-10"
                     required
-                    disabled={isPending}
+                    value={name}
                   />
                 </div>
               </div>
 
               {/* Owner Email */}
               <div className="space-y-2">
-                <Label htmlFor="owner-email" className="text-sm font-medium">
+                <Label className="font-medium text-sm" htmlFor="owner-email">
                   Owner Email
                 </Label>
                 <div className="relative">
-                  <IconMail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <IconMail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
+                    className="pl-10"
+                    disabled={isPending}
                     id="owner-email"
-                    type="email"
-                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="owner@company.com"
-                    className="pl-10"
                     required
-                    disabled={isPending}
+                    type="email"
+                    value={email}
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   An invitation will be sent to this email address
                 </p>
               </div>
 
               {/* Plan Selection */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Plan</Label>
+                <Label className="font-medium text-sm">Plan</Label>
                 <div className="grid gap-3">
                   {planOptions.map((option) => (
                     <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => setPlan(option.value)}
-                      disabled={isPending}
                       className={cn(
                         "flex items-start gap-3 rounded-xl p-4 text-left ring-2 transition-all duration-200",
                         plan === option.value
-                          ? "ring-[var(--accent-green)] bg-[var(--accent-green)]/5"
-                          : "ring-foreground/5 hover:ring-foreground/10 hover:bg-muted/30"
+                          ? "bg-[var(--accent-green)]/5 ring-[var(--accent-green)]"
+                          : "ring-foreground/5 hover:bg-muted/30 hover:ring-foreground/10"
                       )}
+                      disabled={isPending}
+                      key={option.value}
+                      onClick={() => setPlan(option.value)}
+                      type="button"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
@@ -287,7 +286,7 @@ export function CreateWorkspaceDialog({
                             />
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                           {option.description}
                         </p>
                       </div>
@@ -303,8 +302,8 @@ export function CreateWorkspaceDialog({
         <div className="flex items-center justify-end gap-3 border-t bg-muted/30 px-6 py-4">
           {sent ? (
             <Button
-              onClick={handleDone}
               className="min-w-[100px] gap-2"
+              onClick={handleDone}
               style={{ backgroundColor: "var(--accent-green)" }}
             >
               <IconCheck className="h-4 w-4" />
@@ -313,17 +312,17 @@ export function CreateWorkspaceDialog({
           ) : (
             <>
               <Button
+                disabled={isPending}
+                onClick={handleClose}
                 type="button"
                 variant="outline"
-                onClick={handleClose}
-                disabled={isPending}
               >
                 Cancel
               </Button>
               <Button
-                onClick={handleSubmit}
-                disabled={!name.trim() || !email.trim() || isPending}
                 className="min-w-[160px] gap-2"
+                disabled={!(name.trim() && email.trim()) || isPending}
+                onClick={handleSubmit}
                 style={{ backgroundColor: "var(--accent-green)" }}
               >
                 {isPending ? (

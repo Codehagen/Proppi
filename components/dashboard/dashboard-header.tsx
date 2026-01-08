@@ -1,12 +1,12 @@
 "use client";
 
+import { IconMovie, IconSettings, IconSparkles } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { SignOutButton } from "./sign-out-button";
-import { IconSparkles, IconSettings, IconMovie } from "@tabler/icons-react";
 
 type DashboardHeaderProps = {
   userLabel?: string;
@@ -38,15 +38,15 @@ export function DashboardHeader({ userLabel }: DashboardHeaderProps) {
       <div className="w-full px-4 md:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between gap-4">
           {/* Left side: Logo + Navigation */}
-          <div className="flex items-center gap-4 min-w-0">
+          <div className="flex min-w-0 items-center gap-4">
             <Link
+              className="truncate font-semibold text-foreground tracking-tight transition-colors hover:text-foreground/80"
               href="/"
-              className="font-semibold tracking-tight text-foreground hover:text-foreground/80 transition-colors truncate"
             >
               AI Studio
             </Link>
 
-            <Separator orientation="vertical" className="h-6" />
+            <Separator className="h-6" orientation="vertical" />
 
             <nav className="flex items-center gap-1">
               {navItems.map((item) => {
@@ -60,16 +60,16 @@ export function DashboardHeader({ userLabel }: DashboardHeaderProps) {
 
                 return (
                   <Button
-                    key={item.href}
                     asChild={!item.disabled}
-                    variant={isActive ? "secondary" : "ghost"}
-                    size="sm"
-                    disabled={item.disabled}
                     className={cn(
                       "h-8 gap-2 transition-all",
                       isActive && "font-medium",
-                      item.disabled && "opacity-60 cursor-not-allowed"
+                      item.disabled && "cursor-not-allowed opacity-60"
                     )}
+                    disabled={item.disabled}
+                    key={item.href}
+                    size="sm"
+                    variant={isActive ? "secondary" : "ghost"}
                   >
                     {item.disabled ? (
                       <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export function DashboardHeader({ userLabel }: DashboardHeaderProps) {
           {/* Right side: User info + Sign out */}
           <div className="flex items-center gap-3">
             {userLabel && (
-              <span className="hidden md:block text-sm text-muted-foreground max-w-[200px] truncate">
+              <span className="hidden max-w-[200px] truncate text-muted-foreground text-sm md:block">
                 {userLabel}
               </span>
             )}

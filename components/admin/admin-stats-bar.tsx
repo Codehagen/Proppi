@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
-  IconBuilding,
-  IconUsers,
-  IconPhoto,
-  IconCurrencyDollar,
   IconActivity,
+  IconBuilding,
   IconCalendar,
+  IconCurrencyDollar,
+  IconPhoto,
+  IconUsers,
 } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
 type StatItemProps = {
   icon: React.ReactNode;
@@ -37,7 +37,7 @@ function StatItem({
   return (
     <div
       className={`stats-card flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/5 transition-all duration-500 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
       }`}
     >
       <div
@@ -49,18 +49,18 @@ function StatItem({
         <div style={{ color: accentColor }}>{icon}</div>
       </div>
       <div className="min-w-0">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
           {label}
         </p>
         <div className="flex items-baseline gap-1.5">
           <p
-            className="font-mono text-lg font-semibold tabular-nums"
+            className="font-mono font-semibold text-lg tabular-nums"
             style={{ color: accentColor }}
           >
             {value}
           </p>
           {subValue && (
-            <span className="text-xs text-muted-foreground">{subValue}</span>
+            <span className="text-muted-foreground text-xs">{subValue}</span>
           )}
         </div>
       </div>
@@ -94,51 +94,51 @@ export function AdminStatsBar({
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
       <StatItem
-        icon={<IconBuilding className="h-4 w-4" />}
-        label="Workspaces"
-        value={totalWorkspaces.toLocaleString()}
-        subValue={`${activeWorkspaces} active`}
         accentColor="var(--accent-violet)"
         delay={0}
+        icon={<IconBuilding className="h-4 w-4" />}
+        label="Workspaces"
+        subValue={`${activeWorkspaces} active`}
+        value={totalWorkspaces.toLocaleString()}
       />
       <StatItem
-        icon={<IconUsers className="h-4 w-4" />}
-        label="Users"
-        value={totalUsers.toLocaleString()}
-        subValue={`${activeUsers} active`}
         accentColor="var(--accent-teal)"
         delay={50}
+        icon={<IconUsers className="h-4 w-4" />}
+        label="Users"
+        subValue={`${activeUsers} active`}
+        value={totalUsers.toLocaleString()}
       />
       <StatItem
-        icon={<IconActivity className="h-4 w-4" />}
-        label="Sessions"
-        value={activeSessions.toLocaleString()}
-        subValue="online now"
         accentColor="var(--accent-green)"
         delay={100}
+        icon={<IconActivity className="h-4 w-4" />}
+        label="Sessions"
+        subValue="online now"
+        value={activeSessions.toLocaleString()}
       />
       <StatItem
+        accentColor="var(--accent-teal)"
+        delay={150}
         icon={<IconPhoto className="h-4 w-4" />}
         label="Total Images"
         value={totalImages.toLocaleString()}
-        accentColor="var(--accent-teal)"
-        delay={150}
       />
       <StatItem
-        icon={<IconCalendar className="h-4 w-4" />}
-        label="This Month"
-        value={imagesThisMonth.toLocaleString()}
-        subValue="images"
         accentColor="var(--accent-violet)"
         delay={200}
+        icon={<IconCalendar className="h-4 w-4" />}
+        label="This Month"
+        subValue="images"
+        value={imagesThisMonth.toLocaleString()}
       />
       <StatItem
-        icon={<IconCurrencyDollar className="h-4 w-4" />}
-        label="Revenue"
-        value={`$${totalRevenue.toFixed(2)}`}
-        subValue={`$${revenueThisMonth.toFixed(2)} MTD`}
         accentColor="var(--accent-amber)"
         delay={250}
+        icon={<IconCurrencyDollar className="h-4 w-4" />}
+        label="Revenue"
+        subValue={`$${revenueThisMonth.toFixed(2)} MTD`}
+        value={`$${totalRevenue.toFixed(2)}`}
       />
     </div>
   );

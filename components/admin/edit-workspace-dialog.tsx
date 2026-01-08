@@ -1,30 +1,27 @@
 "use client";
 
-import * as React from "react";
-import { useState, useTransition } from "react";
 import {
+  IconAlertTriangle,
+  IconBuilding,
+  IconCheck,
   IconEdit,
   IconLoader2,
-  IconCheck,
-  IconBuilding,
   IconMail,
   IconUser,
-  IconAlertTriangle,
 } from "@tabler/icons-react";
+import * as React from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -32,12 +29,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Workspace, WorkspaceStatus, WorkspacePlan } from "@/lib/db/schema";
+import { Textarea } from "@/components/ui/textarea";
 import {
   updateWorkspaceDetailsAction,
-  updateWorkspaceStatusAction,
   updateWorkspacePlanAction,
+  updateWorkspaceStatusAction,
 } from "@/lib/actions/admin";
+import type {
+  Workspace,
+  WorkspacePlan,
+  WorkspaceStatus,
+} from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 
 interface EditWorkspaceDialogProps {
   open: boolean;
@@ -46,7 +49,11 @@ interface EditWorkspaceDialogProps {
   onSuccess?: () => void;
 }
 
-const statusOptions: { value: WorkspaceStatus; label: string; color: string }[] = [
+const statusOptions: {
+  value: WorkspaceStatus;
+  label: string;
+  color: string;
+}[] = [
   { value: "active", label: "Active", color: "var(--accent-green)" },
   { value: "trial", label: "Trial", color: "var(--accent-amber)" },
   { value: "suspended", label: "Suspended", color: "var(--accent-red)" },
@@ -72,10 +79,18 @@ export function EditWorkspaceDialog({
   const [organizationNumber, setOrganizationNumber] = useState(
     workspace.organizationNumber || ""
   );
-  const [contactEmail, setContactEmail] = useState(workspace.contactEmail || "");
-  const [contactPerson, setContactPerson] = useState(workspace.contactPerson || "");
-  const [status, setStatus] = useState<WorkspaceStatus>(workspace.status as WorkspaceStatus);
-  const [plan, setPlan] = useState<WorkspacePlan>(workspace.plan as WorkspacePlan);
+  const [contactEmail, setContactEmail] = useState(
+    workspace.contactEmail || ""
+  );
+  const [contactPerson, setContactPerson] = useState(
+    workspace.contactPerson || ""
+  );
+  const [status, setStatus] = useState<WorkspaceStatus>(
+    workspace.status as WorkspaceStatus
+  );
+  const [plan, setPlan] = useState<WorkspacePlan>(
+    workspace.plan as WorkspacePlan
+  );
   const [suspendedReason, setSuspendedReason] = useState(
     workspace.suspendedReason || ""
   );
@@ -184,8 +199,8 @@ export function EditWorkspaceDialog({
       suspendedReason !== (workspace.suspendedReason || ""));
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent size="default" className="overflow-hidden p-0">
+    <Dialog onOpenChange={handleClose} open={open}>
+      <DialogContent className="overflow-hidden p-0" size="default">
         {/* Header */}
         <div className="border-b px-6 py-4">
           <DialogHeader>
@@ -211,10 +226,10 @@ export function EditWorkspaceDialog({
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="space-y-6 p-6">
+        <form className="space-y-6 p-6" onSubmit={handleSubmit}>
           {/* Success state */}
           {saved ? (
-            <div className="animate-fade-in-up flex flex-col items-center gap-4 py-8 text-center">
+            <div className="flex animate-fade-in-up flex-col items-center gap-4 py-8 text-center">
               <div
                 className="flex h-16 w-16 items-center justify-center rounded-full"
                 style={{
@@ -228,8 +243,8 @@ export function EditWorkspaceDialog({
                 />
               </div>
               <div>
-                <p className="text-lg font-semibold">Workspace Updated!</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-semibold text-lg">Workspace Updated!</p>
+                <p className="text-muted-foreground text-sm">
                   Changes have been saved successfully
                 </p>
               </div>
@@ -238,77 +253,86 @@ export function EditWorkspaceDialog({
             <>
               {/* Basic Info Section */}
               <div className="space-y-4">
-                <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                <h4 className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                   Basic Information
                 </h4>
 
                 {/* Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="workspace-name" className="text-sm font-medium">
+                  <Label
+                    className="font-medium text-sm"
+                    htmlFor="workspace-name"
+                  >
                     Workspace Name
                   </Label>
                   <div className="relative">
-                    <IconBuilding className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <IconBuilding className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
+                      className="pl-10"
+                      disabled={isPending}
                       id="workspace-name"
-                      value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Company Name"
-                      className="pl-10"
                       required
-                      disabled={isPending}
+                      value={name}
                     />
                   </div>
                 </div>
 
                 {/* Organization Number */}
                 <div className="space-y-2">
-                  <Label htmlFor="org-number" className="text-sm font-medium">
+                  <Label className="font-medium text-sm" htmlFor="org-number">
                     Organization Number
                   </Label>
                   <Input
+                    className="font-mono"
+                    disabled={isPending}
                     id="org-number"
-                    value={organizationNumber}
                     onChange={(e) => setOrganizationNumber(e.target.value)}
                     placeholder="123456789"
-                    disabled={isPending}
-                    className="font-mono"
+                    value={organizationNumber}
                   />
                 </div>
 
                 {/* Contact Email */}
                 <div className="space-y-2">
-                  <Label htmlFor="contact-email" className="text-sm font-medium">
+                  <Label
+                    className="font-medium text-sm"
+                    htmlFor="contact-email"
+                  >
                     Contact Email
                   </Label>
                   <div className="relative">
-                    <IconMail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <IconMail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                      id="contact-email"
-                      type="email"
-                      value={contactEmail}
-                      onChange={(e) => setContactEmail(e.target.value)}
-                      placeholder="contact@company.com"
                       className="pl-10"
                       disabled={isPending}
+                      id="contact-email"
+                      onChange={(e) => setContactEmail(e.target.value)}
+                      placeholder="contact@company.com"
+                      type="email"
+                      value={contactEmail}
                     />
                   </div>
                 </div>
 
                 {/* Contact Person */}
                 <div className="space-y-2">
-                  <Label htmlFor="contact-person" className="text-sm font-medium">
+                  <Label
+                    className="font-medium text-sm"
+                    htmlFor="contact-person"
+                  >
                     Contact Person
                   </Label>
                   <div className="relative">
-                    <IconUser className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <IconUser className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                      id="contact-person"
-                      value={contactPerson}
-                      onChange={(e) => setContactPerson(e.target.value)}
-                      placeholder="John Doe"
                       className="pl-10"
                       disabled={isPending}
+                      id="contact-person"
+                      onChange={(e) => setContactPerson(e.target.value)}
+                      placeholder="John Doe"
+                      value={contactPerson}
                     />
                   </div>
                 </div>
@@ -316,18 +340,20 @@ export function EditWorkspaceDialog({
 
               {/* Status & Plan Section */}
               <div className="space-y-4">
-                <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                <h4 className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
                   Status & Plan
                 </h4>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   {/* Status */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Status</Label>
+                    <Label className="font-medium text-sm">Status</Label>
                     <Select
-                      value={status}
-                      onValueChange={(value) => setStatus(value as WorkspaceStatus)}
                       disabled={isPending}
+                      onValueChange={(value) =>
+                        setStatus(value as WorkspaceStatus)
+                      }
+                      value={status}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -350,11 +376,11 @@ export function EditWorkspaceDialog({
 
                   {/* Plan */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Plan</Label>
+                    <Label className="font-medium text-sm">Plan</Label>
                     <Select
-                      value={plan}
-                      onValueChange={(value) => setPlan(value as WorkspacePlan)}
                       disabled={isPending}
+                      onValueChange={(value) => setPlan(value as WorkspacePlan)}
+                      value={plan}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -378,17 +404,17 @@ export function EditWorkspaceDialog({
                       "animate-fade-in-up"
                     )}
                   >
-                    <div className="flex items-center gap-2 text-sm font-medium text-destructive">
+                    <div className="flex items-center gap-2 font-medium text-destructive text-sm">
                       <IconAlertTriangle className="h-4 w-4" />
                       Suspension Details
                     </div>
                     <Textarea
-                      value={suspendedReason}
+                      className="resize-none"
+                      disabled={isPending}
                       onChange={(e) => setSuspendedReason(e.target.value)}
                       placeholder="Reason for suspension (visible to workspace owner)..."
                       rows={3}
-                      disabled={isPending}
-                      className="resize-none"
+                      value={suspendedReason}
                     />
                   </div>
                 )}
@@ -401,17 +427,17 @@ export function EditWorkspaceDialog({
         {!saved && (
           <div className="flex items-center justify-end gap-3 border-t bg-muted/30 px-6 py-4">
             <Button
+              disabled={isPending}
+              onClick={handleClose}
               type="button"
               variant="outline"
-              onClick={handleClose}
-              disabled={isPending}
             >
               Cancel
             </Button>
             <Button
-              onClick={handleSubmit}
-              disabled={!name.trim() || !hasChanges || isPending}
               className="min-w-[120px] gap-2"
+              disabled={!(name.trim() && hasChanges) || isPending}
+              onClick={handleSubmit}
               style={{ backgroundColor: "var(--accent-violet)" }}
             >
               {isPending ? (

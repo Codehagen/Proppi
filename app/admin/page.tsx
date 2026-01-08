@@ -1,8 +1,8 @@
 import { IconShieldCheck } from "@tabler/icons-react";
 import { AdminStatsBar } from "@/components/admin/admin-stats-bar";
 import { RecentActivityList } from "@/components/admin/recent-activity";
-import { getAdminStats, getRecentActivity } from "@/lib/mock/admin-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getAdminStats, getRecentActivity } from "@/lib/mock/admin-stats";
 
 export default function AdminOverviewPage() {
   const stats = getAdminStats();
@@ -20,10 +20,10 @@ export default function AdminOverviewPage() {
             <IconShieldCheck className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
+            <h1 className="font-bold text-2xl tracking-tight">
               Platform Administration
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Monitor and manage all workspaces, users, and platform activity
             </p>
           </div>
@@ -31,25 +31,25 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="animate-fade-in-up stagger-1">
+      <div className="stagger-1 animate-fade-in-up">
         <AdminStatsBar
-          totalWorkspaces={stats.totalWorkspaces}
-          activeWorkspaces={stats.activeWorkspaces}
-          totalUsers={stats.totalUsers}
-          activeUsers={stats.activeUsers}
-          totalImages={stats.totalImages}
-          imagesThisMonth={stats.imagesThisMonth}
-          totalRevenue={stats.totalRevenue}
-          revenueThisMonth={stats.revenueThisMonth}
           activeSessions={stats.activeSessions}
+          activeUsers={stats.activeUsers}
+          activeWorkspaces={stats.activeWorkspaces}
+          imagesThisMonth={stats.imagesThisMonth}
+          revenueThisMonth={stats.revenueThisMonth}
+          totalImages={stats.totalImages}
+          totalRevenue={stats.totalRevenue}
+          totalUsers={stats.totalUsers}
+          totalWorkspaces={stats.totalWorkspaces}
         />
       </div>
 
       {/* Recent Activity */}
-      <div className="animate-fade-in-up stagger-2">
+      <div className="stagger-2 animate-fade-in-up">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold">
+            <CardTitle className="font-semibold text-base">
               Recent Activity
             </CardTitle>
           </CardHeader>

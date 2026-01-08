@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { IconLoader, IconLogout } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { IconLogout, IconLoader } from "@tabler/icons-react";
 import { signOut } from "@/lib/auth-client";
 
 export function SignOutButton() {
@@ -23,11 +23,11 @@ export function SignOutButton() {
 
   return (
     <Button
-      variant="ghost"
-      size="sm"
-      onClick={handleSignOut}
-      disabled={isLoading}
       className="gap-2 text-muted-foreground hover:text-foreground"
+      disabled={isLoading}
+      onClick={handleSignOut}
+      size="sm"
+      variant="ghost"
     >
       {isLoading ? (
         <IconLoader className="size-4 animate-spin" />

@@ -1,6 +1,6 @@
 import { Resend } from "resend";
-import { WelcomeEmail } from "../emails/welcome-email";
 import { InviteEmail } from "../emails/invite-email";
+import { WelcomeEmail } from "../emails/welcome-email";
 import { siteConfig } from "./siteconfig";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -25,7 +25,7 @@ export async function sendInviteEmail(
   to: string,
   inviterName: string,
   workspaceName: string,
-  inviteLink: string,
+  inviteLink: string
 ) {
   const { data, error } = await resend.emails.send({
     from: siteConfig.email.from,

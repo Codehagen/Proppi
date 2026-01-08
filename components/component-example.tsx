@@ -1,9 +1,39 @@
 "use client";
 
-import { Suspense } from "react";
+import {
+  IconArrowRight,
+  IconBell,
+  IconBluetooth,
+  IconCreditCard,
+  IconDeviceDesktop,
+  IconDeviceFloppy,
+  IconDots,
+  IconDotsVertical,
+  IconDownload,
+  IconEye,
+  IconFile,
+  IconFileCode,
+  IconFileText,
+  IconFolder,
+  IconFolderOpen,
+  IconFolderSearch,
+  IconHelpCircle,
+  IconKeyboard,
+  IconLanguage,
+  IconLayout,
+  IconLogout,
+  IconMail,
+  IconMoon,
+  IconPalette,
+  IconPlus,
+  IconSettings,
+  IconShield,
+  IconSun,
+  IconUser,
+} from "@tabler/icons-react";
+import Link from "next/link";
 import * as React from "react";
-import { useSession } from "@/lib/auth-client";
-
+import { Suspense } from "react";
 import { Example, ExampleWrapper } from "@/components/example";
 import {
   AlertDialog,
@@ -64,38 +94,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  IconPlus,
-  IconBluetooth,
-  IconDotsVertical,
-  IconFile,
-  IconFolder,
-  IconFolderOpen,
-  IconFileCode,
-  IconDots,
-  IconFolderSearch,
-  IconDeviceFloppy,
-  IconDownload,
-  IconEye,
-  IconLayout,
-  IconPalette,
-  IconSun,
-  IconMoon,
-  IconDeviceDesktop,
-  IconUser,
-  IconCreditCard,
-  IconSettings,
-  IconKeyboard,
-  IconLanguage,
-  IconBell,
-  IconMail,
-  IconShield,
-  IconHelpCircle,
-  IconFileText,
-  IconLogout,
-  IconArrowRight,
-} from "@tabler/icons-react";
-import Link from "next/link";
+import { useSession } from "@/lib/auth-client";
 
 function AuthButtons() {
   const { data: session, isPending } = useSession();
@@ -129,13 +128,15 @@ export function ComponentExample() {
   return (
     <ExampleWrapper>
       {/* Hero Title Section */}
-      <div className="text-center space-y-4 pb-8 border-b border-border md:col-span-2">
-        <h1 className="text-4xl font-bold tracking-tight">AI Studio</h1>
-        <p className="text-muted-foreground text-lg max-w-md mx-auto">
+      <div className="space-y-4 border-border border-b pb-8 text-center md:col-span-2">
+        <h1 className="font-bold text-4xl tracking-tight">AI Studio</h1>
+        <p className="mx-auto max-w-md text-lg text-muted-foreground">
           Transform your real estate photos with AI-powered enhancements
         </p>
         <div className="flex justify-center gap-3 pt-2">
-          <Suspense fallback={<div className="skeleton h-11 w-32 rounded-md" />}>
+          <Suspense
+            fallback={<div className="skeleton h-11 w-32 rounded-md" />}
+          >
             <AuthButtons />
           </Suspense>
         </div>
@@ -150,14 +151,14 @@ export function ComponentExample() {
 
 function CardExample() {
   return (
-    <Example title="Card" className="items-center justify-center">
+    <Example className="items-center justify-center" title="Card">
       <Card className="relative w-full max-w-sm overflow-hidden pt-0">
-        <div className="bg-primary absolute inset-0 z-30 aspect-video opacity-50 mix-blend-color" />
+        <div className="absolute inset-0 z-30 aspect-video bg-primary opacity-50 mix-blend-color" />
         <img
-          src="https://images.unsplash.com/photo-1604076850742-4c7221f3101b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Photo by mymind on Unsplash"
-          title="Photo by mymind on Unsplash"
           className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale"
+          src="https://images.unsplash.com/photo-1604076850742-4c7221f3101b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          title="Photo by mymind on Unsplash"
         />
         <CardHeader>
           <CardTitle>Observability Plus is replacing Monitoring</CardTitle>
@@ -192,7 +193,7 @@ function CardExample() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Badge variant="secondary" className="ml-auto">
+          <Badge className="ml-auto" variant="secondary">
             Warning
           </Badge>
         </CardFooter>
@@ -226,7 +227,7 @@ function FormExample() {
           <CardAction>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button size="icon" variant="ghost">
                   <IconDotsVertical />
                   <span className="sr-only">More options</span>
                 </Button>
@@ -339,8 +340,8 @@ function FormExample() {
                         <DropdownMenuGroup>
                           <DropdownMenuLabel>Appearance</DropdownMenuLabel>
                           <DropdownMenuRadioGroup
-                            value={theme}
                             onValueChange={setTheme}
+                            value={theme}
                           >
                             <DropdownMenuRadioItem value="light">
                               <IconSun />
@@ -523,7 +524,7 @@ function FormExample() {
               </Field>
               <Field orientation="horizontal">
                 <Button type="submit">Submit</Button>
-                <Button variant="outline" type="button">
+                <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </Field>

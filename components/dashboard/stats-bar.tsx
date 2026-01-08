@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   IconBuilding,
   IconSparkles,
   IconTrendingUp,
 } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
 type StatItemProps = {
   icon: React.ReactNode;
@@ -26,7 +26,7 @@ function StatItem({ icon, label, value, accentColor, delay }: StatItemProps) {
   return (
     <div
       className={`stats-card flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/5 transition-all duration-500 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
       }`}
     >
       <div
@@ -38,11 +38,11 @@ function StatItem({ icon, label, value, accentColor, delay }: StatItemProps) {
         <div style={{ color: accentColor }}>{icon}</div>
       </div>
       <div className="min-w-0">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
           {label}
         </p>
         <p
-          className="font-mono text-lg font-semibold tabular-nums"
+          className="font-mono font-semibold text-lg tabular-nums"
           style={{ color: accentColor }}
         >
           {value}
@@ -66,25 +66,25 @@ export function StatsBar({
   return (
     <div className="grid grid-cols-3 gap-3">
       <StatItem
+        accentColor="var(--accent-teal)"
+        delay={0}
         icon={<IconBuilding className="h-4 w-4" />}
         label="Total Properties"
         value={totalProperties.toLocaleString()}
-        accentColor="var(--accent-teal)"
-        delay={0}
       />
       <StatItem
+        accentColor="var(--accent-green)"
+        delay={100}
         icon={<IconTrendingUp className="h-4 w-4" />}
         label="Active"
         value={activeProperties.toLocaleString()}
-        accentColor="var(--accent-green)"
-        delay={100}
       />
       <StatItem
+        accentColor="var(--accent-teal)"
+        delay={200}
         icon={<IconSparkles className="h-4 w-4" />}
         label="AI Edits"
         value={totalEdits.toLocaleString()}
-        accentColor="var(--accent-teal)"
-        delay={200}
       />
     </div>
   );

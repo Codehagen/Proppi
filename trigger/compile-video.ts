@@ -1,15 +1,14 @@
-import { task, logger, metadata } from "@trigger.dev/sdk/v3";
-import {
-  getVideoProjectById,
-  getVideoClips,
-  updateVideoProject,
-  getMusicTrackById,
-} from "@/lib/db/queries";
-import { uploadVideo, getVideoPath } from "@/lib/supabase";
+import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 import { execSync } from "child_process";
-import { writeFileSync, mkdirSync, rmSync, existsSync, readFileSync } from "fs";
-import { join } from "path";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
+import { join } from "path";
+import {
+  getVideoClips,
+  getVideoProjectById,
+  updateVideoProject,
+} from "@/lib/db/queries";
+import { getVideoPath, uploadVideo } from "@/lib/supabase";
 
 export interface CompileVideoPayload {
   videoProjectId: string;
@@ -34,7 +33,7 @@ export const compileVideoTask = task({
   retry: {
     maxAttempts: 2,
     minTimeoutInMs: 5000,
-    maxTimeoutInMs: 60000,
+    maxTimeoutInMs: 60_000,
     factor: 2,
   },
   run: async (payload: CompileVideoPayload) => {
@@ -63,7 +62,7 @@ export const compileVideoTask = task({
       const completedClips = clips
         .filter((c) => c.status === "completed" && c.clipUrl)
         .sort((a, b) => a.sequenceOrder - b.sequenceOrder);
-      
+
       if (completedClips.length === 0) {
         throw new Error("No completed clips to compile");
       }
@@ -88,10 +87,13 @@ export const compileVideoTask = task({
 
       const clipPaths: string[] = [];
       let totalItems = completedClips.length;
-      
+
       // Count transitions that need to be downloaded
       for (let i = 0; i < completedClips.length - 1; i++) {
-        if (completedClips[i].transitionType === "seamless" && completedClips[i].transitionClipUrl) {
+        if (
+          completedClips[i].transitionType === "seamless" &&
+          completedClips[i].transitionClipUrl
+        ) {
           totalItems++;
         }
       }
@@ -99,11 +101,11 @@ export const compileVideoTask = task({
       let itemIndex = 0;
       for (let i = 0; i < completedClips.length; i++) {
         const clip = completedClips[i];
-        
+
         // Download main clip
         const clipPath = join(
           workDir,
-          `clip_${String(itemIndex).padStart(3, "0")}.mp4`,
+          `clip_${String(itemIndex).padStart(3, "0")}.mp4`
         );
 
         logger.info(`Downloading clip ${i + 1}/${completedClips.length}`, {
@@ -114,7 +116,7 @@ export const compileVideoTask = task({
         const response = await fetch(clip.clipUrl!);
         if (!response.ok) {
           throw new Error(
-            `Failed to download clip ${clip.id}: ${response.status}`,
+            `Failed to download clip ${clip.id}: ${response.status}`
           );
         }
 
@@ -124,10 +126,14 @@ export const compileVideoTask = task({
         itemIndex++;
 
         // Download transition clip if seamless transition is enabled
-        if (i < completedClips.length - 1 && clip.transitionType === "seamless" && clip.transitionClipUrl) {
+        if (
+          i < completedClips.length - 1 &&
+          clip.transitionType === "seamless" &&
+          clip.transitionClipUrl
+        ) {
           const transitionPath = join(
             workDir,
-            `transition_${String(itemIndex).padStart(3, "0")}.mp4`,
+            `transition_${String(itemIndex).padStart(3, "0")}.mp4`
           );
 
           logger.info(`Downloading transition ${itemIndex}/${totalItems}`, {
@@ -136,16 +142,19 @@ export const compileVideoTask = task({
           });
 
           const transitionResponse = await fetch(clip.transitionClipUrl);
-          if (!transitionResponse.ok) {
-            logger.warn(`Failed to download transition for clip ${clip.id}, continuing without it`, {
-              status: transitionResponse.status,
-            });
-            // Continue without transition - fall back to cut
-          } else {
+          if (transitionResponse.ok) {
             const transitionBuffer = await transitionResponse.arrayBuffer();
             writeFileSync(transitionPath, Buffer.from(transitionBuffer));
             clipPaths.push(transitionPath);
             itemIndex++;
+          } else {
+            logger.warn(
+              `Failed to download transition for clip ${clip.id}, continuing without it`,
+              {
+                status: transitionResponse.status,
+              }
+            );
+            // Continue without transition - fall back to cut
           }
         }
 
@@ -203,7 +212,7 @@ export const compileVideoTask = task({
         execSync(ffmpegCmd, {
           cwd: workDir,
           stdio: "pipe",
-          timeout: 300000, // 5 minute timeout for FFmpeg
+          timeout: 300_000, // 5 minute timeout for FFmpeg
         });
       } catch (ffmpegError) {
         logger.error("FFmpeg compilation failed", {
@@ -230,23 +239,26 @@ export const compileVideoTask = task({
       const finalVideoPath = getVideoPath(
         videoProject.workspaceId,
         videoProjectId,
-        "final.mp4",
+        "final.mp4"
       );
 
       const finalVideoUrl = await uploadVideo(
         new Uint8Array(outputBuffer),
         finalVideoPath,
-        "video/mp4",
+        "video/mp4"
       );
 
       // Calculate total duration (including transitions)
       let totalDuration = completedClips.reduce(
         (sum, clip) => sum + (clip.durationSeconds ?? 5),
-        0,
+        0
       );
       // Add 5 seconds for each seamless transition (Kling minimum duration)
       for (let i = 0; i < completedClips.length - 1; i++) {
-        if (completedClips[i].transitionType === "seamless" && completedClips[i].transitionClipUrl) {
+        if (
+          completedClips[i].transitionType === "seamless" &&
+          completedClips[i].transitionClipUrl
+        ) {
           totalDuration += 5; // Transition clips are 5 seconds (Kling minimum)
         }
       }
@@ -298,7 +310,7 @@ export const compileVideoTask = task({
       try {
         await updateVideoProject(videoProjectId, {
           status: "failed",
-          errorMessage: errorMessage,
+          errorMessage,
         });
       } catch (dbError) {
         logger.error("Failed to update project status in database", {

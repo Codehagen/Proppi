@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
-  IconExternalLink,
-  IconFileInvoice,
   IconBuilding,
   IconCheck,
+  IconExternalLink,
+  IconFileInvoice,
   IconLoader2,
 } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -19,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
@@ -47,8 +47,8 @@ function StatusBadge({ status }: { status: InvoiceStatus }) {
     case "paid":
       return (
         <Badge
-          variant="outline"
           className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+          variant="outline"
         >
           Betalt
         </Badge>
@@ -56,8 +56,8 @@ function StatusBadge({ status }: { status: InvoiceStatus }) {
     case "sent":
       return (
         <Badge
-          variant="outline"
           className="border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-400"
+          variant="outline"
         >
           Sendt
         </Badge>
@@ -65,8 +65,8 @@ function StatusBadge({ status }: { status: InvoiceStatus }) {
     case "draft":
       return (
         <Badge
-          variant="outline"
           className="border-slate-500/30 bg-slate-500/10 text-slate-700 dark:text-slate-400"
+          variant="outline"
         >
           Utkast
         </Badge>
@@ -74,8 +74,8 @@ function StatusBadge({ status }: { status: InvoiceStatus }) {
     case "overdue":
       return (
         <Badge
-          variant="outline"
           className="border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400"
+          variant="outline"
         >
           Forfalt
         </Badge>
@@ -83,8 +83,8 @@ function StatusBadge({ status }: { status: InvoiceStatus }) {
     case "cancelled":
       return (
         <Badge
-          variant="outline"
           className="border-slate-500/30 bg-slate-500/10 text-slate-700 dark:text-slate-400"
+          variant="outline"
         >
           Kansellert
         </Badge>
@@ -92,8 +92,8 @@ function StatusBadge({ status }: { status: InvoiceStatus }) {
     default:
       return (
         <Badge
-          variant="outline"
           className="border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+          variant="outline"
         >
           Venter
         </Badge>
@@ -145,8 +145,8 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
             style={{ color: "var(--accent-violet)" }}
           />
         </div>
-        <h3 className="text-lg font-semibold">Ingen fakturaer enna</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h3 className="font-semibold text-lg">Ingen fakturaer enna</h3>
+        <p className="mt-1 text-muted-foreground text-sm">
           Fakturaer vil vises her nar du begynner a fakturere.
         </p>
       </div>
@@ -167,7 +167,7 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
               <TableHead>Status</TableHead>
               <TableHead>Utstedt</TableHead>
               <TableHead>Forfall</TableHead>
-              <TableHead className="w-24"></TableHead>
+              <TableHead className="w-24" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -178,7 +178,7 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
               return (
                 <TableRow key={invoice.id}>
                   <TableCell>
-                    <div className="font-mono font-medium">
+                    <div className="font-medium font-mono">
                       {invoice.fikenInvoiceNumber
                         ? `#${invoice.fikenInvoiceNumber}`
                         : "-"}
@@ -199,10 +199,10 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
                         />
                       </div>
                       <div>
-                        <div className="text-sm font-medium">
+                        <div className="font-medium text-sm">
                           {invoice.workspaceName}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-muted-foreground text-xs">
                           {invoice.workspaceOrgNumber
                             ? `Org: ${invoice.workspaceOrgNumber}`
                             : "Mangler org.nr"}
@@ -211,7 +211,9 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <span className="tabular-nums">{invoice.lineItemCount}</span>
+                    <span className="tabular-nums">
+                      {invoice.lineItemCount}
+                    </span>
                   </TableCell>
                   <TableCell className="text-right">
                     <span className="font-mono">
@@ -230,7 +232,7 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
                     <StatusBadge status={invoice.status} />
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-muted-foreground text-sm">
                       {invoice.issueDate
                         ? invoice.issueDate.toLocaleDateString("nb-NO", {
                             day: "numeric",
@@ -240,7 +242,7 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-muted-foreground text-sm">
                       {invoice.dueDate
                         ? invoice.dueDate.toLocaleDateString("nb-NO", {
                             day: "numeric",
@@ -255,11 +257,11 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
-                              variant="ghost"
-                              size="sm"
                               className="h-8"
-                              onClick={() => handleMarkAsPaid(invoice.id)}
                               disabled={markingPaidId === invoice.id}
+                              onClick={() => handleMarkAsPaid(invoice.id)}
+                              size="sm"
+                              variant="ghost"
                             >
                               {markingPaidId === invoice.id ? (
                                 <IconLoader2 className="h-4 w-4 animate-spin" />
@@ -275,15 +277,15 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8"
                               asChild
+                              className="h-8"
+                              size="sm"
+                              variant="ghost"
                             >
                               <a
                                 href={`https://fiken.no/foretak/fiken-demo-mulig-hytte-as2/handel/salg/${invoice.fikenInvoiceId}`}
-                                target="_blank"
                                 rel="noopener noreferrer"
+                                target="_blank"
                               >
                                 <IconExternalLink className="h-4 w-4" />
                               </a>
@@ -301,7 +303,7 @@ export function InvoiceHistoryTable({ invoices }: InvoiceHistoryTableProps) {
         </Table>
 
         {/* Footer */}
-        <div className="border-t px-4 py-3 text-sm text-muted-foreground">
+        <div className="border-t px-4 py-3 text-muted-foreground text-sm">
           <span
             className="font-mono font-semibold"
             style={{ color: "var(--accent-violet)" }}

@@ -1,23 +1,21 @@
 "use client";
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
 import {
-  IconPhoto,
-  IconHome,
-  IconMusic,
-  IconCheck,
-  IconArrowRight,
   IconArrowLeft,
-  IconMovie,
+  IconArrowRight,
+  IconCheck,
+  IconHome,
+  IconLayoutDashboard,
   IconLoader2,
+  IconMovie,
+  IconMusic,
+  IconPhoto,
   IconSparkles,
   IconTemplate,
-  IconLayoutDashboard,
 } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import * as React from "react";
 import { toast } from "sonner";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   useVideoCreation,
@@ -27,10 +25,11 @@ import {
   createVideoProject,
   triggerVideoGeneration,
 } from "@/lib/actions/video";
-import { SelectImagesStep } from "./steps/select-images-step";
+import { cn } from "@/lib/utils";
 import { AssignRoomsStep } from "./steps/assign-rooms-step";
-import { SelectMusicStep } from "./steps/select-music-step";
 import { ReviewStep } from "./steps/review-step";
+import { SelectImagesStep } from "./steps/select-images-step";
+import { SelectMusicStep } from "./steps/select-music-step";
 import { SelectTemplateStep } from "./steps/select-template-step";
 import { StoryboardStep } from "./steps/storyboard-step";
 
@@ -106,20 +105,20 @@ function StepIndicator({
           <React.Fragment key={step.id}>
             <div
               className={cn(
-                "flex items-center gap-1.5 sm:gap-2 rounded-full px-2.5 sm:px-4 py-2 text-sm font-medium transition-all duration-300",
+                "flex items-center gap-1.5 rounded-full px-2.5 py-2 font-medium text-sm transition-all duration-300 sm:gap-2 sm:px-4",
                 isActive &&
-                  "bg-(--accent-teal)/15 text-(--accent-teal) shadow-sm shadow-(--accent-teal)/10",
+                  "bg-(--accent-teal)/15 text-(--accent-teal) shadow-(--accent-teal)/10 shadow-sm",
                 isCompleted && "text-(--accent-teal)",
-                !isActive && !isCompleted && "text-muted-foreground",
+                !(isActive || isCompleted) && "text-muted-foreground"
               )}
             >
               <span
                 className={cn(
-                  "flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300",
+                  "flex h-7 w-7 items-center justify-center rounded-full font-semibold text-xs transition-all duration-300",
                   isActive &&
-                    "bg-(--accent-teal) text-white shadow-lg shadow-(--accent-teal)/30",
+                    "bg-(--accent-teal) text-white shadow-(--accent-teal)/30 shadow-lg",
                   isCompleted && "bg-(--accent-teal) text-white",
-                  !isActive && !isCompleted && "bg-muted text-muted-foreground",
+                  !(isActive || isCompleted) && "bg-muted text-muted-foreground"
                 )}
               >
                 {isCompleted ? (
@@ -134,10 +133,10 @@ function StepIndicator({
             {index < steps.length - 1 && (
               <div
                 className={cn(
-                  "h-px w-6 sm:w-10 transition-all duration-300",
+                  "h-px w-6 transition-all duration-300 sm:w-10",
                   index < currentIndex
                     ? "bg-linear-to-r from-(--accent-teal) to-(--accent-teal)/50"
-                    : "bg-border",
+                    : "bg-border"
                 )}
               />
             )}
@@ -198,9 +197,11 @@ export function VideoCreationWizard() {
         generateNativeAudio: creation.generateNativeAudio,
         clips: creation.images.map((img) => ({
           sourceImageUrl: img.startImageUrl || img.url,
-          imageGenerationId: img.startImageGenerationId || img.imageGenerationId || null,
+          imageGenerationId:
+            img.startImageGenerationId || img.imageGenerationId || null,
           endImageUrl: img.endImageUrl || img.url,
-          endImageGenerationId: img.endImageGenerationId || img.imageGenerationId || null,
+          endImageGenerationId:
+            img.endImageGenerationId || img.imageGenerationId || null,
           roomType: img.roomType,
           roomLabel: img.roomLabel || null,
           sequenceOrder: img.sequenceOrder,
@@ -214,7 +215,7 @@ export function VideoCreationWizard() {
       }
 
       console.log(
-        `[VideoCreationWizard] Project created successfully: ${result.videoProjectId}. Triggering generation...`,
+        `[VideoCreationWizard] Project created successfully: ${result.videoProjectId}. Triggering generation...`
       );
 
       // Trigger video generation
@@ -223,7 +224,7 @@ export function VideoCreationWizard() {
       } catch (triggerError) {
         console.error(
           "[VideoCreationWizard] Trigger failed, but project was created:",
-          triggerError,
+          triggerError
         );
         // We still redirect because the project exists, but we show a different message
         toast.warning(
@@ -231,15 +232,15 @@ export function VideoCreationWizard() {
           {
             description:
               "You can try to restart the generation from the video details page.",
-            duration: 10000,
-          },
+            duration: 10_000,
+          }
         );
         router.push(`/video/${result.videoProjectId}`);
         return;
       }
 
       console.log(
-        "[VideoCreationWizard] Video generation triggered successfully",
+        "[VideoCreationWizard] Video generation triggered successfully"
       );
 
       toast.success("Video generation started!", {
@@ -251,7 +252,7 @@ export function VideoCreationWizard() {
     } catch (error) {
       console.error(
         "[VideoCreationWizard] General error in handleSubmit:",
-        error,
+        error
       );
       toast.error("Failed to create video", {
         description:
@@ -284,32 +285,33 @@ export function VideoCreationWizard() {
         <div
           className="absolute inset-0 opacity-[0.02]"
           style={{
-            backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 20px, currentColor 20px, currentColor 22px)`,
+            backgroundImage:
+              "repeating-linear-gradient(90deg, transparent, transparent 20px, currentColor 20px, currentColor 22px)",
           }}
         />
 
         <div className="relative mx-auto max-w-5xl px-4 py-8 sm:px-6">
           {/* Logo/Title */}
           <div className="mb-6 flex items-center justify-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-(--accent-teal) to-(--accent-teal)/70 shadow-lg shadow-(--accent-teal)/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-(--accent-teal) to-(--accent-teal)/70 shadow-(--accent-teal)/20 shadow-lg">
               <IconMovie className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">
+              <h1 className="font-bold text-2xl tracking-tight">
                 Create Video
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Property Tour Generator
               </p>
             </div>
           </div>
 
           {/* Step Indicator */}
-          <StepIndicator steps={steps} currentStep={creation.step} />
+          <StepIndicator currentStep={creation.step} steps={steps} />
 
           {/* Step Title */}
-          <div className="mt-6 text-center animate-fade-in">
-            <h2 className="text-xl font-semibold">{currentStepInfo.title}</h2>
+          <div className="mt-6 animate-fade-in text-center">
+            <h2 className="font-semibold text-xl">{currentStepInfo.title}</h2>
             <p className="mt-1 text-muted-foreground">
               {currentStepInfo.description}
             </p>
@@ -319,27 +321,29 @@ export function VideoCreationWizard() {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className={cn(
-            "mx-auto px-4 py-8 sm:px-6 transition-all duration-500",
+        <div
+          className={cn(
+            "mx-auto px-4 py-8 transition-all duration-500 sm:px-6",
             creation.step === "storyboard" ? "max-w-full lg:px-12" : "max-w-5xl"
-        )}>
+          )}
+        >
           <div className="animate-fade-in-up">
             {creation.step === "select-template" && (
               <SelectTemplateStep
-                selectedTemplateId={creation.selectedTemplateId}
-                onSelectTemplate={handleTemplateSelect}
                 onSelectCustom={handleCustomSelect}
+                onSelectTemplate={handleTemplateSelect}
+                selectedTemplateId={creation.selectedTemplateId}
               />
             )}
 
             {creation.step === "storyboard" && creation.selectedTemplateId && (
               <StoryboardStep
-                selectedTemplateId={creation.selectedTemplateId}
                 images={creation.images}
                 onAddImageToSlot={creation.addImageToSlot}
+                onRemoveImage={creation.removeImage}
                 onUpdateSlotImage={creation.updateSlotImage}
                 onUpdateTransitionType={creation.updateTransitionType}
-                onRemoveImage={creation.removeImage}
+                selectedTemplateId={creation.selectedTemplateId}
               />
             )}
 
@@ -353,30 +357,30 @@ export function VideoCreationWizard() {
             {creation.step === "assign-rooms" && (
               <AssignRoomsStep
                 images={creation.images}
-                onUpdateImage={creation.updateImage}
-                onReorderImages={creation.reorderImages}
                 onAutoArrange={creation.autoArrangeByRoomType}
+                onReorderImages={creation.reorderImages}
+                onUpdateImage={creation.updateImage}
               />
             )}
             {creation.step === "select-music" && (
               <SelectMusicStep
-                selectedTrack={creation.selectedMusicTrack}
-                onSelectTrack={creation.setMusicTrack}
-                volume={creation.musicVolume}
-                onVolumeChange={creation.setMusicVolume}
                 aspectRatio={creation.aspectRatio}
-                onAspectRatioChange={creation.setAspectRatio}
                 generateNativeAudio={creation.generateNativeAudio}
+                onAspectRatioChange={creation.setAspectRatio}
                 onGenerateNativeAudioChange={creation.setGenerateNativeAudio}
+                onSelectTrack={creation.setMusicTrack}
+                onVolumeChange={creation.setMusicVolume}
+                selectedTrack={creation.selectedMusicTrack}
+                volume={creation.musicVolume}
               />
             )}
             {creation.step === "review" && (
               <ReviewStep
-                images={creation.images}
-                projectName={creation.projectName}
-                onProjectNameChange={creation.setProjectName}
                 aspectRatio={creation.aspectRatio}
+                images={creation.images}
                 musicTrack={creation.selectedMusicTrack}
+                onProjectNameChange={creation.setProjectName}
+                projectName={creation.projectName}
               />
             )}
           </div>
@@ -390,10 +394,10 @@ export function VideoCreationWizard() {
             <div className="flex items-center gap-4">
               {creation.step !== "select-template" && (
                 <Button
-                  variant="ghost"
-                  onClick={creation.goToPreviousStep}
                   className="gap-2"
                   disabled={creation.isSubmitting}
+                  onClick={creation.goToPreviousStep}
+                  variant="ghost"
                 >
                   <IconArrowLeft className="h-4 w-4" />
                   Back
@@ -403,18 +407,18 @@ export function VideoCreationWizard() {
 
             <div className="flex items-center gap-3">
               <Button
-                variant="outline"
-                onClick={() => router.push("/video")}
                 disabled={creation.isSubmitting}
+                onClick={() => router.push("/video")}
+                variant="outline"
               >
                 Cancel
               </Button>
 
               {creation.step === "review" ? (
                 <Button
-                  onClick={handleSubmit}
+                  className="min-w-[160px] gap-2 bg-(--accent-teal) shadow-(--accent-teal)/20 shadow-lg"
                   disabled={!creation.canProceed() || creation.isSubmitting}
-                  className="gap-2 min-w-[160px] shadow-lg shadow-(--accent-teal)/20 bg-(--accent-teal)"
+                  onClick={handleSubmit}
                 >
                   {creation.isSubmitting ? (
                     <>
@@ -431,9 +435,9 @@ export function VideoCreationWizard() {
               ) : (
                 creation.step !== "select-template" && (
                   <Button
-                    onClick={creation.goToNextStep}
+                    className="gap-2 bg-(--accent-teal) shadow-(--accent-teal)/20 shadow-lg"
                     disabled={!creation.canProceed()}
-                    className="gap-2 shadow-lg shadow-(--accent-teal)/20 bg-(--accent-teal)"
+                    onClick={creation.goToNextStep}
                   >
                     Continue
                     <IconArrowRight className="h-4 w-4" />

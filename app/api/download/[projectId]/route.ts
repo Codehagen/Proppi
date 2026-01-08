@@ -1,16 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
 import archiver from "archiver";
+import { headers } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import {
-  getProjectById,
-  getLatestVersionImages,
   getImageGenerationById,
+  getLatestVersionImages,
+  getProjectById,
 } from "@/lib/db/queries";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ projectId: string }> },
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
     // Verify authentication
@@ -39,11 +39,11 @@ export async function GET(
     if (selectedImageIds && selectedImageIds.length > 0) {
       // Fetch specific images by ID
       const imagePromises = selectedImageIds.map((id) =>
-        getImageGenerationById(id),
+        getImageGenerationById(id)
       );
       const fetchedImages = await Promise.all(imagePromises);
       images = fetchedImages.filter(
-        (img) => img !== null && img.projectId === projectId,
+        (img) => img !== null && img.projectId === projectId
       );
     } else {
       // Get latest version of each image
@@ -53,7 +53,7 @@ export async function GET(
     if (images.length === 0) {
       return NextResponse.json(
         { error: "No images to download" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -83,7 +83,7 @@ export async function GET(
           const response = await fetch(imageUrl);
           if (!response.ok) {
             console.error(
-              `Failed to fetch image ${image.id}: ${response.status}`,
+              `Failed to fetch image ${image.id}: ${response.status}`
             );
             continue;
           }

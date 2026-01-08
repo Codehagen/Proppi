@@ -1,38 +1,38 @@
 "use server";
 
-import { headers } from "next/headers";
+import { tasks, auth as triggerAuth } from "@trigger.dev/sdk/v3";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import {
-  createVideoProject as dbCreateVideoProject,
   createVideoClips,
-  updateVideoProject,
-  updateVideoClip,
+  createVideoProject as dbCreateVideoProject,
   deleteVideoProject as dbDeleteVideoProject,
+  getMusicTracks as dbGetMusicTracks,
+  getUserWithWorkspace,
   getVideoProjectById,
   updateClipSequenceOrders,
-  getMusicTracks as dbGetMusicTracks,
+  updateVideoClip,
+  updateVideoProject,
 } from "@/lib/db/queries";
-import { getUserWithWorkspace } from "@/lib/db/queries";
+import type {
+  NewVideoClip,
+  VideoAspectRatio,
+  VideoRoomType,
+} from "@/lib/db/schema";
 import {
   deleteVideoProjectFiles,
-  uploadVideoSourceImage,
-  getVideoSourceImagePath,
   getExtensionFromContentType,
+  getVideoSourceImagePath,
+  uploadVideoSourceImage,
 } from "@/lib/supabase";
-import { auth as triggerAuth, tasks } from "@trigger.dev/sdk/v3";
-import type { generateVideoTask } from "@/trigger/video-orchestrator";
+import { getMotionPrompt } from "@/lib/video/motion-prompts";
 import {
   calculateVideoCost,
   costToCents,
   VIDEO_DEFAULTS,
 } from "@/lib/video/video-constants";
-import { getMotionPrompt } from "@/lib/video/motion-prompts";
-import type {
-  VideoRoomType,
-  VideoAspectRatio,
-  NewVideoClip,
-} from "@/lib/db/schema";
+import type { generateVideoTask } from "@/trigger/video-orchestrator";
 
 // ============================================================================
 // Types
@@ -101,7 +101,8 @@ export async function createVideoProject(input: CreateVideoInput) {
     aspectRatio: input.aspectRatio ?? VIDEO_DEFAULTS.ASPECT_RATIO,
     musicTrackId: input.musicTrackId ?? null,
     musicVolume: input.musicVolume ?? VIDEO_DEFAULTS.MUSIC_VOLUME,
-    generateNativeAudio: input.generateNativeAudio ?? VIDEO_DEFAULTS.GENERATE_NATIVE_AUDIO,
+    generateNativeAudio:
+      input.generateNativeAudio ?? VIDEO_DEFAULTS.GENERATE_NATIVE_AUDIO,
     status: "draft",
     clipCount: input.clips.length,
     completedClipCount: 0,
@@ -144,7 +145,7 @@ export async function createVideoProject(input: CreateVideoInput) {
 export async function triggerVideoGeneration(videoProjectId: string) {
   if (process.env.DEBUG_VIDEO === "1") {
     console.log(
-      `[triggerVideoGeneration] Starting trigger for project: ${videoProjectId}`,
+      `[triggerVideoGeneration] Starting trigger for project: ${videoProjectId}`
     );
   }
 
@@ -160,7 +161,7 @@ export async function triggerVideoGeneration(videoProjectId: string) {
   if (!projectData) {
     if (process.env.DEBUG_VIDEO === "1") {
       console.error(
-        `[triggerVideoGeneration] Video project not found: ${videoProjectId}`,
+        `[triggerVideoGeneration] Video project not found: ${videoProjectId}`
       );
     }
     throw new Error("Video project not found");
@@ -174,7 +175,7 @@ export async function triggerVideoGeneration(videoProjectId: string) {
   ) {
     if (process.env.DEBUG_VIDEO === "1") {
       console.error(
-        `[triggerVideoGeneration] Unauthorized: User does not own workspace ${projectData.videoProject.workspaceId}`,
+        `[triggerVideoGeneration] Unauthorized: User does not own workspace ${projectData.videoProject.workspaceId}`
       );
     }
     throw new Error("Unauthorized");
@@ -183,17 +184,17 @@ export async function triggerVideoGeneration(videoProjectId: string) {
   try {
     // Check if TRIGGER_SECRET_KEY is set (without logging its value)
     if (process.env.DEBUG_VIDEO === "1") {
-      if (!process.env.TRIGGER_SECRET_KEY) {
-        console.error(
-          "[triggerVideoGeneration] TRIGGER_SECRET_KEY is not set in environment variables",
-        );
-      } else {
+      if (process.env.TRIGGER_SECRET_KEY) {
         console.log("[triggerVideoGeneration] TRIGGER_SECRET_KEY is present");
+      } else {
+        console.error(
+          "[triggerVideoGeneration] TRIGGER_SECRET_KEY is not set in environment variables"
+        );
       }
 
       // Trigger the video generation task using the recommended tasks.trigger method
       console.log(
-        "[triggerVideoGeneration] Calling tasks.trigger for generate-video...",
+        "[triggerVideoGeneration] Calling tasks.trigger for generate-video..."
       );
     }
 
@@ -204,13 +205,13 @@ export async function triggerVideoGeneration(videoProjectId: string) {
       },
       {
         queue: "video-generation",
-      },
+      }
     );
 
     if (!handle?.id) {
       if (process.env.DEBUG_VIDEO === "1") {
         console.error(
-          "[triggerVideoGeneration] Trigger failed: No run ID returned from Trigger.dev",
+          "[triggerVideoGeneration] Trigger failed: No run ID returned from Trigger.dev"
         );
       }
       throw new Error("Failed to start video generation: No run ID returned");
@@ -218,7 +219,7 @@ export async function triggerVideoGeneration(videoProjectId: string) {
 
     if (process.env.DEBUG_VIDEO === "1") {
       console.log(
-        `[triggerVideoGeneration] Trigger successful! Run ID: ${handle.id}`,
+        `[triggerVideoGeneration] Trigger successful! Run ID: ${handle.id}`
       );
 
       // Generate public access token for real-time updates
@@ -240,13 +241,15 @@ export async function triggerVideoGeneration(videoProjectId: string) {
 
     if (process.env.DEBUG_VIDEO === "1") {
       console.log(
-        `[triggerVideoGeneration] Project ${videoProjectId} updated with run ID and access token`,
+        `[triggerVideoGeneration] Project ${videoProjectId} updated with run ID and access token`
       );
     }
 
     // Create invoice line item for video generation billing
     try {
-      const { createVideoInvoiceLineItemAction } = await import("@/lib/actions/billing");
+      const { createVideoInvoiceLineItemAction } = await import(
+        "@/lib/actions/billing"
+      );
       await createVideoInvoiceLineItemAction(
         projectData.videoProject.workspaceId,
         videoProjectId,
@@ -254,7 +257,10 @@ export async function triggerVideoGeneration(videoProjectId: string) {
       );
     } catch (billingError) {
       // Log but don't fail the video generation if billing fails
-      console.error("[triggerVideoGeneration] Failed to create invoice line item:", billingError);
+      console.error(
+        "[triggerVideoGeneration] Failed to create invoice line item:",
+        billingError
+      );
     }
 
     revalidatePath(`/video/${videoProjectId}`);
@@ -263,7 +269,7 @@ export async function triggerVideoGeneration(videoProjectId: string) {
   } catch (error) {
     console.error(
       "[triggerVideoGeneration] Error triggering video generation:",
-      error,
+      error
     );
 
     // Update project status to failed if triggering failed
@@ -287,7 +293,7 @@ export async function updateVideoSettings(
     musicTrackId?: string | null;
     musicVolume?: number;
     generateNativeAudio?: boolean;
-  },
+  }
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user?.id) {
@@ -357,7 +363,7 @@ export async function updateClip(input: UpdateClipInput) {
 
 export async function reorderClips(
   videoProjectId: string,
-  clipOrders: Array<{ id: string; sequenceOrder: number }>,
+  clipOrders: Array<{ id: string; sequenceOrder: number }>
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user?.id) {
@@ -409,7 +415,7 @@ export async function deleteVideoProject(videoProjectId: string) {
   try {
     await deleteVideoProjectFiles(
       projectData.videoProject.workspaceId,
-      videoProjectId,
+      videoProjectId
     );
   } catch (error) {
     console.error("Failed to delete video files:", error);
@@ -435,8 +441,9 @@ export async function retryFailedClip(clipId: string) {
   }
 
   // Import here to avoid circular dependency
-  const { generateVideoClipTask } =
-    await import("@/trigger/generate-video-clip");
+  const { generateVideoClipTask } = await import(
+    "@/trigger/generate-video-clip"
+  );
 
   // Reset clip status and trigger regeneration
   await updateVideoClip(clipId, {
@@ -512,7 +519,7 @@ export async function uploadVideoSourceImageAction(formData: FormData) {
   const extension = getExtensionFromContentType(file.type);
   const path = getVideoSourceImagePath(
     userData.workspace.id,
-    `${imageId}.${extension}`,
+    `${imageId}.${extension}`
   );
 
   // Convert file to buffer

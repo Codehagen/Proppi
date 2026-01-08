@@ -1,14 +1,14 @@
-import { task, logger, metadata } from "@trigger.dev/sdk/v3";
-import { fal, NANO_BANANA_PRO_EDIT, type NanoBananaProOutput } from "@/lib/fal";
+import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 import {
   getImageGenerationById,
   updateImageGeneration,
   updateProjectCounts,
 } from "@/lib/db/queries";
+import { fal, NANO_BANANA_PRO_EDIT, type NanoBananaProOutput } from "@/lib/fal";
 import {
-  uploadImage,
-  getImagePath,
   getExtensionFromContentType,
+  getImagePath,
+  uploadImage,
 } from "@/lib/supabase";
 
 export interface ProcessImagePayload {
@@ -33,7 +33,7 @@ export const processImageTask = task({
   retry: {
     maxAttempts: 3,
     minTimeoutInMs: 1000,
-    maxTimeoutInMs: 10000,
+    maxTimeoutInMs: 10_000,
     factor: 2,
   },
   run: async (payload: ProcessImagePayload) => {
@@ -83,13 +83,13 @@ export const processImageTask = task({
       const imageResponse = await fetch(image.originalImageUrl);
       if (!imageResponse.ok) {
         throw new Error(
-          `Failed to fetch original image: ${imageResponse.status}`,
+          `Failed to fetch original image: ${imageResponse.status}`
         );
       }
 
       const imageBlob = await imageResponse.blob();
       const falImageUrl = await fal.storage.upload(
-        new File([imageBlob], "input.jpg", { type: imageBlob.type }),
+        new File([imageBlob], "input.jpg", { type: imageBlob.type })
       );
 
       logger.info("Uploaded to Fal.ai storage", { falImageUrl });
@@ -148,7 +148,7 @@ export const processImageTask = task({
         image.workspaceId,
         image.projectId,
         `${imageId}.${extension}`,
-        "result",
+        "result"
       );
 
       logger.info("Uploading to Supabase", { resultPath });
@@ -156,7 +156,7 @@ export const processImageTask = task({
       const storedResultUrl = await uploadImage(
         new Uint8Array(resultImageBuffer),
         resultPath,
-        contentType,
+        contentType
       );
 
       // Update image record with result

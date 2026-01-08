@@ -1,23 +1,23 @@
-import { task, logger, metadata } from "@trigger.dev/sdk/v3";
+import { logger, metadata, task } from "@trigger.dev/sdk/v3";
+import sharp from "sharp";
 import {
-  fal,
+  createImageGeneration,
+  deleteVersionsAfter,
+  getImageGenerationById,
+  updateProjectCounts,
+} from "@/lib/db/queries";
+import {
   FLUX_FILL_PRO,
-  NANO_BANANA_PRO_EDIT,
   type FluxFillOutput,
+  fal,
+  NANO_BANANA_PRO_EDIT,
   type NanoBananaProOutput,
 } from "@/lib/fal";
 import {
-  getImageGenerationById,
-  createImageGeneration,
-  updateProjectCounts,
-  deleteVersionsAfter,
-} from "@/lib/db/queries";
-import {
-  uploadImage,
-  getImagePath,
   getExtensionFromContentType,
+  getImagePath,
+  uploadImage,
 } from "@/lib/supabase";
-import sharp from "sharp";
 
 export type EditMode = "remove" | "add";
 
@@ -47,7 +47,7 @@ export const inpaintImageTask = task({
   retry: {
     maxAttempts: 2,
     minTimeoutInMs: 1000,
-    maxTimeoutInMs: 10000,
+    maxTimeoutInMs: 10_000,
     factor: 2,
   },
   run: async (payload: InpaintImagePayload) => {
@@ -89,7 +89,7 @@ export const inpaintImageTask = task({
       const imageResponse = await fetch(sourceImageUrl);
       if (!imageResponse.ok) {
         throw new Error(
-          `Failed to fetch source image: ${imageResponse.status}`,
+          `Failed to fetch source image: ${imageResponse.status}`
         );
       }
 
@@ -108,7 +108,7 @@ export const inpaintImageTask = task({
         type: imageResponse.headers.get("content-type") || "image/jpeg",
       });
       const falImageUrl = await fal.storage.upload(
-        new File([imageBlob], "input.jpg", { type: imageBlob.type }),
+        new File([imageBlob], "input.jpg", { type: imageBlob.type })
       );
 
       logger.info("Uploaded image to Fal.ai storage", { falImageUrl });
@@ -147,7 +147,7 @@ export const inpaintImageTask = task({
           type: "image/png",
         });
         const falMaskUrl = await fal.storage.upload(
-          new File([maskBlob], "mask.png", { type: "image/png" }),
+          new File([maskBlob], "mask.png", { type: "image/png" })
         );
 
         logger.info("Uploaded mask to Fal.ai storage", { falMaskUrl });
@@ -223,7 +223,7 @@ export const inpaintImageTask = task({
         image.workspaceId,
         image.projectId,
         `${newImageId}.${extension}`,
-        "result",
+        "result"
       );
 
       logger.info("Uploading to Supabase", { resultPath });
@@ -231,7 +231,7 @@ export const inpaintImageTask = task({
       const storedResultUrl = await uploadImage(
         new Uint8Array(resultImageBuffer),
         resultPath,
-        contentType,
+        contentType
       );
 
       // Calculate version info
@@ -242,11 +242,11 @@ export const inpaintImageTask = task({
       if (replaceNewerVersions) {
         const deletedCount = await deleteVersionsAfter(
           rootImageId,
-          currentVersion,
+          currentVersion
         );
         if (deletedCount > 0) {
           logger.info(
-            `Deleted ${deletedCount} newer version(s) before creating new edit`,
+            `Deleted ${deletedCount} newer version(s) before creating new edit`
           );
         }
       }
@@ -260,7 +260,7 @@ export const inpaintImageTask = task({
         projectId: image.projectId,
         originalImageUrl: image.originalImageUrl,
         resultImageUrl: storedResultUrl,
-        prompt: prompt,
+        prompt,
         version: newVersion,
         parentId: rootImageId,
         status: "completed",

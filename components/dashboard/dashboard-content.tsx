@@ -1,22 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { parseAsStringLiteral, useQueryState } from "nuqs";
 import {
-  IconSparkles,
-  IconPlus,
   IconLayoutGrid,
+  IconPlus,
+  IconSparkles,
   IconTable,
 } from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ProjectsGrid } from "@/components/dashboard/projects-grid";
+import { parseAsStringLiteral, useQueryState } from "nuqs";
+import { useState } from "react";
 import { EmptyProjects } from "@/components/dashboard/empty-projects";
+import { ProjectsGrid } from "@/components/dashboard/projects-grid";
 import { StatsBar } from "@/components/dashboard/stats-bar";
-import { DataTable } from "@/components/tables/properties/data-table";
 import { NewProjectDialog } from "@/components/projects/new-project-dialog";
+import { DataTable } from "@/components/tables/properties/data-table";
+import { Button } from "@/components/ui/button";
 import type { Project } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 
 type ViewMode = "grid" | "table";
 
@@ -30,14 +29,14 @@ function ViewToggle({
   return (
     <div className="flex items-center rounded-lg bg-muted/50 p-1 ring-1 ring-foreground/5">
       <button
-        onClick={() => onViewChange("grid")}
+        aria-label="Grid view"
         className={cn(
           "flex h-8 w-8 items-center justify-center rounded-md transition-all duration-200",
           view === "grid"
             ? "bg-background shadow-sm ring-1 ring-foreground/5"
-            : "text-muted-foreground hover:text-foreground",
+            : "text-muted-foreground hover:text-foreground"
         )}
-        aria-label="Grid view"
+        onClick={() => onViewChange("grid")}
       >
         <IconLayoutGrid
           className="h-4 w-4"
@@ -45,14 +44,14 @@ function ViewToggle({
         />
       </button>
       <button
-        onClick={() => onViewChange("table")}
+        aria-label="Table view"
         className={cn(
           "flex h-8 w-8 items-center justify-center rounded-md transition-all duration-200",
           view === "table"
             ? "bg-background shadow-sm ring-1 ring-foreground/5"
-            : "text-muted-foreground hover:text-foreground",
+            : "text-muted-foreground hover:text-foreground"
         )}
-        aria-label="Table view"
+        onClick={() => onViewChange("table")}
       >
         <IconTable
           className="h-4 w-4"
@@ -77,7 +76,7 @@ export function DashboardContent({ projects, stats }: DashboardContentProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [view, setView] = useQueryState(
     "view",
-    parseAsStringLiteral(["grid", "table"] as const).withDefault("grid"),
+    parseAsStringLiteral(["grid", "table"] as const).withDefault("grid")
   );
 
   const hasProjects = projects.length > 0;
@@ -95,8 +94,8 @@ export function DashboardContent({ projects, stats }: DashboardContentProps) {
               <IconSparkles className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Projects</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="font-bold text-2xl tracking-tight">Projects</h1>
+              <p className="text-muted-foreground text-sm">
                 Transform your real estate photos with AI
               </p>
             </div>
@@ -105,10 +104,10 @@ export function DashboardContent({ projects, stats }: DashboardContentProps) {
           {/* Actions: View Toggle + New Project */}
           {hasProjects && (
             <div className="flex items-center gap-3">
-              <ViewToggle view={view} onViewChange={setView} />
+              <ViewToggle onViewChange={setView} view={view} />
               <Button
-                onClick={() => setDialogOpen(true)}
                 className="gap-2 shadow-sm"
+                onClick={() => setDialogOpen(true)}
                 style={{ backgroundColor: "var(--accent-teal)" }}
               >
                 <IconPlus className="h-4 w-4" />
@@ -123,13 +122,13 @@ export function DashboardContent({ projects, stats }: DashboardContentProps) {
         <>
           {/* Stats bar */}
           <StatsBar
-            totalProperties={stats.totalProjects}
             activeProperties={stats.completedProjects}
             totalEdits={stats.totalImages}
+            totalProperties={stats.totalProjects}
           />
 
           {/* Content based on view mode */}
-          <div className="animate-fade-in-up stagger-3">
+          <div className="stagger-3 animate-fade-in-up">
             {view === "grid" ? (
               <ProjectsGrid projects={projects} />
             ) : (
@@ -143,7 +142,7 @@ export function DashboardContent({ projects, stats }: DashboardContentProps) {
       )}
 
       {/* New Project Dialog */}
-      <NewProjectDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <NewProjectDialog onOpenChange={setDialogOpen} open={dialogOpen} />
     </div>
   );
 }

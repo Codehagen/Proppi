@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import { createSignedUploadUrls, recordUploadedImages } from "@/lib/actions";
 
 export interface UploadProgress {
@@ -15,7 +15,7 @@ interface UseImageUploadReturn {
   uploadImages: (
     projectId: string,
     files: File[],
-    roomTypes?: (string | null)[],
+    roomTypes?: (string | null)[]
   ) => Promise<boolean>;
   progress: UploadProgress[];
   isUploading: boolean;
@@ -38,7 +38,7 @@ export function useImageUpload(): UseImageUploadReturn {
     async (
       projectId: string,
       files: File[],
-      roomTypes?: (string | null)[],
+      roomTypes?: (string | null)[]
     ): Promise<boolean> => {
       if (files.length === 0) return false;
 
@@ -63,7 +63,7 @@ export function useImageUpload(): UseImageUploadReturn {
 
         const urlsResult = await createSignedUploadUrls(
           projectId,
-          fileMetadata,
+          fileMetadata
         );
 
         if (!urlsResult.success) {
@@ -81,7 +81,7 @@ export function useImageUpload(): UseImageUploadReturn {
             fileName: files[index].name,
             progress: 0,
             status: "uploading" as const,
-          })),
+          }))
         );
 
         // Step 2: Upload files directly to Supabase
@@ -118,8 +118,8 @@ export function useImageUpload(): UseImageUploadReturn {
               prev.map((p) =>
                 p.imageId === imageId
                   ? { ...p, progress: 100, status: "completed" as const }
-                  : p,
-              ),
+                  : p
+              )
             );
 
             uploadedImages.push({
@@ -143,8 +143,8 @@ export function useImageUpload(): UseImageUploadReturn {
                           ? uploadError.message
                           : "Upload failed",
                     }
-                  : p,
-              ),
+                  : p
+              )
             );
           }
         }
@@ -153,7 +153,7 @@ export function useImageUpload(): UseImageUploadReturn {
         if (uploadedImages.length > 0) {
           const recordResult = await recordUploadedImages(
             projectId,
-            uploadedImages,
+            uploadedImages
           );
 
           if (!recordResult.success) {
@@ -172,7 +172,7 @@ export function useImageUpload(): UseImageUploadReturn {
         return false;
       }
     },
-    [],
+    []
   );
 
   return {

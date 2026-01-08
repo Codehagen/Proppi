@@ -1,20 +1,20 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { eq, and, gt } from "drizzle-orm";
-import { nanoid } from "nanoid";
 import { addDays } from "date-fns";
+import { and, eq, gt } from "drizzle-orm";
+import { nanoid } from "nanoid";
+import { revalidatePath } from "next/cache";
+import type { ActionResult } from "@/lib/actions/admin";
 import { verifySystemAdmin } from "@/lib/admin-auth";
 import { db } from "@/lib/db";
 import {
-  workspace,
+  type Invitation,
   invitation,
   user,
   type WorkspacePlan,
-  type Invitation,
+  workspace,
 } from "@/lib/db/schema";
 import { sendInviteEmail } from "@/lib/email";
-import type { ActionResult } from "@/lib/actions/admin";
 
 // ============================================================================
 // Create Workspace with Invitation (Admin only)
@@ -24,8 +24,14 @@ export async function createWorkspaceWithInviteAction(
   name: string,
   email: string,
   plan: WorkspacePlan,
-  sendEmail: boolean = true
-): Promise<ActionResult<{ workspace: { id: string; name: string }; invitation: Invitation; inviteLink: string }>> {
+  sendEmail = true
+): Promise<
+  ActionResult<{
+    workspace: { id: string; name: string };
+    invitation: Invitation;
+    inviteLink: string;
+  }>
+> {
   const adminCheck = await verifySystemAdmin();
   if (adminCheck.error) {
     return { success: false, error: adminCheck.error };
@@ -83,7 +89,10 @@ export async function createWorkspaceWithInviteAction(
           inviteLink
         );
       } catch (emailError) {
-        console.error("[invitations:createWorkspaceWithInvite] Email failed:", emailError);
+        console.error(
+          "[invitations:createWorkspaceWithInvite] Email failed:",
+          emailError
+        );
         // Don't fail the action if email fails - user can copy the link
       }
     }
@@ -100,7 +109,10 @@ export async function createWorkspaceWithInviteAction(
     };
   } catch (error) {
     console.error("[invitations:createWorkspaceWithInvite] Error:", error);
-    return { success: false, error: "Failed to create workspace and send invitation" };
+    return {
+      success: false,
+      error: "Failed to create workspace and send invitation",
+    };
   }
 }
 
@@ -120,7 +132,7 @@ export async function resendInvitationAction(
     // Get existing invitation with workspace
     const [existingInvite] = await db
       .select({
-        invitation: invitation,
+        invitation,
         workspaceName: workspace.name,
       })
       .from(invitation)
@@ -168,18 +180,18 @@ export async function resendInvitationAction(
 // Get Invitation by Token (Public - for invite acceptance page)
 // ============================================================================
 
-export async function getInvitationByTokenAction(
-  token: string
-): Promise<ActionResult<{
-  invitation: Invitation;
-  workspaceName: string;
-  isExpired: boolean;
-  isAccepted: boolean;
-}>> {
+export async function getInvitationByTokenAction(token: string): Promise<
+  ActionResult<{
+    invitation: Invitation;
+    workspaceName: string;
+    isExpired: boolean;
+    isAccepted: boolean;
+  }>
+> {
   try {
     const [result] = await db
       .select({
-        invitation: invitation,
+        invitation,
         workspaceName: workspace.name,
       })
       .from(invitation)
@@ -221,16 +233,13 @@ export async function acceptInvitationAction(
     // Get invitation
     const [result] = await db
       .select({
-        invitation: invitation,
+        invitation,
         workspaceId: workspace.id,
       })
       .from(invitation)
       .innerJoin(workspace, eq(invitation.workspaceId, workspace.id))
       .where(
-        and(
-          eq(invitation.token, token),
-          gt(invitation.expiresAt, new Date())
-        )
+        and(eq(invitation.token, token), gt(invitation.expiresAt, new Date()))
       );
 
     if (!result) {

@@ -1,24 +1,22 @@
 "use client";
 
+import {
+  IconLoader2,
+  IconPhoto,
+  IconSparkles,
+  IconUpload,
+  IconX,
+} from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  IconUpload,
-  IconPhoto,
-  IconX,
-  IconSparkles,
-  IconLoader2,
-} from "@tabler/icons-react";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -29,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { useImageUpload } from "@/hooks/use-image-upload";
 import { ROOM_TYPES } from "@/lib/style-templates";
+import { cn } from "@/lib/utils";
 
 interface UploadedImage {
   id: string;
@@ -90,12 +89,12 @@ export function AddImagesDialog({
 
       setImages((prev) => [...prev, ...newImages]);
     },
-    [images.length, maxImages],
+    [images.length, maxImages]
   );
 
   const updateImageRoomType = useCallback((id: string, roomType: string) => {
     setImages((prev) =>
-      prev.map((img) => (img.id === id ? { ...img, roomType } : img)),
+      prev.map((img) => (img.id === id ? { ...img, roomType } : img))
     );
   }, []);
 
@@ -125,13 +124,13 @@ export function AddImagesDialog({
       setIsDragging(false);
 
       const files = Array.from(e.dataTransfer.files).filter((file) =>
-        file.type.startsWith("image/"),
+        file.type.startsWith("image/")
       );
       if (files.length > 0) {
         addImages(files);
       }
     },
-    [addImages],
+    [addImages]
   );
 
   const handleFileChange = useCallback(
@@ -142,7 +141,7 @@ export function AddImagesDialog({
       }
       e.target.value = "";
     },
-    [addImages],
+    [addImages]
   );
 
   const handleClick = useCallback(() => {
@@ -160,7 +159,7 @@ export function AddImagesDialog({
       const uploadSuccess = await imageUpload.uploadImages(
         projectId,
         files,
-        roomTypes,
+        roomTypes
       );
 
       if (uploadSuccess) {
@@ -178,10 +177,10 @@ export function AddImagesDialog({
   }, [images, projectId, imageUpload, handleReset, onOpenChange, router]);
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog onOpenChange={handleClose} open={open}>
       <DialogContent
-        size="lg"
         className="flex max-h-[80vh] flex-col gap-0 overflow-hidden p-0"
+        size="lg"
       >
         {/* Header */}
         <div className="border-b px-6 py-4">
@@ -199,7 +198,7 @@ export function AddImagesDialog({
           {maxImages <= 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <IconPhoto className="h-12 w-12 text-muted-foreground/30" />
-              <p className="mt-4 text-sm text-muted-foreground">
+              <p className="mt-4 text-muted-foreground text-sm">
                 This project has reached the maximum of 10 images.
               </p>
             </div>
@@ -207,30 +206,30 @@ export function AddImagesDialog({
             <div className="space-y-4">
               {/* Drop zone */}
               <div
-                onClick={handleClick}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
                 className={cn(
                   "relative flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-6 transition-all duration-200",
                   isDragging
                     ? "border-[var(--accent-teal)] bg-[var(--accent-teal)]/5"
-                    : "border-foreground/10 bg-muted/30 hover:border-foreground/20 hover:bg-muted/50",
+                    : "border-foreground/10 bg-muted/30 hover:border-foreground/20 hover:bg-muted/50"
                 )}
+                onClick={handleClick}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
               >
                 <input
-                  ref={inputRef}
-                  type="file"
                   accept="image/*"
+                  className="hidden"
                   multiple
                   onChange={handleFileChange}
-                  className="hidden"
+                  ref={inputRef}
+                  type="file"
                 />
 
                 <div
                   className={cn(
                     "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
-                    isDragging ? "scale-110" : "",
+                    isDragging ? "scale-110" : ""
                   )}
                   style={{
                     backgroundColor: isDragging
@@ -241,7 +240,7 @@ export function AddImagesDialog({
                   <IconUpload
                     className={cn(
                       "h-6 w-6 transition-colors",
-                      isDragging ? "text-white" : "",
+                      isDragging ? "text-white" : ""
                     )}
                     style={{
                       color: isDragging ? undefined : "var(--accent-teal)",
@@ -255,7 +254,7 @@ export function AddImagesDialog({
                       ? "Drop your images here"
                       : "Drag & drop images"}
                   </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
+                  <p className="mt-0.5 text-muted-foreground text-xs">
                     or click to browse • Up to {maxImages} more image
                     {maxImages !== 1 ? "s" : ""}
                   </p>
@@ -266,16 +265,16 @@ export function AddImagesDialog({
               {images.length > 0 && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-foreground">
+                    <p className="font-medium text-foreground text-sm">
                       {images.length} image{images.length !== 1 ? "s" : ""}{" "}
                       selected
                     </p>
                     {canAddMore && (
                       <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleClick}
                         className="gap-1.5 text-xs"
+                        onClick={handleClick}
+                        size="sm"
+                        variant="ghost"
                       >
                         <IconPhoto className="h-3.5 w-3.5" />
                         Add more
@@ -286,28 +285,28 @@ export function AddImagesDialog({
                   <div className="grid grid-cols-3 gap-3">
                     {images.map((image, index) => (
                       <div
+                        className="group relative animate-fade-in-up overflow-hidden rounded-lg bg-muted ring-1 ring-foreground/5"
                         key={image.id}
-                        className="animate-fade-in-up group relative overflow-hidden rounded-lg bg-muted ring-1 ring-foreground/5"
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
                         {/* Image preview */}
                         <div className="relative aspect-square">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={image.preview}
                             alt={image.name}
                             className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                            src={image.preview}
                           />
 
                           {/* Remove button */}
                           <Button
-                            variant="secondary"
-                            size="icon-sm"
+                            className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100"
                             onClick={(e) => {
                               e.stopPropagation();
                               removeImage(image.id);
                             }}
-                            className="absolute right-1 top-1 h-6 w-6 rounded-full bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100"
+                            size="icon-sm"
+                            variant="secondary"
                           >
                             <IconX className="h-3.5 w-3.5" />
                           </Button>
@@ -316,10 +315,10 @@ export function AddImagesDialog({
                         {/* Room type dropdown */}
                         <div className="p-2">
                           <Select
-                            value={image.roomType || ""}
                             onValueChange={(value) =>
                               updateImageRoomType(image.id, value)
                             }
+                            value={image.roomType || ""}
                           >
                             <SelectTrigger className="h-8 text-xs">
                               <SelectValue placeholder="Select room type" />
@@ -327,9 +326,9 @@ export function AddImagesDialog({
                             <SelectContent>
                               {ROOM_TYPES.map((room) => (
                                 <SelectItem
+                                  className="text-xs"
                                   key={room.id}
                                   value={room.id}
-                                  className="text-xs"
                                 >
                                   {room.label}
                                 </SelectItem>
@@ -349,16 +348,16 @@ export function AddImagesDialog({
         {/* Footer */}
         <div className="flex items-center justify-end gap-3 border-t bg-muted/30 px-6 py-4">
           <Button
-            variant="outline"
-            onClick={handleClose}
             disabled={isSubmitting}
+            onClick={handleClose}
+            variant="outline"
           >
             Cancel
           </Button>
           <Button
-            onClick={handleSubmit}
+            className="min-w-[120px] gap-2"
             disabled={images.length === 0 || isSubmitting}
-            className="gap-2 min-w-[120px]"
+            onClick={handleSubmit}
             style={{ backgroundColor: "var(--accent-teal)" }}
           >
             {isSubmitting ? (

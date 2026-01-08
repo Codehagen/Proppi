@@ -51,8 +51,8 @@ const styleTemplateIds = [
 
 function seededRandom(seed: number): () => number {
   return () => {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    return seed / 0x7fffffff;
+    seed = (seed * 1_103_515_245 + 12_345) & 0x7f_ff_ff_ff;
+    return seed / 0x7f_ff_ff_ff;
   };
 }
 
@@ -158,7 +158,7 @@ export function getProjectStats() {
   const total = mockProjects.length;
   const completed = mockProjects.filter((p) => p.status === "completed").length;
   const processing = mockProjects.filter(
-    (p) => p.status === "processing",
+    (p) => p.status === "processing"
   ).length;
   const totalImages = mockProjects.reduce((sum, p) => sum + p.imageCount, 0);
   const totalCost = mockProjects.reduce((sum, p) => {

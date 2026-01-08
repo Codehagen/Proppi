@@ -2,8 +2,8 @@ import { IconUsers } from "@tabler/icons-react";
 import { AffiliateTab } from "@/components/admin/affiliate/affiliate-tab";
 import { requireSystemAdmin } from "@/lib/admin-auth";
 import {
-  getAffiliateRelationships,
   getAffiliateEarnings,
+  getAffiliateRelationships,
   getAffiliateStats,
 } from "@/lib/db/queries";
 
@@ -30,8 +30,8 @@ export default async function AdminAffiliatesPage() {
             <IconUsers className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Affiliates</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="font-bold text-2xl tracking-tight">Affiliates</h1>
+            <p className="text-muted-foreground text-sm">
               Administrer affiliate-relasjoner og provisjoner
             </p>
           </div>
@@ -39,10 +39,10 @@ export default async function AdminAffiliatesPage() {
       </div>
 
       {/* Content */}
-      <div className="animate-fade-in-up stagger-1">
+      <div className="stagger-1 animate-fade-in-up">
         <AffiliateTab
-          relationships={relationships}
           earnings={earnings}
+          relationships={relationships}
           stats={stats}
         />
       </div>

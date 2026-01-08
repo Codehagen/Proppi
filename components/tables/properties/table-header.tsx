@@ -1,12 +1,12 @@
 "use client";
 
+import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import {
-  type SortableColumn,
-  type SortDirection,
+import type {
+  SortableColumn,
+  SortDirection,
 } from "@/hooks/use-property-filters";
-import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
 
 interface SortButtonProps {
   label: string;
@@ -30,9 +30,9 @@ function SortButton({
 
   return (
     <Button
-      variant="ghost"
-      className="h-auto p-0 hover:bg-transparent gap-1.5 font-medium text-muted-foreground hover:text-foreground"
+      className="h-auto gap-1.5 p-0 font-medium text-muted-foreground hover:bg-transparent hover:text-foreground"
       onClick={() => onSort(sortField)}
+      variant="ghost"
     >
       <span>{label}</span>
       {isActive && currentSortDirection === "asc" && (
@@ -100,8 +100,8 @@ export function DataTableHeader({
           const isFlexColumn = column.id === "address";
           return (
             <TableHead
-              key={column.id}
               className="flex items-center"
+              key={column.id}
               style={
                 isFlexColumn
                   ? { flex: 1, minWidth: column.minWidth }
@@ -114,14 +114,14 @@ export function DataTableHeader({
             >
               {column.sortField ? (
                 <SortButton
-                  label={column.label}
-                  sortField={column.sortField}
                   currentSortColumn={sortColumn}
                   currentSortDirection={sortDirection}
-                  onSort={onSort}
-                  width={column.width}
-                  minWidth={column.minWidth}
+                  label={column.label}
                   maxWidth={column.maxWidth}
+                  minWidth={column.minWidth}
+                  onSort={onSort}
+                  sortField={column.sortField}
+                  width={column.width}
                 />
               ) : (
                 <span className="font-medium text-muted-foreground">

@@ -1,17 +1,17 @@
 "use client";
 
-import Link from "next/link";
-import { LandingNav } from "./landing-nav";
-import { LandingFooter } from "./landing-footer";
 import {
-  IconCheck,
-  IconPhoto,
-  IconMovie,
   IconArrowRight,
-  IconPlus,
+  IconCheck,
   IconMinus,
+  IconMovie,
+  IconPhoto,
+  IconPlus,
 } from "@tabler/icons-react";
+import Link from "next/link";
 import { useState } from "react";
+import { LandingFooter } from "./landing-footer";
+import { LandingNav } from "./landing-nav";
 
 const photoFeatures = [
   "Up to 20 images per property",
@@ -92,7 +92,7 @@ function PricingCard({
     >
       {popular && (
         <div
-          className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-semibold"
+          className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 font-semibold text-xs"
           style={{
             backgroundColor: "var(--landing-accent)",
             color: "var(--landing-accent-foreground)",
@@ -124,7 +124,7 @@ function PricingCard({
 
       {/* Title */}
       <h3
-        className="text-xl font-semibold"
+        className="font-semibold text-xl"
         style={{ color: "var(--landing-text)" }}
       >
         {title}
@@ -133,7 +133,7 @@ function PricingCard({
       {/* Price */}
       <div className="mt-4 flex items-baseline gap-2">
         <span
-          className="text-4xl font-bold tabular-nums"
+          className="font-bold text-4xl tabular-nums"
           style={{ color: "var(--landing-text)" }}
         >
           {price}
@@ -149,7 +149,7 @@ function PricingCard({
       {/* Features */}
       <ul className="mt-8 flex-1 space-y-4">
         {features.map((feature) => (
-          <li key={feature} className="flex items-start gap-3">
+          <li className="flex items-start gap-3" key={feature}>
             <IconCheck
               className="mt-0.5 size-5 shrink-0"
               style={{ color: "var(--landing-accent)" }}
@@ -166,8 +166,8 @@ function PricingCard({
 
       {/* CTA */}
       <Link
+        className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full font-medium text-base transition-all duration-200 hover:scale-[1.02]"
         href="/sign-in"
-        className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full text-base font-medium transition-all duration-200 hover:scale-[1.02]"
         style={{
           backgroundColor: popular
             ? "var(--landing-accent)"
@@ -185,13 +185,7 @@ function PricingCard({
   );
 }
 
-function FaqItem({
-  question,
-  answer,
-}: {
-  question: string;
-  answer: string;
-}) {
+function FaqItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -203,14 +197,11 @@ function FaqItem({
       }}
     >
       <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between p-5 text-left"
+        onClick={() => setIsOpen(!isOpen)}
+        type="button"
       >
-        <span
-          className="font-medium"
-          style={{ color: "var(--landing-text)" }}
-        >
+        <span className="font-medium" style={{ color: "var(--landing-text)" }}>
           {question}
         </span>
         {isOpen ? (
@@ -247,16 +238,16 @@ export function PricingPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="px-6 pb-16 pt-20 text-center md:pb-24 md:pt-28">
+        <section className="px-6 pt-20 pb-16 text-center md:pt-28 md:pb-24">
           <div className="mx-auto max-w-3xl">
             <p
-              className="text-sm font-semibold uppercase tracking-wider"
+              className="font-semibold text-sm uppercase tracking-wider"
               style={{ color: "var(--landing-accent)" }}
             >
               Pricing
             </p>
             <h1
-              className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
+              className="mt-3 font-bold text-4xl tracking-tight sm:text-5xl md:text-6xl"
               style={{ color: "var(--landing-text)" }}
             >
               Simple, transparent
@@ -276,19 +267,19 @@ export function PricingPage() {
         <section className="px-6 pb-24">
           <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
             <PricingCard
-              icon={IconPhoto}
-              title="Photo Enhancement"
-              price="1000 NOK"
-              per="per property"
               features={photoFeatures}
+              icon={IconPhoto}
+              per="per property"
               popular
+              price="1000 NOK"
+              title="Photo Enhancement"
             />
             <PricingCard
-              icon={IconMovie}
-              title="Video Creation"
-              price="1000 NOK"
-              per="per video"
               features={videoFeatures}
+              icon={IconMovie}
+              per="per video"
+              price="1000 NOK"
+              title="Video Creation"
             />
           </div>
         </section>
@@ -301,13 +292,13 @@ export function PricingPage() {
           <div className="mx-auto max-w-3xl">
             <div className="text-center">
               <p
-                className="text-sm font-semibold uppercase tracking-wider"
+                className="font-semibold text-sm uppercase tracking-wider"
                 style={{ color: "var(--landing-accent)" }}
               >
                 FAQ
               </p>
               <h2
-                className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl"
+                className="mt-3 font-bold text-3xl tracking-tight sm:text-4xl"
                 style={{ color: "var(--landing-text)" }}
               >
                 Frequently asked questions
@@ -317,9 +308,9 @@ export function PricingPage() {
             <div className="mt-12 space-y-4">
               {faqs.map((faq) => (
                 <FaqItem
+                  answer={faq.answer}
                   key={faq.question}
                   question={faq.question}
-                  answer={faq.answer}
                 />
               ))}
             </div>
@@ -337,7 +328,7 @@ export function PricingPage() {
             }}
           >
             <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl"
+              className="font-bold text-3xl tracking-tight sm:text-4xl"
               style={{ color: "var(--landing-text)" }}
             >
               Ready to get started?
@@ -351,8 +342,8 @@ export function PricingPage() {
             </p>
             <div className="mt-8">
               <Link
+                className="inline-flex h-12 items-center gap-2 rounded-full px-8 font-medium text-base transition-all duration-200 hover:scale-[1.03]"
                 href="/sign-in"
-                className="inline-flex h-12 items-center gap-2 rounded-full px-8 text-base font-medium transition-all duration-200 hover:scale-[1.03]"
                 style={{
                   backgroundColor: "var(--landing-accent)",
                   color: "var(--landing-accent-foreground)",
