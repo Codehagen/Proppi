@@ -1,15 +1,15 @@
 ---
 title: "Uploading Photos"
-description: "Everything you need to know about uploading photos to AI Studio for best results."
+description: "Everything you need to know about uploading photos to Proppi for best results."
 order: 3
 popular: false
 ---
 
-Getting great results from AI Studio starts with uploading quality source photos. Here's everything you need to know about the upload process.
+Getting great results from Proppi starts with uploading quality source photos. Here's everything you need to know about the upload process.
 
 ## Supported Formats
 
-AI Studio accepts the following image formats:
+Proppi accepts the following image formats:
 
 | Format | Max Size | Recommended |
 |--------|----------|-------------|
@@ -59,7 +59,7 @@ Once uploaded, your photos are:
 
 <div class="note">
 
-Your original photos are always preserved—AI Studio creates enhanced copies without modifying your originals.
+Your original photos are always preserved—Proppi creates enhanced copies without modifying your originals.
 
 </div>
 

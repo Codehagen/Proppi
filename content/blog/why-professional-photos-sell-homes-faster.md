@@ -2,7 +2,7 @@
 title: "Why Professional Photos Sell Homes 32% Faster"
 description: "The data is clear: quality photos dramatically impact how quickly properties sell. Here's what the research shows and what it means for your listings."
 date: "2026-01-02"
-author: "AI Studio Team"
+author: "Proppi Team"
 category: "Industry Insights"
 image: "/blog/sell-faster.jpg"
 featured: true
@@ -77,7 +77,7 @@ Each option has clear drawbacks. Professional photographers are expensive and ad
 
 AI-powered photo enhancement offers a new option: professional-quality results without the traditional costs and delays.
 
-With AI Studio, you can:
+With Proppi, you can:
 
 - **Process photos instantly** — No waiting for photographer delivery
 - **Maintain consistency** — Every photo meets the same standard
@@ -92,4 +92,4 @@ The data is clear: photo quality directly impacts sale speed and price. The only
 
 AI photo enhancement makes professional-quality results accessible to every agent, for every listing. In a competitive market, that's not just nice to have — it's a competitive necessity.
 
-Your listings deserve photos that sell. AI Studio delivers them in seconds.
+Your listings deserve photos that sell. Proppi delivers them in seconds.

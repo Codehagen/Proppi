@@ -1,7 +1,7 @@
 import { ContactPage } from "@/components/landing/contact-page";
 
 export const metadata = {
-  title: "Contact - AI Studio",
+  title: "Contact - Proppi",
   description: "Get in touch with us. We'd love to hear from you.",
 };
 

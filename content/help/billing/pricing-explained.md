@@ -1,15 +1,15 @@
 ---
 title: "Pricing Explained"
-description: "Understand AI Studio's pricing structure and find the plan that works best for you."
+description: "Understand Proppi's pricing structure and find the plan that works best for you."
 order: 1
 popular: true
 ---
 
-AI Studio uses a simple, transparent credit-based pricing system. Here's everything you need to know about how pricing works.
+Proppi uses a simple, transparent credit-based pricing system. Here's everything you need to know about how pricing works.
 
 ## How Credits Work
 
-Credits are the currency of AI Studio. Each photo enhancement costs **1 credit**. Credits are:
+Credits are the currency of Proppi. Each photo enhancement costs **1 credit**. Credits are:
 
 - **Simple** – One credit equals one enhanced photo
 - **Flexible** – Use credits whenever you need them
@@ -17,7 +17,7 @@ Credits are the currency of AI Studio. Each photo enhancement costs **1 credit**
 
 <div class="callout-info">
 
-**New users get 10 free credits** to try AI Studio. No credit card required to start.
+**New users get 10 free credits** to try Proppi. No credit card required to start.
 
 </div>
 

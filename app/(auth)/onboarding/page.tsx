@@ -7,8 +7,8 @@ import { db } from "@/lib/db";
 import { user, workspace } from "@/lib/db/schema";
 
 export const metadata = {
-  title: "Complete your profile | AI Studio",
-  description: "Complete your profile to get started with AI Studio",
+  title: "Complete your profile | Proppi",
+  description: "Complete your profile to get started with Proppi",
 };
 
 export default async function OnboardingPage() {

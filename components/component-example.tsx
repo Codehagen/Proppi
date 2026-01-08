@@ -129,7 +129,7 @@ export function ComponentExample() {
     <ExampleWrapper>
       {/* Hero Title Section */}
       <div className="space-y-4 border-border border-b pb-8 text-center md:col-span-2">
-        <h1 className="font-bold text-4xl tracking-tight">AI Studio</h1>
+        <h1 className="font-bold text-4xl tracking-tight">Proppi</h1>
         <p className="mx-auto max-w-md text-lg text-muted-foreground">
           Transform your real estate photos with AI-powered enhancements
         </p>

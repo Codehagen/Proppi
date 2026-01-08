@@ -1,6 +1,6 @@
 ---
 title: "Batch Processing"
-description: "Learn how to efficiently process multiple photos at once with AI Studio's batch processing feature."
+description: "Learn how to efficiently process multiple photos at once with Proppi's batch processing feature."
 order: 2
 popular: false
 ---
@@ -11,7 +11,7 @@ Batch processing allows you to enhance multiple photos simultaneously, applying 
 
 1. **Upload multiple photos** to a single project
 2. **Select your style template** – it applies to all photos
-3. **Start processing** – AI Studio handles each photo automatically
+3. **Start processing** – Proppi handles each photo automatically
 4. **Download all** enhanced images at once
 
 ## Processing Times

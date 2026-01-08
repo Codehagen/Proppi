@@ -1,22 +1,22 @@
 ---
 title: "Incredible Before & After: Real Transformations from Our Users"
-description: "See the dramatic difference AI enhancement makes with real examples from AI Studio users. These transformations speak for themselves."
+description: "See the dramatic difference AI enhancement makes with real examples from Proppi users. These transformations speak for themselves."
 date: "2025-12-28"
-author: "AI Studio Team"
+author: "Proppi Team"
 category: "Case Studies"
 image: "/blog/transformations.jpg"
 featured: false
 ---
 
-Sometimes the best way to understand what's possible is to see real results. Here are actual before-and-after examples from AI Studio users, showing how AI enhancement transforms everyday property photos into listing-ready visuals.
+Sometimes the best way to understand what's possible is to see real results. Here are actual before-and-after examples from Proppi users, showing how AI enhancement transforms everyday property photos into listing-ready visuals.
 
 ## Dark Living Room to Bright, Inviting Space
 
 **The Challenge**: A north-facing living room photographed on an overcast day. The original image was dark, with muddy colors and no sense of warmth.
 
-**The Result**: AI Studio brightened the space naturally, revealing the true colors of the furnishings while maintaining realistic lighting. The windows show proper exposure without blown-out highlights.
+**The Result**: Proppi brightened the space naturally, revealing the true colors of the furnishings while maintaining realistic lighting. The windows show proper exposure without blown-out highlights.
 
-**User Feedback**: "I was ready to schedule a reshoot. AI Studio saved me a trip back to the property and got the listing up same-day."
+**User Feedback**: "I was ready to schedule a reshoot. Proppi saved me a trip back to the property and got the listing up same-day."
 
 ## Exterior Shot: From Flat to Fantastic
 
@@ -30,7 +30,7 @@ Sometimes the best way to understand what's possible is to see real results. Her
 
 **The Challenge**: A modern kitchen with warm under-cabinet lighting and cool daylight from windows. The original photo had an unpleasant green cast from the mixed light sources.
 
-**The Result**: AI Studio corrected the white balance throughout the image while preserving the warm accent lighting. The result is clean and natural without looking over-processed.
+**The Result**: Proppi corrected the white balance throughout the image while preserving the warm accent lighting. The result is clean and natural without looking over-processed.
 
 **User Feedback**: "Mixed lighting has always been my nemesis. This tool handles it perfectly every time."
 
@@ -40,7 +40,7 @@ Sometimes the best way to understand what's possible is to see real results. Her
 
 **The Result**: Brightening revealed the true white of the tiles, and enhanced clarity brought out the shine in fixtures. The space feels clean and well-maintained.
 
-**User Feedback**: "Bathrooms are the hardest rooms to photograph. AI Studio makes them look as good as they do in person."
+**User Feedback**: "Bathrooms are the hardest rooms to photograph. Proppi makes them look as good as they do in person."
 
 ## Bedroom: Warm and Welcoming
 
@@ -48,7 +48,7 @@ Sometimes the best way to understand what's possible is to see real results. Her
 
 **The Result**: Gentle warming and color enhancement brought out the coziness of the space. The bedding looks plush, the natural light feels golden, and the room invites you to imagine living there.
 
-**User Feedback**: "My engagement metrics jumped significantly after I started using AI Studio on all my bedroom shots."
+**User Feedback**: "My engagement metrics jumped significantly after I started using Proppi on all my bedroom shots."
 
 ## Outdoor Living Space
 
@@ -71,6 +71,6 @@ Looking across these examples, several patterns emerge:
 
 The best way to understand AI enhancement is to experience it. Upload a challenging photo from your recent shoots and see the transformation for yourself.
 
-Every property deserves to be shown at its best. AI Studio makes that possible for every listing, every time.
+Every property deserves to be shown at its best. Proppi makes that possible for every listing, every time.
 
 Ready to transform your own photos? Start your free trial today.

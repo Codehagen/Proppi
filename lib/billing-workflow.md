@@ -1,6 +1,6 @@
 # Billing & Affiliate System Workflow
 
-This document explains the billing workflow for AI Studio, from project creation to affiliate payouts.
+This document explains the billing workflow for Proppi, from project creation to affiliate payouts.
 
 ---
 

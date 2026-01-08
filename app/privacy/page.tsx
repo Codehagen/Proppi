@@ -1,7 +1,7 @@
 import { LegalPage, LegalSection } from "@/components/landing/legal-page";
 
 export const metadata = {
-  title: "Privacy Policy - AI Studio",
+  title: "Privacy Policy - Proppi",
   description: "How we collect, use, and protect your personal information.",
 };
 
@@ -14,13 +14,13 @@ export default function PrivacyPage() {
     >
       <LegalSection title="1. Introduction">
         <p>
-          AI Studio (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is
+          Proppi (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is
           committed to protecting your privacy. This Privacy Policy explains how
           we collect, use, disclose, and safeguard your information when you use
           our AI-powered real estate photo enhancement service.
         </p>
         <p>
-          By using AI Studio, you agree to the collection and use of information
+          By using Proppi, you agree to the collection and use of information
           in accordance with this policy. If you do not agree with our policies,
           please do not use our service.
         </p>
@@ -134,8 +134,8 @@ export default function PrivacyPage() {
         </ul>
         <p>
           To exercise any of these rights, please contact us at{" "}
-          <a className="underline" href="mailto:privacy@aistudio.no">
-            privacy@aistudio.no
+          <a className="underline" href="mailto:privacy@proppi.tech">
+            privacy@proppi.tech
           </a>
           .
         </p>
@@ -173,16 +173,16 @@ export default function PrivacyPage() {
           practices, please contact us at:
         </p>
         <p className="mt-2">
-          <strong>AI Studio</strong>
+          <strong>Proppi</strong>
           <br />
           Email:{" "}
-          <a className="underline" href="mailto:privacy@aistudio.no">
-            privacy@aistudio.no
+          <a className="underline" href="mailto:privacy@proppi.tech">
+            privacy@proppi.tech
           </a>
           <br />
           General inquiries:{" "}
-          <a className="underline" href="mailto:hello@aistudio.no">
-            hello@aistudio.no
+          <a className="underline" href="mailto:hello@proppi.tech">
+            hello@proppi.tech
           </a>
         </p>
       </LegalSection>

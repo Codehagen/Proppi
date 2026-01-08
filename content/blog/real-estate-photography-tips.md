@@ -2,7 +2,7 @@
 title: "10 Real Estate Photography Tips That Actually Work"
 description: "Professional photographers share their secrets for capturing properties that sell. These practical tips will elevate your listing photos."
 date: "2026-01-05"
-author: "AI Studio Team"
+author: "Proppi Team"
 category: "Tips & Tricks"
 image: "/blog/photography-tips.jpg"
 featured: false
@@ -87,7 +87,7 @@ If you do end up with tilted photos, most editing software can correct this, but
 
 All your listing photos should have a consistent look. This creates a professional presentation and helps establish your visual brand.
 
-AI Studio's presets ensure consistency across all your photos automatically, saving hours of manual editing while delivering professional results.
+Proppi's presets ensure consistency across all your photos automatically, saving hours of manual editing while delivering professional results.
 
 ## The Bottom Line
 

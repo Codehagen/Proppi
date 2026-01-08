@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 import { getUserWithWorkspace } from "@/lib/db/queries";
 
 export const metadata: Metadata = {
-  title: "Videos | AI Studio",
+  title: "Videos | Proppi",
   description: "Create and manage property tour videos",
 };
 
