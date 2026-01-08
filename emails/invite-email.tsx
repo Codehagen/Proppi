@@ -21,7 +21,7 @@ export function InviteEmail({
 
       <Text style={paragraph}>
         <strong>{inviterName}</strong> has invited you to join{" "}
-        <strong>{workspaceName}</strong> on AI Studio.
+        <strong>{workspaceName}</strong> on Proppi.
       </Text>
 
       <Section style={inviteBox}>
@@ -31,7 +31,7 @@ export function InviteEmail({
       </Section>
 
       <Text style={paragraph}>
-        AI Studio is an AI-powered real estate photo editor that helps teams
+        Proppi is an AI-powered real estate photo editor that helps teams
         create stunning property listings with virtual staging, lighting
         enhancements, and more.
       </Text>
@@ -50,7 +50,7 @@ export function InviteEmail({
       <Text style={signature}>
         Best,
         <br />
-        The AI Studio Team
+        The Proppi Team
       </Text>
     </EmailLayout>
   );

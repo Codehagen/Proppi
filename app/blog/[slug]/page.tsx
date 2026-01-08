@@ -23,12 +23,12 @@ export async function generateMetadata({
 
   if (!post) {
     return {
-      title: "Post Not Found | AI Studio",
+      title: "Post Not Found | Proppi",
     };
   }
 
   return {
-    title: `${post.title} | AI Studio Blog`,
+    title: `${post.title} | Proppi Blog`,
     description: post.description,
     openGraph: {
       title: post.title,

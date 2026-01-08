@@ -84,7 +84,7 @@ export async function createWorkspaceWithInviteAction(
       try {
         await sendInviteEmail(
           email,
-          "AI Studio Admin",
+          "Proppi Admin",
           newWorkspace.name,
           inviteLink
         );
@@ -164,7 +164,7 @@ export async function resendInvitationAction(
     const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${newToken}`;
     await sendInviteEmail(
       existingInvite.invitation.email,
-      "AI Studio Admin",
+      "Proppi Admin",
       existingInvite.workspaceName,
       inviteLink
     );

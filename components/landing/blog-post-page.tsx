@@ -110,7 +110,7 @@ export function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) {
                 className="font-bold text-6xl opacity-10"
                 style={{ color: "var(--landing-accent)" }}
               >
-                AI Studio
+                Proppi
               </div>
             </div>
           </div>
@@ -227,7 +227,7 @@ export function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) {
               className="mx-auto mt-4 max-w-lg text-lg leading-relaxed"
               style={{ color: "var(--landing-text-muted)" }}
             >
-              Join thousands of real estate professionals who use AI Studio to
+              Join thousands of real estate professionals who use Proppi to
               create stunning property photos.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -239,7 +239,7 @@ export function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) {
                   color: "var(--landing-accent-foreground)",
                 }}
               >
-                Try AI Studio Free
+                Try Proppi Free
               </Link>
               <Link
                 className="inline-flex h-12 items-center rounded-full px-8 font-medium text-base transition-colors hover:opacity-80"

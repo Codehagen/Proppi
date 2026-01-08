@@ -27,12 +27,12 @@ export async function generateMetadata({
 
   if (!category) {
     return {
-      title: "Category Not Found | AI Studio Help",
+      title: "Category Not Found | Proppi Help",
     };
   }
 
   return {
-    title: `${category.title} | AI Studio Help`,
+    title: `${category.title} | Proppi Help`,
     description: category.description,
   };
 }

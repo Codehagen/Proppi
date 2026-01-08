@@ -7,7 +7,7 @@ import { auth } from "@/lib/auth";
 import { getUserWithWorkspace } from "@/lib/db/queries";
 
 export const metadata: Metadata = {
-  title: "Dashboard | AI Studio",
+  title: "Dashboard | Proppi",
   description: "Manage your property photos and AI edits",
 };
 

@@ -238,7 +238,7 @@ export function ContactPage() {
                   className="mt-1 text-sm"
                   style={{ color: "var(--landing-text-muted)" }}
                 >
-                  hello@aistudio.no
+                  hello@proppi.tech
                 </p>
               </div>
 

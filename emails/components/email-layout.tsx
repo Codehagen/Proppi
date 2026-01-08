@@ -24,7 +24,7 @@ export function EmailLayout({ preview, children }: EmailLayoutProps) {
         <Container style={container}>
           {/* Header */}
           <Section style={header}>
-            <Text style={logo}>AI Studio</Text>
+            <Text style={logo}>Proppi</Text>
           </Section>
 
           {/* Content */}
@@ -34,10 +34,10 @@ export function EmailLayout({ preview, children }: EmailLayoutProps) {
           <Hr style={hr} />
           <Section style={footer}>
             <Text style={footerText}>
-              AI Studio - AI-powered real estate photo editor
+              Proppi - AI-powered real estate photo editor
             </Text>
             <Text style={footerText}>
-              © {new Date().getFullYear()} AI Studio. All rights reserved.
+              © {new Date().getFullYear()} Proppi. All rights reserved.
             </Text>
           </Section>
         </Container>

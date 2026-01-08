@@ -1,11 +1,11 @@
 ---
 title: "Download Options"
-description: "Understand the different ways to download your enhanced photos from AI Studio."
+description: "Understand the different ways to download your enhanced photos from Proppi."
 order: 3
 popular: false
 ---
 
-Once your photos are enhanced, AI Studio offers several download options to fit your workflow.
+Once your photos are enhanced, Proppi offers several download options to fit your workflow.
 
 ## Download Formats
 
@@ -32,7 +32,7 @@ Download all enhanced images at once:
 
 1. Click **Download All** in your project
 2. Choose your format preference
-3. AI Studio creates a ZIP file
+3. Proppi creates a ZIP file
 4. Download begins automatically
 
 ### Selective Download
@@ -70,6 +70,6 @@ For batch downloads, files are organized in a folder named after your project.
 ## Tips for Best Results
 
 1. **Download high-res first** – You can always compress later
-2. **Keep originals** – AI Studio stores them, but local backups are smart
+2. **Keep originals** – Proppi stores them, but local backups are smart
 3. **Check before sharing** – Review each image at full size
 4. **Organize downloads** – Create folders by property or date

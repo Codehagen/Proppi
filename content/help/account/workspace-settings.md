@@ -1,11 +1,11 @@
 ---
 title: "Workspace Settings"
-description: "Configure your AI Studio workspace including branding, preferences, and defaults."
+description: "Configure your Proppi workspace including branding, preferences, and defaults."
 order: 1
 popular: false
 ---
 
-Your workspace is your team's home in AI Studio. Customize it to match your brand and workflow preferences.
+Your workspace is your team's home in Proppi. Customize it to match your brand and workflow preferences.
 
 ## Accessing Workspace Settings
 
@@ -17,14 +17,14 @@ Your workspace is your team's home in AI Studio. Customize it to match your bran
 
 ### Workspace Name
 
-Your workspace name appears throughout AI Studio. Choose something recognizable like your agency or company name.
+Your workspace name appears throughout Proppi. Choose something recognizable like your agency or company name.
 
 ### Workspace URL
 
 Your custom workspace URL:
 
 ```
-app.aistudio.com/your-workspace-name
+app.proppi.tech/your-workspace-name
 ```
 
 This URL is used for sharing and bookmarking.
@@ -59,7 +59,7 @@ Enable to automatically start processing after upload. Disable for manual contro
 
 <div class="callout-tip">
 
-**Recommended:** Keep auto-processing disabled until you're familiar with AI Studio. This gives you time to preview templates before using credits.
+**Recommended:** Keep auto-processing disabled until you're familiar with Proppi. This gives you time to preview templates before using credits.
 
 </div>
 
@@ -94,7 +94,7 @@ Download all your workspace data including projects, settings, and billing histo
 
 ## Integrations
 
-Connect AI Studio with other tools:
+Connect Proppi with other tools:
 - Zapier integration
 - Webhook notifications
 - API access (Business plan)

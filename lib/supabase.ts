@@ -7,7 +7,7 @@ export const supabaseAdmin = createClient(
 );
 
 // Storage bucket name
-export const STORAGE_BUCKET = "aistudio-bucket";
+export const STORAGE_BUCKET = "proppi-bucket";
 
 // Path helpers
 export function getImagePath(

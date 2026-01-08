@@ -1,11 +1,11 @@
 ---
 title: "Understanding Credits"
-description: "Learn how AI Studio's credit system works and how to manage your credits effectively."
+description: "Learn how Proppi's credit system works and how to manage your credits effectively."
 order: 2
 popular: false
 ---
 
-Credits are the simple way AI Studio tracks usage. One credit equals one photo enhancement—no complicated calculations needed.
+Credits are the simple way Proppi tracks usage. One credit equals one photo enhancement—no complicated calculations needed.
 
 ## Credit Usage
 
@@ -53,7 +53,7 @@ For subscription plans, credits renew monthly on your billing date:
 
 ## Low Credit Alerts
 
-AI Studio notifies you when credits run low:
+Proppi notifies you when credits run low:
 
 | Balance | Notification |
 |---------|--------------|

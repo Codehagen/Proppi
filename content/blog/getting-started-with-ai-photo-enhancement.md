@@ -2,7 +2,7 @@
 title: "Getting Started with AI Photo Enhancement"
 description: "Learn how to transform your real estate photos in seconds with our AI-powered enhancement tools. A complete guide for beginners."
 date: "2026-01-08"
-author: "AI Studio Team"
+author: "Proppi Team"
 category: "Guides"
 image: "/blog/getting-started.jpg"
 featured: true
@@ -25,13 +25,13 @@ AI photo enhancement bridges this gap, offering:
 
 ### Step 1: Upload Your Photos
 
-Start by uploading your property photos to AI Studio. We accept all common image formats including JPEG, PNG, and HEIC. You can upload individual photos or batch-process entire property shoots.
+Start by uploading your property photos to Proppi. We accept all common image formats including JPEG, PNG, and HEIC. You can upload individual photos or batch-process entire property shoots.
 
 For best results, ensure your original photos have good exposure and are in focus. Our AI can work wonders, but it performs best with a solid foundation.
 
 ### Step 2: Choose Your Enhancement Style
 
-AI Studio offers several enhancement presets tailored for real estate:
+Proppi offers several enhancement presets tailored for real estate:
 
 - **Bright & Airy** — Perfect for modern homes and apartments
 - **Warm & Inviting** — Ideal for cozy family homes
@@ -46,7 +46,7 @@ Once processing is complete, download your enhanced photos in full resolution. U
 
 ## Tips for Best Results
 
-Here are some insider tips to get the most out of AI Studio:
+Here are some insider tips to get the most out of Proppi:
 
 1. **Shoot in natural light** when possible — AI enhancement works with what you give it
 2. **Keep rooms tidy** — While we can enhance lighting and colors, we can't remove clutter
@@ -55,6 +55,6 @@ Here are some insider tips to get the most out of AI Studio:
 
 ## Ready to Transform Your Listings?
 
-Start with a few photos to see the difference AI enhancement can make. Most users are amazed by their first results and quickly make AI Studio part of their standard workflow.
+Start with a few photos to see the difference AI enhancement can make. Most users are amazed by their first results and quickly make Proppi part of their standard workflow.
 
-Your properties deserve to look their best. Let AI Studio help you make that happen.
+Your properties deserve to look their best. Let Proppi help you make that happen.

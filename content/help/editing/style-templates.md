@@ -5,7 +5,7 @@ order: 1
 popular: true
 ---
 
-Style templates are the heart of AI Studio's enhancement capabilities. Each template applies a carefully tuned set of adjustments to transform your photos into professional-quality images.
+Style templates are the heart of Proppi's enhancement capabilities. Each template applies a carefully tuned set of adjustments to transform your photos into professional-quality images.
 
 ## Available Templates
 

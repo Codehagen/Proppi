@@ -8,9 +8,9 @@ import {
 } from "@/lib/help";
 
 export const metadata: Metadata = {
-  title: "Help Center | AI Studio",
+  title: "Help Center | Proppi",
   description:
-    "Get help with AI Studio. Browse our knowledge base for guides, tutorials, and answers to frequently asked questions.",
+    "Get help with Proppi. Browse our knowledge base for guides, tutorials, and answers to frequently asked questions.",
 };
 
 export default function Help() {

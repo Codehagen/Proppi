@@ -1,11 +1,11 @@
 ---
 title: "Managing Team Members"
-description: "Learn how to invite team members, set permissions, and collaborate effectively in AI Studio."
+description: "Learn how to invite team members, set permissions, and collaborate effectively in Proppi."
 order: 2
 popular: false
 ---
 
-AI Studio makes it easy to collaborate with your team. Invite colleagues, assign roles, and work together on property photo projects.
+Proppi makes it easy to collaborate with your team. Invite colleagues, assign roles, and work together on property photo projects.
 
 ## Team Roles
 

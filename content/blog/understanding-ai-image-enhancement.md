@@ -2,13 +2,13 @@
 title: "How AI Image Enhancement Actually Works"
 description: "Curious about the technology behind AI photo enhancement? Here's a plain-language explanation of how modern AI transforms your images."
 date: "2025-12-20"
-author: "AI Studio Team"
+author: "Proppi Team"
 category: "Technology"
 image: "/blog/ai-explained.jpg"
 featured: false
 ---
 
-When you upload a photo to AI Studio and see it transformed seconds later, it might feel like magic. But behind that instant transformation is fascinating technology worth understanding. Here's how it actually works, explained without the jargon.
+When you upload a photo to Proppi and see it transformed seconds later, it might feel like magic. But behind that instant transformation is fascinating technology worth understanding. Here's how it actually works, explained without the jargon.
 
 ## The Basic Idea
 
@@ -40,11 +40,11 @@ General-purpose AI enhancement exists, but it's not optimal for real estate. Why
 - **Color fidelity** — Paint colors and finishes must remain accurate
 - **HDR handling** — Windows and interiors need balanced exposure
 
-AI Studio's models were trained specifically on real estate photography. They understand the unique challenges of property photos and produce results appropriate for listings.
+Proppi's models were trained specifically on real estate photography. They understand the unique challenges of property photos and produce results appropriate for listings.
 
 ## What Happens When You Upload
 
-Here's the journey your photo takes through AI Studio:
+Here's the journey your photo takes through Proppi:
 
 ### 1. Analysis
 The AI analyzes your image to understand its characteristics: lighting conditions, exposure levels, color balance, and content type (interior, exterior, detail shot).
@@ -94,7 +94,7 @@ AI image technology improves rapidly. Capabilities that seemed impossible a few 
 - **Real-time processing** — Enhancement during capture rather than after
 - **Quality matching** — Automatically matching reference styles
 
-AI Studio continuously incorporates advances as they mature, ensuring our users always have access to state-of-the-art enhancement.
+Proppi continuously incorporates advances as they mature, ensuring our users always have access to state-of-the-art enhancement.
 
 ## Try It Yourself
 
