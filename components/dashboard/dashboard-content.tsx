@@ -12,7 +12,7 @@ import { EmptyProjects } from "@/components/dashboard/empty-projects";
 import { ProjectsGrid } from "@/components/dashboard/projects-grid";
 import { StatsBar } from "@/components/dashboard/stats-bar";
 import { NewProjectDialog } from "@/components/projects/new-project-dialog";
-import { DataTable } from "@/components/tables/properties/data-table";
+import { ProjectsDataTable } from "@/components/tables/projects";
 import { Button } from "@/components/ui/button";
 import type { Project } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
@@ -132,7 +132,7 @@ export function DashboardContent({ projects, stats }: DashboardContentProps) {
             {view === "grid" ? (
               <ProjectsGrid projects={projects} />
             ) : (
-              <DataTable />
+              <ProjectsDataTable projects={projects} />
             )}
           </div>
         </>
