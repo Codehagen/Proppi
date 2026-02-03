@@ -8,6 +8,7 @@ import {
   IconLoader2,
   IconMail,
   IconPlus,
+  IconReceipt,
 } from "@tabler/icons-react";
 import type * as React from "react";
 import { useState, useTransition } from "react";
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { createWorkspaceWithInviteAction } from "@/lib/actions/invitations";
 import type { WorkspacePlan } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
@@ -70,6 +72,11 @@ export function CreateWorkspaceDialog({
   const [email, setEmail] = useState("");
   const [plan, setPlan] = useState<WorkspacePlan>("free");
 
+  // B2B state
+  const [invoiceEligible, setInvoiceEligible] = useState(false);
+  const [organizationNumber, setOrganizationNumber] = useState("");
+  const [orgNumberError, setOrgNumberError] = useState("");
+
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(inviteLink);
@@ -87,11 +94,31 @@ export function CreateWorkspaceDialog({
       return;
     }
 
+    // Validate B2B fields
+    if (invoiceEligible) {
+      if (!organizationNumber.trim()) {
+        setOrgNumberError("Organization number is required for B2B billing");
+        return;
+      }
+      if (!/^\d{9}$/.test(organizationNumber.trim())) {
+        setOrgNumberError("Organization number must be exactly 9 digits");
+        return;
+      }
+    }
+    setOrgNumberError("");
+
     startTransition(async () => {
       const result = await createWorkspaceWithInviteAction(
         name.trim(),
         email.trim(),
-        plan
+        plan,
+        true,
+        invoiceEligible
+          ? {
+              invoiceEligible: true,
+              organizationNumber: organizationNumber.trim(),
+            }
+          : undefined
       );
 
       if (result.success) {
@@ -110,6 +137,9 @@ export function CreateWorkspaceDialog({
     setName("");
     setEmail("");
     setPlan("free");
+    setInvoiceEligible(false);
+    setOrganizationNumber("");
+    setOrgNumberError("");
     setCreatedEmail("");
     setInviteLink("");
     setCopied(false);
@@ -122,6 +152,9 @@ export function CreateWorkspaceDialog({
       setName("");
       setEmail("");
       setPlan("free");
+      setInvoiceEligible(false);
+      setOrganizationNumber("");
+      setOrgNumberError("");
       setSent(false);
       setCreatedEmail("");
       setInviteLink("");
@@ -294,6 +327,98 @@ export function CreateWorkspaceDialog({
                       </div>
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Invoice Billing (B2B) */}
+              <div className="space-y-3">
+                <div
+                  className={cn(
+                    "rounded-xl p-4 ring-2 transition-all duration-200",
+                    invoiceEligible
+                      ? "bg-[var(--accent-green)]/5 ring-[var(--accent-green)]"
+                      : "ring-foreground/5"
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex h-8 w-8 items-center justify-center rounded-lg"
+                        style={{
+                          backgroundColor: invoiceEligible
+                            ? "color-mix(in oklch, var(--accent-green) 15%, transparent)"
+                            : "color-mix(in oklch, var(--foreground) 5%, transparent)",
+                        }}
+                      >
+                        <IconReceipt
+                          className="h-4 w-4"
+                          style={{
+                            color: invoiceEligible
+                              ? "var(--accent-green)"
+                              : "var(--muted-foreground)",
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">
+                          Invoice Billing (B2B)
+                        </p>
+                        <p className="text-muted-foreground text-sm">
+                          Enable for Norwegian business customers
+                        </p>
+                      </div>
+                    </div>
+                    <Switch
+                      checked={invoiceEligible}
+                      disabled={isPending}
+                      onCheckedChange={(checked) => {
+                        setInvoiceEligible(checked);
+                        if (!checked) {
+                          setOrganizationNumber("");
+                          setOrgNumberError("");
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {invoiceEligible && (
+                    <div className="mt-4 space-y-2">
+                      <Label
+                        className="font-medium text-sm"
+                        htmlFor="organization-number"
+                      >
+                        Organization Number{" "}
+                        <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        className={cn(
+                          orgNumberError &&
+                            "border-destructive ring-destructive"
+                        )}
+                        disabled={isPending}
+                        id="organization-number"
+                        maxLength={9}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "");
+                          setOrganizationNumber(value);
+                          if (orgNumberError) {
+                            setOrgNumberError("");
+                          }
+                        }}
+                        placeholder="969026155"
+                        value={organizationNumber}
+                      />
+                      {orgNumberError ? (
+                        <p className="text-destructive text-xs">
+                          {orgNumberError}
+                        </p>
+                      ) : (
+                        <p className="text-muted-foreground text-xs">
+                          Norwegian 9-digit organization number
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </>

@@ -27,7 +27,11 @@ export async function createWorkspaceWithInviteAction(
   name: string,
   email: string,
   plan: WorkspacePlan,
-  sendEmail = true
+  sendEmail = true,
+  options?: {
+    organizationNumber?: string;
+    invoiceEligible?: boolean;
+  }
 ): Promise<
   ActionResult<{
     workspace: { id: string; name: string };
@@ -41,6 +45,17 @@ export async function createWorkspaceWithInviteAction(
   }
 
   try {
+    // Validate organization number if provided
+    if (
+      options?.organizationNumber &&
+      !/^\d{9}$/.test(options.organizationNumber)
+    ) {
+      return {
+        success: false,
+        error: "Organization number must be exactly 9 digits",
+      };
+    }
+
     // Generate unique slug from name
     const baseSlug = name
       .toLowerCase()
@@ -63,6 +78,11 @@ export async function createWorkspaceWithInviteAction(
         plan,
         status: "active",
         onboardingCompleted: false,
+        // B2B fields
+        organizationNumber: options?.organizationNumber || null,
+        invoiceEligible: options?.invoiceEligible,
+        invoiceEligibleAt: options?.invoiceEligible ? new Date() : null,
+        invitedByAdmin: true,
       })
       .returning();
 
